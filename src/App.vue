@@ -1,11 +1,31 @@
+
 <template>
+  <toolbar></toolbar>
+  <menu></menu>
+  <!-- 组件模板不需要最外层的根标签包裹了 -->
   <div id="nav">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
   </div>
   <router-view/>
+  <bottom></bottom>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { Options } from 'vue-class-component';
+import toolbar from "./components/layout/toolbar.vue"
+import menu from "./components/layout/menu.vue"
+import bottom from "./components/layout/bottom.vue"
+@Options({
+  components: {
+    toolbar,
+    menu,
+    bottom
+  }
+})
+export default defineComponent({
 
+})
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
