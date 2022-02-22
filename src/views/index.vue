@@ -15,7 +15,7 @@ import { Options, Vue } from 'vue-class-component'
 import { ref, defineComponent, reactive } from 'vue'
 export default defineComponent({
   setup() {
-    const title: string = 'adsionli admin'
+    const title = 'adsionli admin'
     //html模板中是不需要使用.value的，因为它会自动调用value，返回的类型是一个Ref类型
     const count: any = ref<number>(0)
     function addCount(): void {

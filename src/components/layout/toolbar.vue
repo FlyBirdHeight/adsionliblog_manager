@@ -1,5 +1,7 @@
 <template>
-    <h1>toolbar</h1>
+    <div>
+        toolbar
+    </div>
 </template>
 <script lang="ts">
 import { ref, defineComponent, reactive } from 'vue'

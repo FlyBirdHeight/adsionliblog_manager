@@ -5,11 +5,15 @@ const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 module.exports = {
     // 基本路径  3.6之前的版本时 baseUrl
     publicPath: "/",
+
     // 输出文件目录
     outputDir: "adsionli-admin",
+
     // eslint-loader 是否在保存的时候检查
     lintOnSave: false,
+
     productionSourceMap: true,
+
     // webpack-dev-server 相关配置
     devServer: {
         open: process.platform === "darwin",
@@ -19,6 +23,7 @@ module.exports = {
         hotOnly: true,
         historyApiFallback: true
     },
+
     configureWebpack: {
         plugins: [
             AutoImport({
@@ -29,12 +34,34 @@ module.exports = {
             }),
         ]
     },
+
+    css: {
+        loaderOptions: {
+            sass: {
+                // 全局sass变量	
+                //sass-loader 新版本
+                prependData: `
+                    @import "./public/scss/index.scss";
+                    @import "./public/scss/variable.scss";
+                    @import "./public/scss/mixin.scss";
+                `
+            }
+        }
+    },
+
     pages: {
         index: {
             entry: 'src/main.ts',
             template: 'public/index.html',
             filename: 'index.html',
             title: 'adsionli-admin'
+        }
+    },
+
+    pluginOptions: {
+        'style-resources-loader': {
+            preProcessor: 'scss',
+            patterns: []
         }
     }
 }

@@ -1,30 +1,31 @@
-
 <template>
   <toolbar></toolbar>
-  <menu></menu>
+  <left></left>
   <!-- 组件模板不需要最外层的根标签包裹了 -->
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-  </div>
-  <router-view/>
+  <router-view />
   <bottom></bottom>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { Options } from 'vue-class-component';
-import toolbar from "./components/layout/toolbar.vue"
-import menu from "./components/layout/menu.vue"
-import bottom from "./components/layout/bottom.vue"
+import { defineComponent } from 'vue'
+import { Options, Vue, setup } from 'vue-class-component'
+import toolbar from './components/layout/toolbar.vue'
+import left from './components/layout/left_menu.vue'
+import bottom from './components/layout/bottom.vue'
 @Options({
   components: {
     toolbar,
-    menu,
-    bottom
+    left,
+    bottom,
+  },
+})
+export default class App extends Vue {
+  setup() {
+    const msg = "adsionli-admin";
+    return {
+      msg
+    }
   }
-})
-export default defineComponent({
-
-})
+}
 </script>
 <style>
 #app {

@@ -1,5 +1,7 @@
 <template>
-    <h1>menu</h1>
+    <div>
+        <h1>left_menu</h1>
+    </div>
 </template>
 <script lang="ts">
 import { ref, defineComponent, reactive } from 'vue'
