@@ -1,6 +1,6 @@
 <template>
   <toolbar></toolbar>
-  <left></left>
+  <left-menu></left-menu>
   <!-- 组件模板不需要最外层的根标签包裹了 -->
   <router-view />
   <bottom></bottom>
@@ -9,12 +9,12 @@
 import { defineComponent } from 'vue'
 import { Options, Vue, setup } from 'vue-class-component'
 import toolbar from './components/layout/toolbar.vue'
-import left from './components/layout/left_menu.vue'
+import leftMenu from './components/layout/left_menu.vue'
 import bottom from './components/layout/bottom.vue'
 @Options({
   components: {
     toolbar,
-    left,
+    leftMenu,
     bottom,
   },
 })

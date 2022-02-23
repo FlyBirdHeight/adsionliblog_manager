@@ -6,7 +6,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
-    Menu: typeof import('./src/components/layout/menu.vue')['default']
+    Left_menu: typeof import('./src/components/layout/left_menu.vue')['default']
     Toolbar: typeof import('./src/components/layout/toolbar.vue')['default']
   }
 }

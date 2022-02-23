@@ -7,7 +7,7 @@
 import { ref, defineComponent, reactive } from 'vue'
 import { Options, Vue } from 'vue-class-component'
 export default defineComponent({
-    name: "menu",
+    name: "leftMenu",
     setup(props, context){
     }
 })

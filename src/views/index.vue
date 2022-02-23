@@ -1,5 +1,5 @@
 <template>
-  <h1>
+  <!-- <h1>
     {{ title }}
   </h1>
   <h1>{{ count }}</h1>
@@ -7,7 +7,7 @@
   <div>
       {{user}}
   </div>
-  <el-button @click="changeUser">改变User中的内容</el-button>
+  <el-button @click="changeUser">改变User中的内容</el-button> -->
 </template>
 
 <script lang="ts">

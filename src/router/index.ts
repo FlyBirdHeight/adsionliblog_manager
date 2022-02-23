@@ -7,6 +7,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Index',
     component: Index
   },
+  {
+    path: '/image',
+    name: 'image',
+    component: () => import("../views/image/index.vue"),
+  }
 ]
 
 const router = createRouter({
