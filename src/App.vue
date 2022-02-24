@@ -1,9 +1,17 @@
 <template>
-  <toolbar></toolbar>
-  <left-menu></left-menu>
-  <!-- 组件模板不需要最外层的根标签包裹了 -->
-  <router-view />
-  <bottom></bottom>
+  <div class="container flex-vertical">
+    <toolbar></toolbar>
+    <div class="container flex-horizontal">
+      <left-menu></left-menu>
+      <!-- 组件模板不需要最外层的根标签包裹了 -->
+      <div class="container flex-vertical">
+        <div class="router-body">
+          <router-view />
+        </div>
+        <bottom></bottom>
+      </div>
+    </div>
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
@@ -20,32 +28,13 @@ import bottom from './components/layout/bottom.vue'
 })
 export default class App extends Vue {
   setup() {
-    const msg = "adsionli-admin";
+    const msg = 'adsionli-admin'
     return {
-      msg
+      msg,
     }
   }
 }
 </script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>

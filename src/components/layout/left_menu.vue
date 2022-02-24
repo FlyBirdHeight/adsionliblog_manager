@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="left-menu left-aside">
         <h1>left_menu</h1>
     </div>
 </template>

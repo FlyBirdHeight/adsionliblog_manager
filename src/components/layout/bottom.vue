@@ -1,5 +1,7 @@
 <template>
-    <h1>bottom</h1>
+    <div class="bottom">
+        bottom
+    </div>
 </template>
 <script lang="ts">
 import { ref, defineComponent, reactive } from 'vue'
