@@ -1,5 +1,5 @@
 <template>
-  <div class="container flex-vertical">
+  <div class="container flex-vertical all-screen">
     <toolbar></toolbar>
     <div class="container flex-horizontal">
       <left-menu></left-menu>

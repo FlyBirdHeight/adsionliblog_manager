@@ -1,5 +1,5 @@
 .left-menu {
-    background-color: #d3dce6;
+    background-color: #fff;
     text-align: center;
 }
 
@@ -7,5 +7,8 @@
     overflow: auto;
     box-sizing: border-box;
     flex-shrink: 0;
+}
+
+.left-menu-vertical:not(.el-menu--collapse) {
     width: 200px;
 }
