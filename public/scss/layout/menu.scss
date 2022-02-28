@@ -1,6 +1,7 @@
 .left-menu {
-    background-color: #fff;
-    text-align: center;
+    background-image: linear-gradient(180deg, rgba(139, 144, 255, .87), rgba(152, 94, 238, .83), #b765d9, #de8ac4);
+    color: #ffffff;
+    font-weight: bolder;
 }
 
 .left-aside {
@@ -10,5 +11,23 @@
 }
 
 .left-menu-vertical:not(.el-menu--collapse) {
-    width: 200px;
+    width: 240px;
+}
+
+.el-menu-item:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.el-menu-item.is-active {
+    background-color: #ffffff;
+}
+
+.el-menu-item-group__title {
+    color: #dcdde0;
+}
+
+.el-menu-item {
+    margin: 10px;
+    border-radius: 10px;
 }

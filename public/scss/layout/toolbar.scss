@@ -1,7 +1,8 @@
 .toolbar {
     text-align: center;
     line-height: 50px;
-    background-color: #b3c0d1;
+    background-image: linear-gradient(90deg, rgba(139, 144, 255, .87), rgba(152, 94, 238, .83), #b765d9, #de8ac4);
+    color: #fff;
     --el-header-padding: 0 20px;
     --el-header-height: 50px;
     padding: var(--el-header-padding);

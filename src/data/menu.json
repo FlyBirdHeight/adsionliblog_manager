@@ -27,7 +27,7 @@
                     "path": "uploadImage"
                 },
                 {
-                    "name": "图片整理",
+                    "name": "图床整理",
                     "path": "arrangeImage"
                 }
             ]

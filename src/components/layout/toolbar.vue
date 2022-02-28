@@ -10,13 +10,20 @@
 <script lang="ts" setup>
 import { ref, shallowRef, watchEffect } from 'vue'
 import { Close, Fold } from '@element-plus/icons-vue'
+import { State } from '@/store/index'
+import { useStore } from 'vuex'
+const {state: {menu}, getters, commit} = useStore<State>();
+
+// console.log(state)
 const buttonIcon: any = shallowRef(Close)
 const showType = ref(true)
 const changeStatus = () => {
   showType.value = !showType.value
+  
 }
 watchEffect(() => {
-  buttonIcon.value = showType.value ? Close : Fold
+  buttonIcon.value = showType.value ? Fold : Close
+  commit('menu/SET_SHOW_MENU', showType.value);
 })
 </script>
 <style lang="scss">
@@ -24,7 +31,8 @@ watchEffect(() => {
   .none-border {
     border: 0;
     background-color: rgba(1, 1, 1, 0);
-    color: #000000;
+    color: #fff;
+    font-size: 18px
   }
 }
 </style>

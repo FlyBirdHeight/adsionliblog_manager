@@ -8,9 +8,9 @@ const routes: Array<RouteRecordRaw> = [
     component: Index
   },
   {
-    path: '/image',
-    name: 'image',
-    component: () => import("../views/image/index.vue"),
+    path: '/arrangeImage',
+    name: 'arrangeImage',
+    component: () => import("../views/image/arrangeImage.vue"),
   }
 ]
 

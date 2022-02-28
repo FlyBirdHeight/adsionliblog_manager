@@ -1,10 +1,12 @@
 <template>
   <el-menu
     class="left-menu left-aside left-menu-vertical"
-    default-active="2"
-    :collapse="isCollapse"
+    default-active="1"
     @open="handleOpen"
     @close="handleClose"
+    text-color="var(--text-color)"
+    background-color="var(--background-color)"
+    active-text-color="#000000"
   >
     <el-sub-menu index="1">
       <template #title>
@@ -28,10 +30,9 @@
   </el-menu>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { Location, Document, Menu as IconMenu, Setting } from '@element-plus/icons-vue'
 
-const isCollapse = ref(false)
 const handleOpen = (key: string, keyPath: string[]) => {
   // console.log(key, keyPath)
 }
@@ -39,4 +40,11 @@ const handleClose = (key: string, keyPath: string[]) => {
   // console.log(key, keyPath)
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+:root {
+  --text-color: #fff;
+  --background-color: transparent;
+  --el-menu-hover-bg-color: #fff;
+}
+
+</style>
