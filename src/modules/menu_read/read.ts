@@ -5,13 +5,17 @@ interface Menu {
     routeName?: string;
     children?: Array<Menu>;
     component?: string;
+    icon?: string;
 }
 interface MenuData {
     name: string;
+    index: string;
+    isGroup: boolean;
     path?: string;
     icon?: string;
+    children?: Array<MenuData>;
 }
-class GenerateRouter {
+class GenerateMenuData {
     menuData: Array<Menu> = require("@/data/menu.json").menu;
     routerData: Array<RouteRecordRaw>;
     showMenu: Array<MenuData>;
@@ -21,6 +25,8 @@ class GenerateRouter {
     }
     /**
      * @method handleRouteData 处理路由数据
+     * @param {Array[Menu]} data menu未处理数据
+     * @param {string} parent 父类路径
      * @return {Array<RouteRecordRaw>}
      */
     handleRouteData(data: Array<Menu> | undefined, parent: string = ''): Array<RouteRecordRaw> {
@@ -62,6 +68,39 @@ class GenerateRouter {
 
         return res;
     }
+
+    /**
+     * @method handleMenuData 处理列表数据
+     * @param {Array[Menu]} data menu未处理数据
+     * @param {string} parentPath 父类路径
+     * @param {string} parentIndex 父类编号
+     * @return {Array[MenuData]}
+     */
+    handleMenuData(data: Array<Menu> | undefined, parentPath: string = '', parentIndex: string = '0'): Array<MenuData> {
+        if (!data) {
+            return [];
+        }
+        let res: Array<MenuData> = [];
+        let idx: number = 0;
+        for (let value of data) {
+            let isGroup = !Reflect.has(value, 'path');
+            let hasChildren = Reflect.has(value, 'children');
+            let innerData: MenuData = {
+                name: value.name,
+                index: parentIndex == '0' ? (++idx).toString() : (parentIndex + '-' + (++idx)),
+                isGroup,
+                icon: value.icon
+            }
+            if (hasChildren) {
+                !isGroup && (innerData.path = parentPath == '' ? `/${value.path}` : parentPath + '/' + value.path)
+                innerData.children = this.handleMenuData(value.children, isGroup ? parentPath : innerData.path, isGroup ? parentIndex : innerData.index);
+            } else {
+                !isGroup && (innerData.path = parentPath == '' ? `/${value.path}` : parentPath + '/' + value.path)
+            }
+            res.push(innerData)
+        }
+        return res;
+    }
 }
 
-export default GenerateRouter;
+export default GenerateMenuData;

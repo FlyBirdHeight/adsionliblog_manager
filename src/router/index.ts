@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Index from '../views/index.vue'
-import GenerateRouter from "@/modules/menu_read/read"
-let routerData = new GenerateRouter();
+import GenerateMenuData from "@/modules/menu_read/read"
+let routerData = new GenerateMenuData();
 const generateRoute: Array<RouteRecordRaw> = routerData.handleRouteData(routerData.menuData, '');
 let routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Index',
-    component: Index
+    component: Index,
+    redirect: '/adsionli-home'
   },
   {
     path: '/arrangeImage',
@@ -16,11 +17,9 @@ let routes: Array<RouteRecordRaw> = [
   }
 ]
 routes = routes.concat(generateRoute);
-console.log(routes)
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-console.log(router.getRoutes())
 export default router
