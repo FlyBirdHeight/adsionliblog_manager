@@ -131,28 +131,28 @@
                             "icon": "Link",
                             "routeName": "SitePeople",
                             "path": "people",
-                            "component": "views/site/people"
+                            "component": "views/site/data/people"
                         },
                         {
                             "name": "评论统计",
                             "icon": "Share",
                             "routeName": "SiteComment",
                             "path": "comment",
-                            "component": "views/site/comment"
+                            "component": "views/site/data/comment"
                         },
                         {
                             "name": "点击人数",
                             "icon": "Mouse",
                             "routeName": "SiteSeeCount",
                             "path": "Pointer",
-                            "component": "views/site/seeCount"
+                            "component": "views/site/data/seeCount"
                         },
                         {
                             "name": "文章排名",
                             "icon": "PieChart",
                             "routeName": "SitePageRanking",
                             "path": "ranking",
-                            "component": "views/site/ranking"
+                            "component": "views/site/data/ranking"
                         }
                     ]
                 },
@@ -165,21 +165,21 @@
                             "icon": "UserFilled",
                             "routeName": "SiteFriendLink",
                             "path": "friendLink",
-                            "component": "views/site/friendLink"
+                            "component": "views/site/setting/friendLink"
                         },
                         {
                             "name": "时间轴设置",
                             "icon": "Timer",
                             "routeName": "SiteTimeLine",
                             "path": "timeline",
-                            "component": "views/site/timeline"
+                            "component": "views/site/setting/timeline"
                         },
                         {
                             "name": "个人页设置",
                             "icon": "Avatar",
                             "routeName": "SitePersonSetting",
                             "path": "person",
-                            "component": "views/site/person"
+                            "component": "views/site/setting/person"
                         }
                     ]
                 }

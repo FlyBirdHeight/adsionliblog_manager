@@ -6,11 +6,14 @@
     background-color="var(--background-color)"
     active-text-color="#000000"
     :router="true"
+    :collapse="false"
   >
     <template v-for="item in menuData" :key="item.index">
       <el-sub-menu :index="item.path" v-if="item.children">
         <template #title>
-          <component style="width: 1.5em; height: 1.5em; margin-right: 8px" v-if="item.icon" :is="$icon[item.icon]" />
+          <el-icon v-if="item.icon"
+            ><component :is="$icon[item.icon]"
+          /></el-icon>
           <span style="margin-right: 10px">{{ item.name }}</span>
         </template>
         <template v-for="child in item.children" :key="child.index">
@@ -40,11 +43,10 @@
       </el-sub-menu>
       <el-menu-item :index="item.path" v-else>
         <template #title>
-          <component
-            style="width: 1.5em; height: 1.5em; margin-right: 8px"
-            v-if="item.icon"
-            :is="$icon[item.icon]"
-          /><span>{{ item.name }}</span></template
+          <el-icon v-if="item.icon"
+            ><component :is="$icon[item.icon]"
+          /></el-icon>
+          <span>{{ item.name }}</span></template
         >
       </el-menu-item>
     </template>
