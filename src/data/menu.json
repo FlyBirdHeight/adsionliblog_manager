@@ -2,74 +2,101 @@
     "menu": [
         {
             "name": "文章管理",
+            "routeName": "Page",
             "path": "page",
             "children": [
                 {
                     "name": "文章管理",
-                    "path": "manager"
+                    "routeName": "PageManager",
+                    "path": "manager",
+                    "component": "views/page/manager"
                 },
                 {
                     "name": "文章发布",
-                    "path": "write"
+                    "routeName": "PageWrite",
+                    "path": "write",
+                    "component": "views/page/write"
                 },
                 {
                     "name": "标签管理",
-                    "path": "tag"
+                    "routeName": "Tag",
+                    "path": "tag",
+                    "component": "views/page/tag"
                 }
             ]
         },
         {
             "name": "图床管理",
+            "routeName": "Image",
             "path": "image",
             "children": [
                 {
                     "name": "图片上传",
-                    "path": "uploadImage"
+                    "routeName": "UploadImage",
+                    "path": "uploadImage",
+                    "component": "views/image/uploadImage"
                 },
                 {
                     "name": "图床整理",
-                    "path": "arrangeImage"
+                    "routeName": "ArrangeImage",
+                    "path": "arrangeImage",
+                    "component": "views/image/arrangeImage"
                 }
             ]
         },
         {
             "name": "日程安排",
+            "routeName": "Daily",
             "path": "daily",
             "children": [
                 {
                     "name": "日程设置",
-                    "path": "setting"
+                    "routeName": "DailySetting",
+                    "path": "setting",
+                    "component": "views/daily/setting"
                 },
                 {
                     "name": "完成情况",
-                    "path": "ending"
+                    "routeName": "DailyEnding",
+                    "path": "ending",
+                    "component": "views/daily/ending"
                 },
                 {
                     "name": "学习计划制定",
-                    "path": "learning"
+                    "routeName": "DailyLearning",
+                    "path": "learning",
+                    "component": "views/daily/learning"
                 },
                 {
                     "name": "刷题计划",
-                    "path": "leetcode"
+                    "routeName": "Leetcode",
+                    "path": "leetcode",
+                    "component": "views/daily/leetcode"
                 }
             ]
         },
         {
             "name": "评论管理",
+            "routeName": "Comment",
             "path": "comment",
             "children": [
                 {
                     "name": "评论回复",
-                    "path": "reply"
+                    "routeName": "CommentReply",
+                    "path": "reply",
+                    "component": "views/comment/reply"
                 },
                 {
                     "name": "评论设置",
-                    "path": "setting"
+                    "routeName": "CommentSetting",
+                    "path": "setting",
+                    "component": "views/comment/setting"
                 }
             ]
         },
         {
             "name": "站点管理",
+            "routeName": "Site",
             "path": "site",
             "children": [
                 {
@@ -77,19 +104,27 @@
                     "children": [
                         {
                             "name": "访问人数",
-                            "path": "people"
+                            "routeName": "SitePeople",
+                            "path": "people",
+                            "component": "views/site/people"
                         },
                         {
                             "name": "评论统计",
-                            "path": "comment"
+                            "routeName": "SiteComment",
+                            "path": "comment",
+                            "component": "views/site/comment"
                         },
                         {
                             "name": "点击人数",
-                            "path": "seeCount"
+                            "routeName": "SiteSeeCount",
+                            "path": "seeCount",
+                            "component": "views/site/seeCount"
                         },
                         {
                             "name": "文章排名",
-                            "path": "ranking"
+                            "routeName": "SitePageRanking",
+                            "path": "ranking",
+                            "component": "views/site/ranking"
                         }
                     ]
                 },
@@ -98,15 +133,21 @@
                     "children": [
                         {
                             "name": "友链设置",
-                            "path": "friendLink"
+                            "routeName": "SiteFriendLink",
+                            "path": "friendLink",
+                            "component": "views/site/friendLink"
                         },
                         {
                             "name": "时间轴设置",
-                            "path": "timeline"
+                            "routeName": "SiteTimeLine",
+                            "path": "timeline",
+                            "component": "views/site/timeline"
                         },
                         {
                             "name": "个人页设置",
-                            "path": "person"
+                            "routeName": "SitePersonSetting",
+                            "path": "person",
+                            "component": "views/site/person"
                         }
                     ]
                 }
