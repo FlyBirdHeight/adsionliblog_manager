@@ -18,16 +18,35 @@
     background-color: #fff;
     color: #000;
 }
-
 .el-menu-item.is-active {
+    padding-left: -15px;
     background-color: #ffffff;
+    color: #000;
 }
+
+.el-sub-menu:hover {
+    // background-color: #fff;
+    border-radius: -15px;
+    color: #000;
+}
+.el-sub-menu.is-active {
+    // background-color: #ffffff;
+    color: #000;
+}
+
+
+
 
 .el-menu-item-group__title {
     color: #dcdde0;
 }
 
 .el-menu-item {
-    margin: 10px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+.el-sub-menu {
+    margin: 5px;
     border-radius: 10px;
 }

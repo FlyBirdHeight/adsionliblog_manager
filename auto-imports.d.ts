@@ -6,6 +6,9 @@ declare global {
   const ElMenu: typeof import('element-plus/es')['ElMenu']
   const ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
   const ElMenuItemGroup: typeof import('element-plus/es')['ElMenuItemGroup']
+  const ElPagination: typeof import('element-plus/es')['ElPagination']
   const ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+  const ElTable: typeof import('element-plus/es')['ElTable']
+  const ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
 }
 export {}
