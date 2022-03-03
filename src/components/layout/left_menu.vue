@@ -15,14 +15,14 @@
 import { defineComponent, reactive } from 'vue'
 import GenerateMenuData from '@/modules/menu_read/read'
 import { setup, Options } from 'vue-class-component'
-import ItemMenu from "@/components/utils/menu/item_menu.vue"
+import ItemMenu from '@/components/utils/menu/item_menu.vue'
 export default defineComponent({
   components: {
     ItemMenu,
   },
   setup() {
     let generateMenuData = new GenerateMenuData()
-    const menuData = reactive(generateMenuData.handleMenuData(generateMenuData.menuData), { deep: true })
+    const menuData = reactive(generateMenuData.handleMenuData(generateMenuData.menuData))
     return {
       menuData,
     }

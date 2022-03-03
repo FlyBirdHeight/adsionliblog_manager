@@ -34,7 +34,7 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    const menuInfo = isReactive() ? props.menuData : reactive(props.menuData)
+    const menuInfo = isReactive(props.menuData) ? props.menuData : reactive(props.menuData)
     return {
       menuInfo,
     }
