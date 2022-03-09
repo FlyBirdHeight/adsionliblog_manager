@@ -13,20 +13,15 @@
       <el-date-picker style="width: 100%" v-model="data.writingDate" type="date" placeholder="选择发布日期" />
     </el-form-item>
   </el-form>
-  <md-editor style="margin-top: 20px" preview-theme="github" v-model="data.page" />
+  <md-editor style="margin-top: 20px" preview-theme="github" :onUploadImg="uploadImage" v-model="data.page" />
 </template>
 <script lang="ts">
 import { ref, defineComponent, reactive, computed, watch } from 'vue'
 import { Options, Vue } from 'vue-class-component'
 import MdEditor from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
-interface WritingForm {
-  title: string
-  subTitle: string
-  description: string
-  writingDate: string
-  page: string
-}
+import axios from 'axios'
+import { UploadImage, UploadImageResponse, WritingForm } from '@/modules/files/uploadImage'
 export default defineComponent({
   name: 'Writing',
   props: {
@@ -37,6 +32,7 @@ export default defineComponent({
   },
   emits: ['dataGet'],
   setup(props, context) {
+    const upload = new UploadImage()
     const form: WritingForm = {
       title: '',
       subTitle: '',
@@ -56,9 +52,27 @@ export default defineComponent({
         }
       }
     )
+    const uploadImage = async (files: FileList, callback: (urls: string[]) => void) => {
+      try {
+        const res = await upload.uploadImage(files)
+        let callbackImageList: Array<string> = new Array<string>(res.length)
+        let statusFalseImage = new Array()
+        for (let i = 0; i < res.length; i++) {
+          if (!res[i].status) {
+            statusFalseImage.push(res[i].id)
+          } else {
+            callbackImageList.push(res[i].url)
+          }
+        }
+        callback(callbackImageList.map((item: any) => item))
+      } catch (e) {
+        console.log(e)
+      }
+    }
     return {
       data,
       dataGet,
+      uploadImage,
     }
   },
 })
