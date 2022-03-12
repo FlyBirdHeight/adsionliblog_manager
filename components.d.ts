@@ -5,6 +5,7 @@
 declare module 'vue' {
   export interface GlobalComponents {
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
+    Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
@@ -21,11 +22,15 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTabPane: typeof import('element-plus/es')['ElTabPane']
+    ElTabs: typeof import('element-plus/es')['ElTabs']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Item_menu: typeof import('./src/components/utils/menu/item_menu.vue')['default']
     Left_menu: typeof import('./src/components/layout/left_menu.vue')['default']
-    Page_info: typeof import('./src/components/utils/page/page_info.vue')['default']
+    Page_info: typeof import('./src/components/pages/write/page_info.vue')['default']
+    Tag: typeof import('./src/components/pages/category_tag/tag.vue')['default']
     Toolbar: typeof import('./src/components/layout/toolbar.vue')['default']
-    Writing: typeof import('./src/components/utils/page/writing.vue')['default']
+    Writing: typeof import('./src/components/pages/write/writing.vue')['default']
   }
 }
 

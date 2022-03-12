@@ -28,7 +28,7 @@ export default defineComponent({
     sendData: Boolean,
   },
   components: {
-    MdEditor,
+    MdEditor
   },
   emits: ['dataGet'],
   setup(props, context) {
@@ -54,17 +54,26 @@ export default defineComponent({
     )
     const uploadImage = async (files: FileList, callback: (urls: string[]) => void) => {
       try {
-        const res = await upload.uploadImage(files)
-        let callbackImageList: Array<string> = new Array<string>(res.length)
-        let statusFalseImage = new Array()
-        for (let i = 0; i < res.length; i++) {
-          if (!res[i].status) {
-            statusFalseImage.push(res[i].id)
-          } else {
-            callbackImageList.push(res[i].url)
+        const res: any = await upload.uploadImage(files)
+        console.log(res)
+        if (res.length != 0) {
+          let callbackImageList: Array<string> = new Array<string>(res.length)
+          let statusFalseImage = new Array()
+          for (let i = 0; i < res.length; i++) {
+            if (!res[i].status) {
+              statusFalseImage.push(res[i].id)
+            } else {
+              callbackImageList.push(res[i].url)
+            }
+          }
+          callbackImageList.length != 0 && callback(callbackImageList.map((item: any) => item))
+          if(statusFalseImage.length != 0){
+            ElNotification.warning({
+              title: "图片存在重名",
+              message: "请确认是否需要重新上传图片，重名图片需重命名后才可使用！"
+            })
           }
         }
-        callback(callbackImageList.map((item: any) => item))
       } catch (e) {
         console.log(e)
       }

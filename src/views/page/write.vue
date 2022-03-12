@@ -7,8 +7,8 @@
   <page-info :send-data="sendData" @infoGet="infoGet"></page-info>
 </template>
 <script lang="ts">
-import Writing from '@/components/utils/page/writing.vue'
-import PageInfo from '@/components/utils/page/page_info.vue'
+import Writing from '@/components/pages/write/writing.vue'
+import PageInfo from '@/components/pages/write/page_info.vue'
 import { ref, defineComponent, reactive, watch } from 'vue'
 import { Options, Vue } from 'vue-class-component'
 export default defineComponent({

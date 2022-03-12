@@ -28,11 +28,16 @@
                     "icon": "DocumentAdd"
                 },
                 {
-                    "name": "标签管理",
-                    "routeName": "Tag",
-                    "path": "tag",
-                    "component": "views/page/tag",
-                    "icon": "PriceTag"
+                    "name": "模块管理",
+                    "children": [
+                        {
+                            "name": "分类の标签",
+                            "routeName": "CategoryTag",
+                            "path": "category_tag",
+                            "component": "views/page/category_tag",
+                            "icon": "Connection"
+                        }
+                    ]
                 }
             ]
         },
