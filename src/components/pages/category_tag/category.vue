@@ -16,7 +16,7 @@
 <script lang="ts">
 import { ref, defineComponent, reactive, onMounted } from 'vue'
 import { Options, Vue } from 'vue-class-component'
-import { CategoryList, getCategoryList } from '@/plugin/page/category_tag'
+import { CategoryList, getCategoryList } from '@/plugin/page/category_tag/category_tag'
 export default defineComponent({
   name: 'Category',
   setup(props, context) {
@@ -24,19 +24,19 @@ export default defineComponent({
     const categorySelectdValue = ref<CategoryList[]>([])
     const page = ref<number>(1)
     const count = ref<number>(20)
-    const handleSelectionChange = (val: User[]) => {
+    const handleSelectionChange = (val: CategoryList[]) => {
       categorySelectdValue.value = val
     }
     onMounted(() => {
       getCategoryList(page.value, count.value)
         .then((res) => {
-          console.log(res)
+          // console.log(res.data)
         })
         .catch((error) => {
           console.log(error)
         })
     })
-    const tableData = []
+    const tableData = ref<Array<CategoryList>>([])
 
     return {
       tableData,

@@ -33,10 +33,9 @@ interface TagList {
  */
 const getCategoryList = function (page: number, count: number): Promise<CategoryList[]> {
     let categroyList: CategoryList[] = [];
-    console.log(page, count)
     return new Promise<CategoryList[]>((resolve, reject) => {
         axios.get(`/api/page/tag_category/get/categoryList?page=${page}&count=${count}`).then(res => {
-            console.log(res);
+            resolve(res.data);
         }).catch(error => {
             reject(error)
         })
@@ -54,7 +53,7 @@ const getTagList = function (page: number, count: number): Promise<TagList[]> {
 
     return new Promise<TagList[]>((resolve, reject) => {
         axios.get(`/api/page/tag_category/get/tagList?page=${page}&count=${count}`).then(res => {
-            console.log(res);
+            resolve(res.data);
         }).catch(error => {
             reject(error)
         })

@@ -13,7 +13,6 @@ import { Close, Fold } from '@element-plus/icons-vue'
 import { State } from '@/store/index'
 import { useStore } from 'vuex'
 const {state: {menu}, getters, commit} = useStore<State>();
-
 // console.log(state)
 const buttonIcon: any = shallowRef(Close)
 const showType = ref(true)

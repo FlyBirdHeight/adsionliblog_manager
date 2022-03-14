@@ -3,10 +3,16 @@
     <h1 class="header-title">分类の标签</h1>
     <div class="button-group">
       <el-tooltip effect="dark" content="添加新分类" placement="bottom">
-        <el-button color="#8a2be2" :icon="$icon['CirclePlus']" class="button-group-menu" circle></el-button>
+        <el-button
+          color="#8a2be2"
+          :icon="$icon['CirclePlus']"
+          @click="addCategory"
+          class="button-group-menu"
+          circle
+        ></el-button>
       </el-tooltip>
       <el-tooltip effect="dark" content="删除选中分类" placement="bottom">
-      <el-button color="#ff69b4" :icon="$icon['Delete']" class="button-group-menu" circle></el-button>
+        <el-button color="#ff69b4" :icon="$icon['Delete']" class="button-group-menu" circle></el-button>
       </el-tooltip>
     </div>
   </div>
@@ -18,25 +24,35 @@
       <tag v-if="checkTab == 'tag'"></tag>
     </el-tab-pane>
   </el-tabs>
+  <category-add />
 </template>
 <script lang="ts">
-import { ref, defineComponent, reactive } from 'vue';
-import { Options, Vue } from 'vue-class-component';
-import Tag from '@/components/pages/category_tag/tag.vue';
-import Category from '@/components/pages/category_tag/category.vue';
+import { ref, defineComponent, reactive } from 'vue'
+import { Options, Vue } from 'vue-class-component'
+import { State } from '@/store/index'
+import { useStore } from 'vuex'
+import Tag from '@/components/pages/category_tag/tag.vue'
+import Category from '@/components/pages/category_tag/category.vue'
+import CategoryAdd from '@/components/dialog/category_add.vue'
 export default defineComponent({
   components: {
     Tag,
     Category,
+    CategoryAdd,
   },
   setup(props, context) {
+    const {commit} = useStore<State>()
     const checkTab = ref('category')
     const handleClick = function (tab: any) {
       console.log(tab.props.label, tab.props.name)
     }
+    const addCategory = function () {
+      commit('dialog/setCategoryAddShow', true);
+    }
     return {
       checkTab,
       handleClick,
+      addCategory,
     }
   },
 })
