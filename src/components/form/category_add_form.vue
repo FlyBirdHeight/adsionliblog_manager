@@ -1,6 +1,6 @@
 <template>
   <el-form
-    ref="categoryForm"
+    ref="categoryFormSubmit"
     :rules="rules"
     :model="formData"
     :size="formSize"
@@ -37,69 +37,62 @@
   </el-form>
 </template>
 <script lang="ts">
-import { ref, unref, defineComponent, reactive, computed, watch } from 'vue'
-import { Options, Vue } from 'vue-class-component'
-import { CategoryForm, validateName } from '@/plugin/page/category_tag/category_tag_add'
-export default defineComponent({
+export default {
   name: 'CategoryAddForm',
-  props: {
-    isSubmit: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup(props, context) {
-    const formData = reactive<CategoryForm>({
-      name: '',
-      desc: '',
-      is_show: true,
-      is_recommend: true,
-      sort: 0,
-    })
-    const formSize = 'small'
-    const labelPosition = 'left'
-    const categoryForm = ref()
-    const rules = {
-      name: validateName,
-    }
-    const isSubmitForm = computed(() => {
-      return props.isSubmit
-    })
-    const submitCategoryForm = async () => {
-      try {
-        const form = unref(categoryForm)
-        if (!form) {
-          return
-        }
-        await form.validate((valid, fields) => {
-          if (valid) {
-            context.emit('getSubmitFormData', formData)
-          } else {
-            console.log('error submit!', fields)
-          }
-        })
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    watch(
-      isSubmitForm,
-      (newV, oldV) => {
-        if (newV) {
-          submitCategoryForm()
-        }
-      },
-      { immediate: true }
-    )
-    return {
-      formData,
-      formSize,
-      labelPosition,
-      rules,
-      submitCategoryForm,
-      categoryForm,
-    }
+}
+</script>
+<script lang="ts" setup>
+import { ref, unref, reactive, computed, watch, defineProps, defineEmits } from 'vue'
+import { CategoryForm, validateName } from '@/plugin/page/category_tag/category_tag_add'
+const props = defineProps({
+  isSubmit: {
+    type: Boolean,
+    default: false,
   },
 })
+const emit = defineEmits(['submitForm', 'changeStatus'])
+
+const formData = reactive<CategoryForm>({
+  name: '',
+  desc: '',
+  is_show: true,
+  is_recommend: true,
+  sort: 0,
+})
+const formSize = 'small'
+const labelPosition = 'left'
+const categoryFormSubmit = ref()
+const rules = {
+  name: validateName,
+}
+const isSubmitForm = computed(() => {
+  return props.isSubmit
+})
+const submitCategoryForm = async () => {
+  try {
+    const form = unref(categoryFormSubmit)
+    if (!form) {
+      return
+    }
+    await form.validate((valid, fields) => {
+      if (valid) {
+        emit('submitForm', formData)
+      } else {
+        emit('changeStatus', false)
+      }
+    })
+  } catch (e) {
+    console.log(e)
+  }
+}
+watch(
+  isSubmitForm,
+  (newV, oldV) => {
+    if (newV) {
+      submitCategoryForm()
+    }
+  },
+  { immediate: true }
+)
 </script>
 <style lang="scss"></style>

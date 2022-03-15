@@ -48,8 +48,13 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, defineComponent, reactive, watch, onMounted } from 'vue'
-import { Options, Vue } from 'vue-class-component'
+export default {
+  name: 'PageInfo',
+}
+</script>
+<script lang="ts" setup>
+import { ref, reactive, watch, onMounted, defineProps, defineEmits } from 'vue'
+import { setup } from 'vue-class-component';
 interface InfoData {
   tag: Array<string>
   headImage: string
@@ -63,68 +68,55 @@ interface LinkItem {
   value: string
   link: string
 }
-export default defineComponent({
-  name: 'PageInfo',
-  props: {
-    sendData: Boolean,
-  },
-  setup(props, context) {
-    let infoData: InfoData = {
-      tag: [],
-      headImage: '',
-      category: [],
-    }
-    const info = reactive(infoData)
-    const categoryList = ref<Array<ListData>>([])
-    const tagList = ref<Array<ListData>>([])
-    //@TODO 用于头文件图片输入框查找,需要接入到后端去
-    const links = [
-      { value: 'vue', link: 'https://github.com/vuejs/vue' },
-      { value: 'element', link: 'https://github.com/ElemeFE/element' },
-      { value: 'cooking', link: 'https://github.com/ElemeFE/cooking' },
-      { value: 'mint-ui', link: 'https://github.com/ElemeFE/mint-ui' },
-      { value: 'vuex', link: 'https://github.com/vuejs/vuex' },
-      { value: 'vue-router', link: 'https://github.com/vuejs/vue-router' },
-      { value: 'babel', link: 'https://github.com/babel/babel' },
-    ]
-    let timeout: any
-    const querySearchAsync = (queryString: string, cb: (arg: any) => void) => {
-      const results = queryString ? links.filter(createFilter(queryString)) : links
-      clearTimeout(timeout)
-      timeout = setTimeout(() => {
-        cb(results)
-      }, 500)
-    }
-    const createFilter = (queryString: string) => {
-      return (restaurant: LinkItem) => {
-        return restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-      }
-    }
-    const handleSelect = (item: LinkItem) => {
-      console.log(item)
-    }
-    //@TODO 远程搜索结束
-    const infoGet = () => {
-      context.emit('infoGet', info)
-    }
-
-    watch(
-      () => props.sendData,
-      (newV, oldV) => {
-        infoGet()
-      }
-    )
-
-    return {
-      info,
-      infoGet,
-      categoryList,
-      tagList,
-      querySearchAsync,
-      handleSelect,
-    }
-  },
+const props = defineProps({
+  sendData: Boolean,
 })
+const emit = defineEmits(['infoGet'])
+let infoData: InfoData = {
+  tag: [],
+  headImage: '',
+  category: [],
+}
+const info = reactive(infoData)
+const categoryList = ref<Array<ListData>>([])
+const tagList = ref<Array<ListData>>([])
+//@TODO 用于头文件图片输入框查找,需要接入到后端去
+const links = [
+  { value: 'vue', link: 'https://github.com/vuejs/vue' },
+  { value: 'element', link: 'https://github.com/ElemeFE/element' },
+  { value: 'cooking', link: 'https://github.com/ElemeFE/cooking' },
+  { value: 'mint-ui', link: 'https://github.com/ElemeFE/mint-ui' },
+  { value: 'vuex', link: 'https://github.com/vuejs/vuex' },
+  { value: 'vue-router', link: 'https://github.com/vuejs/vue-router' },
+  { value: 'babel', link: 'https://github.com/babel/babel' },
+]
+let timeout: any
+const querySearchAsync = (queryString: string, cb: (arg: any) => void) => {
+  const results = queryString ? links.filter(createFilter(queryString)) : links
+  clearTimeout(timeout)
+  timeout = setTimeout(() => {
+    cb(results)
+  }, 500)
+}
+const createFilter = (queryString: string) => {
+  return (restaurant: LinkItem) => {
+    return restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+  }
+}
+const handleSelect = (item: LinkItem) => {
+  console.log(item)
+}
+//@TODO 远程搜索结束
+const infoSubmit = () => {
+  emit('infoGet', info)
+}
+
+watch(
+  () => props.sendData,
+  (newV, oldV) => {
+    infoSubmit()
+  }
+)
 </script>
 <style lang="scss" scoped>
 .page-info {

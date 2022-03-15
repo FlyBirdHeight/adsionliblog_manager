@@ -6,51 +6,37 @@
   <writing :send-data="sendData" @dataGet="dataGet"></writing>
   <page-info :send-data="sendData" @infoGet="infoGet"></page-info>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import Writing from '@/components/pages/write/writing.vue'
 import PageInfo from '@/components/pages/write/page_info.vue'
-import { ref, defineComponent, reactive, watch } from 'vue'
-import { Options, Vue } from 'vue-class-component'
-export default defineComponent({
-  components: {
-    Writing,
-    PageInfo,
-  },
-  setup(props, context) {
-    const sendData = ref(false)
-    const dataReturn = ref(false)
-    const infoReturn = ref(false)
-    const pageData = reactive({
-        info: null,
-        data: null
-    })
-    const sendPage = () => {
-      sendData.value = true
-    }
-    const dataGet = (val: any) => {
-      pageData.data = val;
-      dataReturn.value = true
-    }
-    const infoGet = (val: any) => {
-      pageData.info = val;
-      infoReturn.value = true
-    }
+import { ref, reactive, watch } from 'vue'
+const sendData = ref(false)
+const dataReturn = ref(false)
+const infoReturn = ref(false)
+const pageData = reactive({
+  info: null,
+  data: null,
+})
+const sendPage = () => {
+  sendData.value = true
+}
+const dataGet = (val: any) => {
+  pageData.data = val
+  console.log(val);
+  dataReturn.value = true
+}
+const infoGet = (val: any) => {
+  pageData.info = val
+  console.log(val)
+  infoReturn.value = true
+}
 
-    watch([infoReturn, dataReturn], (newV, oldV) => {
-      if (newV[0] && newV[1]) {
-        sendData.value = false
-        infoReturn.value = false
-        dataReturn.value = false
-      }
-    })
-
-    return {
-      sendPage,
-      dataGet,
-      infoGet,
-      sendData,
-    }
-  },
+watch([infoReturn, dataReturn], (newV, oldV) => {
+  if (newV[0] && newV[1]) {
+    sendData.value = false
+    infoReturn.value = false
+    dataReturn.value = false
+  }
 })
 </script>
 <style lang="scss" scoped>

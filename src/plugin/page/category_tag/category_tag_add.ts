@@ -1,3 +1,4 @@
+import axios from "axios"
 interface CategoryForm {
     name: string,
     desc?: string,
@@ -13,7 +14,23 @@ const validateName = {
     trigger: 'change',
 }
 
+const insertCategory = function (val: CategoryForm): Promise<any> {
+    console.log(val)
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "post",
+            url: `/api/page/tag_category/create/category`,
+            data: val
+        }).then(res => {
+            resolve(res);
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
 export {
     CategoryForm,
-    validateName
+    validateName,
+    insertCategory
 }

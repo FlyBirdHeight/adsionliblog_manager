@@ -14,37 +14,30 @@
   </el-table>
 </template>
 <script lang="ts">
-import { ref, defineComponent, reactive, onMounted } from 'vue'
-import { Options, Vue } from 'vue-class-component'
-import { CategoryList, getCategoryList } from '@/plugin/page/category_tag/category_tag'
-export default defineComponent({
+export default {
   name: 'Category',
-  setup(props, context) {
-    const categoryTableMultip = ref<InstanceType<typeof ElTable>>()
-    const categorySelectdValue = ref<CategoryList[]>([])
-    const page = ref<number>(1)
-    const count = ref<number>(20)
-    const handleSelectionChange = (val: CategoryList[]) => {
-      categorySelectdValue.value = val
-    }
-    onMounted(() => {
-      getCategoryList(page.value, count.value)
-        .then((res) => {
-          // console.log(res.data)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    })
-    const tableData = ref<Array<CategoryList>>([])
+}
+</script>
+<script lang="ts" setup>
+import { ref, reactive, onMounted } from 'vue'
+import { CategoryList, getCategoryList } from '@/plugin/page/category_tag/category_tag'
 
-    return {
-      tableData,
-      categoryTableMultip,
-      handleSelectionChange,
-      categorySelectdValue,
-    }
-  },
+const categoryTableMultip = ref<InstanceType<typeof ElTable>>()
+const categorySelectdValue = ref<CategoryList[]>([])
+const page = ref<number>(1)
+const count = ref<number>(20)
+const handleSelectionChange = (val: CategoryList[]) => {
+  categorySelectdValue.value = val
+}
+onMounted(() => {
+  getCategoryList(page.value, count.value)
+    .then((res) => {
+      // console.log(res.data)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 })
+const tableData = ref<Array<CategoryList>>([])
 </script>
 <style lang="scss"></style>

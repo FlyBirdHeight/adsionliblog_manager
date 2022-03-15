@@ -3,9 +3,6 @@
 declare global {
   const ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
   const ElButton: typeof import('element-plus/es')['ElButton']
-  const ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
-  const ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
-  const ElCol: typeof import('element-plus/es')['ElCol']
   const ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
   const ElDialog: typeof import('element-plus/es')['ElDialog']
   const ElForm: typeof import('element-plus/es')['ElForm']
@@ -19,8 +16,6 @@ declare global {
   const ElNotification: typeof import('element-plus/es')['ElNotification']
   const ElOption: typeof import('element-plus/es')['ElOption']
   const ElPagination: typeof import('element-plus/es')['ElPagination']
-  const ElRadio: typeof import('element-plus/es')['ElRadio']
-  const ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
   const ElSelect: typeof import('element-plus/es')['ElSelect']
   const ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
   const ElSwitch: typeof import('element-plus/es')['ElSwitch']
@@ -28,7 +23,6 @@ declare global {
   const ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
   const ElTabPane: typeof import('element-plus/es')['ElTabPane']
   const ElTabs: typeof import('element-plus/es')['ElTabs']
-  const ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
   const ElTooltip: typeof import('element-plus/es')['ElTooltip']
 }
 export {}

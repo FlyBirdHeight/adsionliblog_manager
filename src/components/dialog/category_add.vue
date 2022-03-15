@@ -8,7 +8,11 @@
     width="30%"
     draggable
   >
-    <category-add-form @submitForm="getSubmitFormData" :isSubmit="isSubmit"></category-add-form>
+    <category-add-form
+      @changeStatus="changeStatus"
+      @submitForm="getSubmitFormData"
+      :isSubmit="isSubmit"
+    ></category-add-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="closeCategoryAddDialog">关闭</el-button>
@@ -18,49 +22,43 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { ref, reactive, computed, watch, defineComponent } from 'vue'
-import { Options, Vue, setup } from 'vue-class-component'
+export default {
+  name: 'CategoryAdd',
+}
+</script>
+<script lang="ts" setup>
+import { ref, reactive, computed, watch } from 'vue'
 import store, { State } from '@/store/index'
 import { useStore } from 'vuex'
 import CategoryAddForm from '@/components/form/category_add_form.vue'
-export default defineComponent({
-  name: 'CategoryAdd',
-  components: {
-    CategoryAddForm,
-  },
-  setup() {
-    const use = useStore<State>()
-    const commit = use.commit
-    const state = use.state.dialog
-    const visible = ref(false)
-    const isSubmit = ref(false)
-    const closeCategoryAddDialog = function () {
-      commit('dialog/setCategoryAddShow', false)
-    }
-    const submitCategoryAdd = function () {
-      isSubmit.value = true;
-    }
-    const getSubmitFormData = function (val) {
-      console.log(value)
-    }
-    const storeCommitShow = computed(() => {
-      return state.categoryAddShow
-    })
-    watch(
-      storeCommitShow,
-      (newV, oldV) => {
-        visible.value = newV
-      },
-      { immediate: true, deep: true }
-    )
-    return {
-      visible,
-      closeCategoryAddDialog,
-      submitCategoryAdd,
-      getSubmitFormData,
-      isSubmit
-    }
-  },
+import { insertCategory } from '../../plugin/page/category_tag/category_tag_add'
+const use = useStore<State>()
+const commit = use.commit
+const state = use.state.dialog
+const visible = ref(false)
+const isSubmit = ref(false)
+const closeCategoryAddDialog = function () {
+  commit('dialog/setCategoryAddShow', false)
+}
+const submitCategoryAdd = function () {
+  isSubmit.value = true
+}
+const changeStatus = function (val: boolean) {
+  isSubmit.value = val
+}
+const getSubmitFormData = function (val: any) {
+  isSubmit.value = false
+  insertCategory(val);
+}
+const storeCommitShow = computed(() => {
+  return state.categoryAddShow
 })
+watch(
+  storeCommitShow,
+  (newV, oldV) => {
+    visible.value = newV
+  },
+  { immediate: true, deep: true }
+)
 </script>
 <style lang="scss"></style>
