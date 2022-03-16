@@ -1,7 +1,7 @@
 import axios from "axios"
 interface CategoryForm {
     name: string,
-    desc?: string,
+    des?: string,
     is_show?: boolean,
     is_recommend?: boolean,
     sort?: number
@@ -15,7 +15,6 @@ const validateName = {
 }
 
 const insertCategory = function (val: CategoryForm): Promise<any> {
-    console.log(val)
     return new Promise((resolve, reject) => {
         axios({
             method: "post",

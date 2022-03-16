@@ -27,7 +27,7 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, defineEmits } from 'vue'
 import store, { State } from '@/store/index'
 import { useStore } from 'vuex'
 import CategoryAddForm from '@/components/form/category_add_form.vue'
@@ -35,6 +35,7 @@ import { insertCategory } from '../../plugin/page/category_tag/category_tag_add'
 const use = useStore<State>()
 const commit = use.commit
 const state = use.state.dialog
+const emit = defineEmits(['addSuccess'])
 const visible = ref(false)
 const isSubmit = ref(false)
 const closeCategoryAddDialog = function () {
@@ -48,7 +49,26 @@ const changeStatus = function (val: boolean) {
 }
 const getSubmitFormData = function (val: any) {
   isSubmit.value = false
-  insertCategory(val);
+  insertCategory(val)
+    .then((res) => {
+      if (res.data.status) {
+        ElMessage({
+          message: '分类添加成功',
+          type: 'success',
+        })
+        visible.value = false
+        commit('dialog/setCategoryAddShow', false)
+        emit('addSuccess', true)
+      } else {
+        ElMessage({
+          message: '分类添加失败',
+          type: 'error',
+        })
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 }
 const storeCommitShow = computed(() => {
   return state.categoryAddShow

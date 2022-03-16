@@ -10,8 +10,8 @@
     <el-form-item label="分类名称:" prop="name">
       <el-input v-model="formData.name"></el-input>
     </el-form-item>
-    <el-form-item label="分类备注:" prop="desc">
-      <el-input v-model="formData.desc"></el-input>
+    <el-form-item label="分类备注:" prop="des">
+      <el-input v-model="formData.des"></el-input>
     </el-form-item>
     <el-form-item label="是否显示分类:" prop="is_show">
       <el-switch
@@ -54,7 +54,7 @@ const emit = defineEmits(['submitForm', 'changeStatus'])
 
 const formData = reactive<CategoryForm>({
   name: '',
-  desc: '',
+  des: '',
   is_show: true,
   is_recommend: true,
   sort: 0,

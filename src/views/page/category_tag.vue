@@ -18,16 +18,16 @@
   </div>
   <el-tabs v-model="checkTab" @tab-click="handleClick">
     <el-tab-pane label="分类" name="category">
-      <category v-if="checkTab == 'category'"></category>
+      <category @changeCategoryInsertStatus="changeCategoryInsertStatus" v-if="checkTab == 'category'"></category>
     </el-tab-pane>
     <el-tab-pane label="标签" name="tag">
       <tag v-if="checkTab == 'tag'"></tag>
     </el-tab-pane>
   </el-tabs>
-  <category-add />
+  <category-add @addSuccess="addSuccess" />
 </template>
 <script lang="ts">
-import { ref, defineComponent, reactive } from 'vue'
+import { ref, defineComponent, reactive, provide } from 'vue'
 import { Options, Vue } from 'vue-class-component'
 import { State } from '@/store/index'
 import { useStore } from 'vuex'
@@ -43,16 +43,27 @@ export default defineComponent({
   setup(props, context) {
     const {commit} = useStore<State>()
     const checkTab = ref('category')
+    const insertCategory = ref<boolean>(false)
     const handleClick = function (tab: any) {
       console.log(tab.props.label, tab.props.name)
     }
     const addCategory = function () {
       commit('dialog/setCategoryAddShow', true);
     }
+    const addSuccess = function(val: boolean) {
+      insertCategory.value = val;
+    }
+    const changeCategoryInsertStatus = function(val:boolean) {
+      insertCategory.value = val;
+    }
+    provide('insertCategoryStatus', insertCategory);
     return {
       checkTab,
       handleClick,
       addCategory,
+      addSuccess,
+      insertCategory,
+      changeCategoryInsertStatus
     }
   },
 })

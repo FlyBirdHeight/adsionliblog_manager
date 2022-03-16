@@ -15,6 +15,7 @@
 import { defineComponent } from 'vue'
 import { Options, Vue, setup } from 'vue-class-component'
 import leftMenu from '@/components/layout/left_menu.vue'
+
 @Options({
   components: {
     leftMenu,
@@ -23,13 +24,11 @@ import leftMenu from '@/components/layout/left_menu.vue'
 export default class App extends Vue {
   setup() {
     const msg = 'adsionli-admin'
-    console.log(msg)
+
     return {
       msg,
     }
   }
 }
 </script>
-<style>
-
-</style>
+<style></style>
