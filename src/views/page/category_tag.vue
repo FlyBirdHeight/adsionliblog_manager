@@ -27,6 +27,7 @@
       <category
         @changeCategoryInsertStatus="changeCategoryInsertStatus"
         @deleteCheckedHandle="getDeleteChecked"
+        @refreshEnd="refreshEnd"
         v-if="checkTab == 'category'"
       ></category>
     </el-tab-pane>
@@ -57,8 +58,12 @@ export default defineComponent({
     const deleteClick = ref<boolean>(false)
     const insertCategory = ref<boolean>(false)
     const deleteArray = ref<number[]>([])
+    const refreshCategoryList = ref<boolean>(false)
+    const refreshTagList = ref<boolean>(false)
     provide('insertCategoryStatus', insertCategory)
     provide('deleteCheckedData', deleteClick)
+    provide('refreshCategoryList', refreshCategoryList)
+    provide('refreshTagList', refreshTagList)
 
     const handleClick = function (tab: any) {
       console.log(tab.props.label, tab.props.name)
@@ -71,7 +76,10 @@ export default defineComponent({
       if (checkTab.value === 'category') {
         deleteCategory(deleteArray.value)
           .then((res) => {
-            deleteArray.value = []
+            if (res) {
+              deleteArray.value = []
+              refreshCategoryList.value = true
+            }
           })
           .catch((error) => {
             console.log(error)
@@ -79,7 +87,10 @@ export default defineComponent({
       } else {
         deleteTag(deleteArray.value)
           .then((res) => {
-            deleteArray.value = []
+            if (res.data) {
+              deleteArray.value = []
+              refreshTagList.value = true
+            }
           })
           .catch((error) => {
             console.log(error)
@@ -109,9 +120,14 @@ export default defineComponent({
     const changeCategoryInsertStatus = function (val: boolean) {
       insertCategory.value = val
     }
+    const refreshEnd = function (val: boolean) {
+      refreshCategoryList.value = false
+      refreshTagList.value = false
+    }
     watchEffect(() => {
       deleteData()
     })
+    
     return {
       checkTab,
       handleClick,
@@ -120,6 +136,9 @@ export default defineComponent({
       changeCategoryInsertStatus,
       deleteChecked,
       getDeleteChecked,
+      refreshEnd,
+      refreshCategoryList,
+      refreshTagList
     }
   },
 })

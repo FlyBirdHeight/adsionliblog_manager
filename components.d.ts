@@ -7,7 +7,6 @@ declare module 'vue' {
     Add_category: typeof import('./src/components/dialog/body/add_category.vue')['default']
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
     Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
-    Category_add: typeof import('./src/components/dialog/category_add.vue')['default']
     Category_add_form: typeof import('./src/components/form/category_add_form.vue')['default']
     Dialog: typeof import('./src/components/dialog/dialog.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']

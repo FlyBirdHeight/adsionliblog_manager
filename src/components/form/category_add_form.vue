@@ -77,6 +77,11 @@ const submitCategoryForm = async () => {
     await form.validate((valid, fields) => {
       if (valid) {
         emit('submitForm', formData)
+        formData.name = '';
+        formData.des = '';
+        formData.is_show = true;
+        formData.is_recommend = true;
+        formData.sort = 0;
       } else {
         emit('changeStatus', false)
       }

@@ -53,13 +53,11 @@ const deleteCategory = function (val: any): Promise<any> {
             method: "delete",
             url: "/api/page/tag_category/delete/category",
             data: {
-                delete_id: val
+                id: val
             }
         }).then(res => {
-            console.log(res);
-            resolve(true)
+            resolve(res.data.status)
         }).catch(error => {
-            console.log(error);
             reject(error)
         })
     })
@@ -70,13 +68,33 @@ const deleteTag = function (val: any): Promise<any> {
             method: "delete",
             url: "/api/page/tag_category/delete/tag",
             data: {
-                delete_id: val
+                id: val
             }
         }).then(res => {
             resolve(true)
         }).catch(error => {
             console.log(error);
             reject(error)
+        })
+    })
+}
+
+const getInfo = function(type: string, id: number) {
+    return new Promise<any>((resolve, reject) => {
+        let url = '/api/page/tag_category/getInfo/';
+        if(type == 'category'){
+            url += 'category/' + id;
+        }else {
+            url += 'tag/' + id;
+        }   
+        axios.get(url).then(res => {
+            if(res.data.status){
+                resolve(res.data.data)
+            }else {
+                reject('未查询到该数据id内容')
+            }
+        }).catch(e => {
+            reject(e)
         })
     })
 }
@@ -88,5 +106,6 @@ export {
     insertCategory,
     deleteCategory,
     deleteTag,
-    insertTag
+    insertTag,
+    getInfo
 }

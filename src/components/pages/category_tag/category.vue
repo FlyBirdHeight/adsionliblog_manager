@@ -54,8 +54,8 @@ import { PaginationReturn } from '@/utils/pagination'
 import { ref, reactive, onMounted, watchEffect, defineEmits, inject, watch } from 'vue'
 import { CategoryList, getCategoryList } from '@/plugin/page/category_tag/category_tag'
 import Pagination from '@/components/utils/pagination.vue'
-
-const emit = defineEmits(['changeCategoryInsertStatus', 'deleteCheckedHandle'])
+import { deleteCategory, getInfo } from '@/plugin/page/category_tag/category_tag_handle'
+const emit = defineEmits(['changeCategoryInsertStatus', 'deleteCheckedHandle', 'refreshEnd'])
 
 const categoryTableMultip = ref<InstanceType<typeof ElTable>>()
 const categorySelectdValue = ref<number[]>([])
@@ -66,6 +66,7 @@ const tableData = ref<Array<CategoryList>>([])
 
 const updateData = inject('insertCategoryStatus')
 const deleteCheckedData = inject('deleteCheckedData')
+const refreshList = inject('refreshCategoryList')
 /**
  * @method clearSelection 清空列表选项
  */
@@ -85,8 +86,8 @@ const handleSelectionChange = (val: CategoryList[]) => {
 const getList = function () {
   getCategoryList(page.value, count.value)
     .then((res) => {
-      tableData.value = res.data
-      total.value = tableData.value.length
+      tableData.value = res.data.data
+      total.value = res.data.count
       emit('changeCategoryInsertStatus', false)
     })
     .catch((error) => {
@@ -104,10 +105,26 @@ const changePageData = function (val: PaginationReturn) {
  * @description 表格按钮处理方法
  */
 const destory = function (val: number[]) {
-  console.log(val)
+  deleteCategory(val)
+    .then((res) => {
+      if (res) {
+        ElMessage({
+          type: 'success',
+          message: '删除成功',
+        })
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'error',
+        message: '删除失败:' + error,
+      })
+    })
+  getList();
 }
-const update = function (id: number) {
-  console.log(id)
+const update = async function (id: number) {
+  let data = await getInfo('category', id);
+  console.log(data);
 }
 //监听父组件传过来是否需要更新的
 watch(updateData, (newV, oldV) => {
@@ -115,12 +132,18 @@ watch(updateData, (newV, oldV) => {
     getList()
   }
 })
+watch(refreshList, (newV, oldV) => {
+  if (newV) {
+    getList()
+    emit('refreshEnd', false)
+  }
+})
 watch(deleteCheckedData, (newV, oldV) => {
   if (newV) {
     emit('deleteCheckedHandle', categorySelectdValue.value)
   } else {
     categorySelectdValue.value = []
-    clearSelection();
+    clearSelection()
   }
 })
 //这里的watchEffect监听的副作用是页数和展示数量改变的副作用
