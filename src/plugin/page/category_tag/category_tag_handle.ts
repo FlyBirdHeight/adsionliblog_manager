@@ -1,0 +1,92 @@
+import axios from "axios"
+interface CategoryForm {
+    name: string,
+    des?: string,
+    is_show?: boolean,
+    is_recommend?: boolean,
+    sort?: number
+}
+interface TagForm {
+    name: string,
+    des?: string,
+    is_show?: boolean,
+    sort?: number
+}
+
+const validateName = {
+    type: 'string',
+    required: true,
+    message: '请输入分类名称',
+    trigger: 'change',
+}
+
+const insertCategory = function (val: CategoryForm): Promise<any> {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "post",
+            url: `/api/page/tag_category/create/category`,
+            data: val
+        }).then(res => {
+            resolve(res);
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+const insertTag = function (val: TagForm): Promise<any> {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "post",
+            url: `/api/page/tag_category/create/category`,
+            data: val
+        }).then(res => {
+            resolve(res);
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+const deleteCategory = function (val: any): Promise<any> {    
+    return new Promise<any>((resolve, reject) => {
+        axios({
+            method: "delete",
+            url: "/api/page/tag_category/delete/category",
+            data: {
+                delete_id: val
+            }
+        }).then(res => {
+            console.log(res);
+            resolve(true)
+        }).catch(error => {
+            console.log(error);
+            reject(error)
+        })
+    })
+}
+const deleteTag = function (val: any): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+        axios({
+            method: "delete",
+            url: "/api/page/tag_category/delete/tag",
+            data: {
+                delete_id: val
+            }
+        }).then(res => {
+            resolve(true)
+        }).catch(error => {
+            console.log(error);
+            reject(error)
+        })
+    })
+}
+
+export {
+    TagForm,
+    CategoryForm,
+    validateName,
+    insertCategory,
+    deleteCategory,
+    deleteTag,
+    insertTag
+}

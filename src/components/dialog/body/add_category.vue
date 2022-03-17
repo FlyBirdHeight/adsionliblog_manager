@@ -26,7 +26,7 @@ import { useStore } from 'vuex'
 import store, { State } from '@/store/index'
 import DialogShow from '@/components/dialog/dialog.vue'
 import CategoryAddForm from '@/components/form/category_add_form.vue'
-import { insertCategory } from '@/plugin/page/category_tag/category_tag_add'
+import { insertCategory } from '@/plugin/page/category_tag/category_tag_handle'
 const dialogConfig = reactive({
   title: '分类添加',
   show: false,

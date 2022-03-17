@@ -43,7 +43,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref, unref, reactive, computed, watch, defineProps, defineEmits } from 'vue'
-import { CategoryForm, validateName } from '@/plugin/page/category_tag/category_tag_add'
+import { CategoryForm, validateName } from '@/plugin/page/category_tag/category_tag_handle'
 const props = defineProps({
   isSubmit: {
     type: Boolean,
