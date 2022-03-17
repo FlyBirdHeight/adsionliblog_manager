@@ -1,42 +1,40 @@
 <template>
-  <el-dialog
-    v-model="visible"
-    @close="closeCategoryAddDialog"
-    :modal="false"
-    :append-to-body="true"
-    title="添加分类"
-    width="30%"
-    draggable
-  >
-    <category-add-form
-      @changeStatus="changeStatus"
-      @submitForm="getSubmitFormData"
-      :isSubmit="isSubmit"
-    ></category-add-form>
-    <template #footer>
-      <span class="dialog-footer">
+  <dialog-show :title="dialogConfig.title" :show="dialogConfig.show" @closeDialog="closeCategoryAddDialog">
+    <template #mainBody>
+      <category-add-form
+        @changeStatus="changeStatus"
+        @submitForm="getSubmitFormData"
+        :isSubmit="isSubmit"
+      ></category-add-form>
+    </template>
+    <template #foot>
+      <span>
         <el-button @click="closeCategoryAddDialog">关闭</el-button>
         <el-button type="primary" @click="submitCategoryAdd">提交</el-button>
       </span>
     </template>
-  </el-dialog>
+  </dialog-show>
 </template>
 <script lang="ts">
 export default {
-  name: 'CategoryAdd',
+  name: 'AddCategory',
 }
 </script>
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, defineEmits } from 'vue'
-import store, { State } from '@/store/index'
 import { useStore } from 'vuex'
+import store, { State } from '@/store/index'
+import DialogShow from '@/components/dialog/dialog.vue'
 import CategoryAddForm from '@/components/form/category_add_form.vue'
-import { insertCategory } from '../../plugin/page/category_tag/category_tag_add'
+import { insertCategory } from '@/plugin/page/category_tag/category_tag_add'
+const dialogConfig = reactive({
+  title: '分类添加',
+  show: false,
+})
 const use = useStore<State>()
 const commit = use.commit
 const state = use.state.dialog
 const emit = defineEmits(['addSuccess'])
-const visible = ref(false)
 const isSubmit = ref(false)
 const closeCategoryAddDialog = function () {
   commit('dialog/setCategoryAddShow', false)
@@ -56,7 +54,7 @@ const getSubmitFormData = function (val: any) {
           message: '分类添加成功',
           type: 'success',
         })
-        visible.value = false
+        dialogConfig.show = false
         commit('dialog/setCategoryAddShow', false)
         emit('addSuccess', true)
       } else {
@@ -76,7 +74,7 @@ const storeCommitShow = computed(() => {
 watch(
   storeCommitShow,
   (newV, oldV) => {
-    visible.value = newV
+    dialogConfig.show = newV
   },
   { immediate: true, deep: true }
 )

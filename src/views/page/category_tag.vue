@@ -24,7 +24,7 @@
       <tag v-if="checkTab == 'tag'"></tag>
     </el-tab-pane>
   </el-tabs>
-  <category-add @addSuccess="addSuccess" />
+  <add-category @addSuccess="addSuccess" />
 </template>
 <script lang="ts">
 import { ref, defineComponent, reactive, provide } from 'vue'
@@ -33,12 +33,12 @@ import { State } from '@/store/index'
 import { useStore } from 'vuex'
 import Tag from '@/components/pages/category_tag/tag.vue'
 import Category from '@/components/pages/category_tag/category.vue'
-import CategoryAdd from '@/components/dialog/category_add.vue'
+import AddCategory from '@/components/dialog/body/add_category.vue'
 export default defineComponent({
   components: {
     Tag,
     Category,
-    CategoryAdd,
+    AddCategory,
   },
   setup(props, context) {
     const {commit} = useStore<State>()
