@@ -1,6 +1,6 @@
 <template>
   <el-form
-    ref="categoryFormSubmit"
+    ref="categoryForm"
     :rules="rules"
     :model="formData"
     :size="formSize"
@@ -16,6 +16,8 @@
     <el-form-item label="是否显示分类:" prop="is_show">
       <el-switch
         v-model="formData.is_show"
+        :active-value="1"
+        :inactive-value="0"
         active-color="#13ce66"
         inactive-color="#ff4949"
         active-text="显示"
@@ -25,6 +27,8 @@
     <el-form-item label="是否推荐分类:" prop="is_recommend">
       <el-switch
         v-model="formData.is_recommend"
+        :active-value="1"
+        :inactive-value="0"
         active-color="#13ce66"
         inactive-color="#ff4949"
         active-text="推荐"
@@ -38,50 +42,52 @@
 </template>
 <script lang="ts">
 export default {
-  name: 'CategoryAddForm',
+  name: 'CategoryForm',
 }
 </script>
 <script lang="ts" setup>
-import { ref, unref, reactive, computed, watch, defineProps, defineEmits } from 'vue'
+import { ref, unref, reactive, computed, watch, defineProps, defineEmits, inject } from 'vue';
 import { CategoryForm, validateName } from '@/plugin/page/category_tag/category_tag_handle'
 const props = defineProps({
   isSubmit: {
     type: Boolean,
     default: false,
-  },
+  }
 })
 const emit = defineEmits(['submitForm', 'changeStatus'])
 
-const formData = reactive<CategoryForm>({
-  name: '',
-  des: '',
-  is_show: true,
-  is_recommend: true,
-  sort: 0,
-})
+const formType = ref<string>('insert')
+const formData = inject('submitCategoryFormData');
+if (formData.id === 0) {
+  formType.value = "insert"
+  Reflect.deleteProperty(formData, 'id')
+} else {
+  formType.value = 'update'
+}
 const formSize = 'small'
 const labelPosition = 'left'
-const categoryFormSubmit = ref()
+const categoryForm = ref()
 const rules = {
   name: validateName,
 }
-const isSubmitForm = computed(() => {
-  return props.isSubmit
-})
+
 const submitCategoryForm = async () => {
   try {
-    const form = unref(categoryFormSubmit)
+    const form = unref(categoryForm)
     if (!form) {
       return
     }
     await form.validate((valid, fields) => {
       if (valid) {
-        emit('submitForm', formData)
-        formData.name = '';
-        formData.des = '';
-        formData.is_show = true;
-        formData.is_recommend = true;
-        formData.sort = 0;
+        formData.name = ''
+        formData.des = ''
+        formData.is_show = true
+        formData.is_recommend = true
+        formData.sort = 0
+        emit('submitForm', {
+          form: formData,
+          type: formType
+        })
       } else {
         emit('changeStatus', false)
       }
@@ -91,7 +97,7 @@ const submitCategoryForm = async () => {
   }
 }
 watch(
-  isSubmitForm,
+  () => props.isSubmit,
   (newV, oldV) => {
     if (newV) {
       submitCategoryForm()

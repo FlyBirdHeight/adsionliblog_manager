@@ -55,7 +55,8 @@ import { ref, reactive, onMounted, watchEffect, defineEmits, inject, watch } fro
 import { CategoryList, getCategoryList } from '@/plugin/page/category_tag/category_tag'
 import Pagination from '@/components/utils/pagination.vue'
 import { deleteCategory, getInfo } from '@/plugin/page/category_tag/category_tag_handle'
-const emit = defineEmits(['changeCategoryInsertStatus', 'deleteCheckedHandle', 'refreshEnd'])
+
+const emit = defineEmits(['changeCategoryInsertStatus', 'deleteCheckedHandle', 'refreshEnd', 'updateData'])
 
 const categoryTableMultip = ref<InstanceType<typeof ElTable>>()
 const categorySelectdValue = ref<number[]>([])
@@ -120,11 +121,11 @@ const destory = function (val: number[]) {
         message: '删除失败:' + error,
       })
     })
-  getList();
+  getList()
 }
 const update = async function (id: number) {
-  let data = await getInfo('category', id);
-  console.log(data);
+  let data = await getInfo('category', id)
+  emit("updateData", data);
 }
 //监听父组件传过来是否需要更新的
 watch(updateData, (newV, oldV) => {

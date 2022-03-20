@@ -1,6 +1,7 @@
 import axios from "axios"
 interface CategoryForm {
     name: string,
+    id?: number,
     des?: string,
     is_show?: boolean,
     is_recommend?: boolean,
@@ -47,7 +48,7 @@ const insertTag = function (val: TagForm): Promise<any> {
     })
 }
 
-const deleteCategory = function (val: any): Promise<any> {    
+const deleteCategory = function (val: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
         axios({
             method: "delete",
@@ -79,22 +80,38 @@ const deleteTag = function (val: any): Promise<any> {
     })
 }
 
-const getInfo = function(type: string, id: number) {
+const getInfo = function (type: string, id: number) {
     return new Promise<any>((resolve, reject) => {
         let url = '/api/page/tag_category/getInfo/';
-        if(type == 'category'){
+        if (type == 'category') {
             url += 'category/' + id;
-        }else {
+        } else {
             url += 'tag/' + id;
-        }   
+        }
         axios.get(url).then(res => {
-            if(res.data.status){
+            if (res.data.status) {
                 resolve(res.data.data)
-            }else {
+            } else {
                 reject('未查询到该数据id内容')
             }
         }).catch(e => {
             reject(e)
+        })
+    })
+}
+
+const update = function (data: CategoryForm, type: string = 'category') {
+    console.log(data);
+    return new Promise((resolve, reject) => {
+        let url = "/api/page/tag_category/update/" + type;
+        axios({
+            method: "put",
+            url: url,
+            data: data,
+        }).then(res => {
+            resolve(res);
+        }).catch(error => {
+            reject(error)
         })
     })
 }
@@ -107,5 +124,6 @@ export {
     deleteCategory,
     deleteTag,
     insertTag,
-    getInfo
+    getInfo,
+    update
 }
