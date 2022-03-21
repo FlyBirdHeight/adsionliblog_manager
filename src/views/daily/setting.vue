@@ -1,13 +1,14 @@
 <template>
-<h1>日程设置</h1>
+  <div class="daily-setting">
+    <div class="title"></div>
+    <div class="body">
+      <daily></daily>
+    </div>
+  </div>
 </template>
-<script lang="ts">
-import { ref, defineComponent, reactive } from 'vue'
-import { Options, Vue } from 'vue-class-component'
-export default defineComponent({
-    setup(props, context){
-    }
-})
+<script lang="ts" setup>
+import { ref, reactive } from 'vue'
+import Daily from "@/components/daily/setting/daily"
+
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>

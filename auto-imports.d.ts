@@ -4,6 +4,7 @@ declare global {
   const ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
   const ElButton: typeof import('element-plus/es')['ElButton']
   const ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
+  const ElCalendar: typeof import('element-plus/es')['ElCalendar']
   const ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
   const ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
   const ElDialog: typeof import('element-plus/es')['ElDialog']
