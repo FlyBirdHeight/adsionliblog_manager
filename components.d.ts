@@ -7,6 +7,7 @@ declare module 'vue' {
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
     Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
     Category_form: typeof import('./src/components/dialog/body/category_form.vue')['default']
+    Daily: typeof import('./src/components/daily/setting/daily.vue')['default']
     Dialog: typeof import('./src/components/dialog/dialog.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElButton: typeof import('element-plus/es')['ElButton']
