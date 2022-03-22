@@ -8,18 +8,13 @@ interface DateSetting {
     target: string,
     status: number
 }
-interface DateList {
-    current: Array<DateSetting>,
-    pre: Array<DateSetting>,
-    next: Array<DateSetting>
-}
 interface DateInfo {
     currentYear: number,
     currentMonth: number,
-    preYear?: number,
-    preMonth?: number,
-    nextMonth?: number,
-    nextYear?: number,
+    preYear: number,
+    preMonth: number,
+    nextMonth: number,
+    nextYear: number,
 }
 
 enum DateType {
@@ -57,15 +52,9 @@ const getMonth = () => {
  */
 const getWholeDaily = async (monthList: DateInfo) => {
     try {
-        const current = await getDailyList(monthList.currentYear, monthList.currentMonth);
-        const pre = monthList.preYear && monthList.preMonth ? await getDailyList(monthList.preYear, monthList.preMonth) : [];
-        const next = monthList.nextYear && monthList.nextMonth ? await getDailyList(monthList.nextYear, monthList.nextMonth) : [];
+        const data = await getDailyList(monthList.preYear, monthList.preMonth, monthList.nextYear, monthList.nextMonth);
 
-        return {
-            current,
-            pre,
-            next
-        }
+        return data;
     } catch (e) {
         throw e;
     }
@@ -75,9 +64,9 @@ const getWholeDaily = async (monthList: DateInfo) => {
  * @param {number} year 
  * @param {number} month 
  */
-const getDailyList = (year: number, month: number) => {
+const getDailyList = (py: number, pm: number, ny: number, nm: number) => {
     return new Promise((resolve, reject) => {
-        axios.get(`/api/daily/get?year=${year}&month=${month}`).then(res => {
+        axios.get(`/api/daily/get?py=${py}&pm=${pm}&ny=${ny}&nm=${nm}`).then(res => {
             resolve(res.data.data);
         }).catch(error => {
             reject(error);
@@ -86,11 +75,28 @@ const getDailyList = (year: number, month: number) => {
 }
 /**
  * @method handleDailyData 处理日程数据
- * @param {DateList} data 
+ * @param {DateSetting[]} data 
  */
-const handleDailyData = (data: DateList, dateMap: Map<string, []>, pre: number[], next: number[]): Array<DateSetting> => {
+const handleDailyData = (data: DateSetting[], dateMap: Map<string, []>, pre: number[], next: number[]) => {
     const getRange = (startTime: Date, endTime: Date): string[] => {
         let returnData: string[] = [];
+        let arr: number[] = [];
+        const s: number = startTime.getTime() - 24 * 60 * 60 * 1000;
+        const d: number = endTime.getTime() - 24 * 60 * 60 * 1000;
+        for (let i = s; i <= d;) {
+            i = i + 24 * 60 * 60 * 1000;
+            arr.push(i)
+        }
+
+        // 获取每一天的时间  YY-MM-DD
+        for (let j in arr) {
+            let time = new Date(arr[j]);
+            let year = time.getFullYear();
+            let mouth = (time.getMonth() + 1) >= 10 ? (time.getMonth() + 1) : ('0' + (time.getMonth() + 1));
+            let day = time.getDate() >= 10 ? time.getDate() : ('0' + time.getDate());
+            let YYMMDD = year + '-' + mouth + '-' + day;
+            returnData.push(YYMMDD)
+        }
 
         return returnData;
     }
@@ -99,45 +105,37 @@ const handleDailyData = (data: DateList, dateMap: Map<string, []>, pre: number[]
         data.end_time = data.end_time.split("T")[0];
         let [sy, sm, sd] = data.start_time.split('-');
         let [ey, em, ed] = data.end_time.split('-');
-        console.log([sy, sm, sd], [ey, em, ed])
+
         //NOTE: 判断一个日期的开始时间和结束时间是否在当前范围内，不在的话，需要进行调整
-        sy = Number(sy) > pre[0] ? pre[0].toString() : sy;
-        sm = Number(sm) > pre[1] ? pre[1].toString() : sm;
-        sd = Number(sm) > pre[1] ? '01' : sd;
+        sd = Number(sy) <= pre[0] && Number(sm) < pre[1] ? '1' : sd;
+        sm = Number(sy) <= pre[0] && Number(sm) < pre[1] ? pre[1].toString() : sm;
+        sy = Number(sy) < pre[0] ? pre[0].toString() : sy;
 
+        ed = Number(ey) >= next[0] && Number(em) > next[1] ? '0' : ed;
+        em = Number(ey) >= next[0] && Number(em) > next[1] ? (next[1] + 1).toString() : em;
         ey = Number(ey) > next[0] ? next[0].toString() : ey;
-        em = Number(em) > next[1] ? (next[1] + 1).toString() : em;
-        ed = Number(em) > next[1] ? '00' : ed;
 
-        let range = getRange(new Date(Number(sy), Number(sm), Number(sd)), new Date(Number(ey), Number(em), Number(ed)));
-    }
-    let returnData: Array<DateSetting> = [];
-    if (data.pre.length != 0) {
-        for (let value of data.pre) {
-            handle(value);
-            let startDay = value.start_time.substr(value.start_time.length - 2, 2);
-            let endDay = value.end_time.substr(value.end_time.length - 2, 2);
-            console.log(startDay, endDay)
-        }
-    }
-    if (data.current.length != 0) {
-        for (let value of data.current) {
-            handle(value);
-            let startDay = value.start_time.substr(value.start_time.length - 2, 2);
-            let endDay = value.end_time.substr(value.end_time.length - 2, 2);
-            console.log(startDay, endDay)
-        }
-    }
-    if (data.next.length != 0) {
-        for (let value of data.next) {
-            handle(value);
-            let startDay = value.start_time.substr(value.start_time.length - 2, 2);
-            let endDay = value.end_time.substr(value.end_time.length - 2, 2);
-            console.log(startDay, endDay)
-        }
+        let range = getRange(new Date(Number(sy), Number(sm) - 1, Number(sd)), new Date(Number(ey), Number(em) - 1, Number(ed)));
+
+        return range;
     }
 
-    return returnData;
+    if (data.length != 0) {
+        for (let value of data) {
+            let range = handle(value);
+            if (range.length != 0) {
+                for (let v of range) {
+                    if (!dateMap.has(v)) {
+                        continue
+                    }
+                    let data: any = dateMap.get(v);
+                    data[value.status.toString()].push(value);
+                    data.length += 1;
+                    dateMap.set(v, data);
+                }
+            }
+        }
+    }
 }
 /**
  * @method generateDataList 生成当前、上、下三个月对应的Map数据
@@ -151,13 +149,31 @@ const generateDataList = (year: number, month: number) => {
     const nextDate = next.getDate();
     let dateMap = new Map();
     for (let i = 1; i <= preDate; i++) {
-        dateMap.set(formatDate(new Date(pre.getFullYear(), pre.getMonth(), i), "yyyy-MM-dd"), []);
+        dateMap.set(formatDate(new Date(pre.getFullYear(), pre.getMonth(), i), "yyyy-MM-dd"), {
+            "0": [],
+            "1": [],
+            "2": [],
+            "3": [],
+            "length": 0
+        });
     }
     for (let i = 1; i <= currentDate; i++) {
-        dateMap.set(formatDate(new Date(year, month - 1, i), "yyyy-MM-dd"), []);
+        dateMap.set(formatDate(new Date(year, month - 1, i), "yyyy-MM-dd"), {
+            "0": [],
+            "1": [],
+            "2": [],
+            "3": [],
+            "length": 0
+        });
     }
     for (let i = 1; i <= nextDate; i++) {
-        dateMap.set(formatDate(new Date(next.getFullYear(), next.getMonth(), i), "yyyy-MM-dd"), []);
+        dateMap.set(formatDate(new Date(next.getFullYear(), next.getMonth(), i), "yyyy-MM-dd"), {
+            "0": [],
+            "1": [],
+            "2": [],
+            "3": [],
+            "length": 0
+        });
     }
 
     return dateMap;
