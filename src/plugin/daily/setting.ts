@@ -27,19 +27,92 @@ enum DateType {
     PALYING = 6,
     WIFE = 7,
 }
+enum DateStatus {
+    READY = 0,
+    RUNNING = 1,
+    OVERTIME = 2,
+    ENDING = 3,
+}
 
-const getMonth = () => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const preMonth = month == 1 ? 12 : month - 1;
-    const preYear = month == 1 ? (year - 1) : year;
-    const nextMonth = month == 12 ? 1 : month + 1;
-    const nextYear = month == 1 ? (year + 1) : year;
+const getType = (val: number): { type: string, color: string } => {
+    let type: string = '';
+    let color: string = '';
+    switch (val) {
+        case DateType.NORMAL:
+            type = '普通事件';
+            color = '#00a4e4';
+            break;
+        case DateType.LEARNING:
+            type = '学习事件';
+            color = '#6a737b';
+            break;
+        case DateType.LEETCODE:
+            type = '刷题事件';
+            color = '#8a7967';
+            break;
+        case DateType.URGENT:
+            type = '加急事件';
+            color = '#ff0000';
+            break;
+        case DateType.FAMILY:
+            type = '家庭事件';
+            color = '#fd5c63';
+            break;
+        case DateType.TRAVEL:
+            type = '出行事件';
+            color = '#c1d82f';
+            break;
+        case DateType.PALYING:
+            type = '娱乐事件';
+            color = '#ffdd00';
+            break;
+        case DateType.WIFE:
+            type = '猪哥事件';
+            color = '#fbb034';
+            break;
+    }
+    return { type, color };
+}
+
+const getStatus = (val: number): { type: string, color: string } => {
+    let type = '';
+    let color = '';
+    switch (val) {
+        case DateStatus.READY:
+            type = '未开始';
+            color = '#fdbd10'
+            break;
+        case DateStatus.RUNNING:
+            type = '进行中';
+            color = '#0066b2';
+            break;
+        case DateStatus.OVERTIME:
+            type = '已延期';
+            color = '#ec1c24';
+            break;
+        case DateStatus.ENDING:
+            type = '已完成';
+            color = '#00d1b2';
+            break;
+    }
+    return {
+        type,
+        color
+    };
+}
+
+const getMonth = (year: number, month: number) => {
+    const date = new Date(year, month - 1);
+    const cyear = date.getFullYear();
+    const cmonth = date.getMonth() + 1;
+    const preMonth = cmonth == 1 ? 12 : cmonth - 1;
+    const preYear = cmonth == 1 ? (cyear - 1) : cyear;
+    const nextMonth = cmonth == 12 ? 1 : cmonth + 1;
+    const nextYear = cmonth == 1 ? (cyear + 1) : cyear;
 
     return {
-        currentYear: year,
-        currentMonth: month,
+        currentYear: cyear,
+        currentMonth: cmonth,
         preYear,
         preMonth,
         nextMonth,
@@ -186,5 +259,7 @@ export {
     getDailyList,
     getWholeDaily,
     handleDailyData,
-    generateDataList
+    generateDataList,
+    getType,
+    getStatus
 }

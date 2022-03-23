@@ -9,7 +9,7 @@
   >
     <el-table-column type="selection" width="55" />
     <el-table-column type="expand">
-      <template #default="props"> 123 </template>
+      <template #default="props"> {{props.row}} </template>
     </el-table-column>
     <el-table-column width="150" label="名称" prop="name" />
     <el-table-column width="300" label="简介" prop="des" />
