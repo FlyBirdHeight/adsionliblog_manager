@@ -76,7 +76,8 @@
       </div>
     </template>
   </el-calendar>
-  <daily-setting-info-dialog @closeDialog="closeDialog"></daily-setting-info-dialog>
+  <daily-setting-info-dialog @closeDialog="closeDialog" />
+  <daily-setting-form-dialog @closeDialog="closeFormDialog" />
 </template>
 <script lang="ts" setup>
 import {
@@ -90,30 +91,32 @@ import {
 } from '@/plugin/daily/setting'
 import { ref, reactive, onMounted, watchEffect, provide } from 'vue'
 import DailySettingInfoDialog from '@/components/dialog/daily/setting_info.vue'
+import DailySettingFormDialog from '@/components/dialog/daily/setting_form.vue'
 /**
  * @property {DateInfo} dateList 当前显示日期列表当前、下、上月的数据
  * @property {Map} dateMap 存放日程的表，按照每一天存放
  * @property {any} dailySetting 用来获取模板中ref标签
- * @property {string} checkedDay 鼠标点击时的日期记录
  * @property {Array} checkedDateInfo 鼠标点击时的日期的日程表数据
  */
 const dateList = ref<DateInfo>()
 const dateMap = ref(new Map())
 const dailySetting = ref()
-const checkedDay = ref<string>('')
 const checkedDateInfo = ref([])
 /**
  * @description 这里的三个监听传递属性是给到查看日期详情的
  * @property {DateSetting[]} checkedDateInfoList 显示日程列表信息
  * @property {boolean} showInfoDialog 是否显示详情框
+ * @property {boolean} showDailyFormDialog 是否显示日程添加框
  * @property {string} checkedDate 点击的日期，作为项情框和添加框的日期
  */
 const checkedDateInfoList = ref<DateSetting[]>([])
 const showInfoDialog = ref<boolean>(false)
+const showDailyFormDialog = ref<boolean>(false)
 const checkedDate = ref<string>('')
-provide('dateInfoShow', showInfoDialog)
 provide('dateTime', checkedDate)
 provide('dateInfoData', checkedDateInfoList)
+provide('dateInfoShow', showInfoDialog)
+provide('dateSettingFormShow', showDailyFormDialog)
 onMounted(() => {
   let date = new Date()
   getDateInfoList(date.getFullYear(), date.getMonth() + 1)
@@ -176,7 +179,8 @@ const getDateInfoList = (year: number, month: number) => {
  * @param {string} day
  */
 const addDate = (day: string) => {
-  checkedDay.value = day
+  checkedDate.value = day
+  showDailyFormDialog.value = true
 }
 
 const showInfo = (day: string) => {
@@ -185,14 +189,17 @@ const showInfo = (day: string) => {
   let dateList = []
   for (let v of Reflect.ownKeys(list)) {
     if (v != 'length') {
-      dateList = dateList.concat(list[v]);
+      dateList = dateList.concat(list[v])
     }
   }
-  checkedDateInfoList.value = dateList;
+  checkedDateInfoList.value = dateList
   showInfoDialog.value = true
 }
 const closeDialog = (val: boolean) => {
   showInfoDialog.value = false
+}
+const closeFormDialog = (val: boolean) => {
+  showDailyFormDialog.value = false
 }
 </script>
 <style lang="scss">

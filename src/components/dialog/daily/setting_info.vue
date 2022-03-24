@@ -9,10 +9,10 @@
             </template>
           </el-table-column>
           <el-table-column width="60" label="编号" type="index" :index="indexMethod" />
-          <el-table-column label="创建人" prop="creator" />
+          <el-table-column label="创建人" width="100" prop="creator" />
           <el-table-column
             label="日程内容"
-            width="180"
+            width="200"
             style="overflow: hidden; text-overflow: ellipsis"
             prop="target"
           />

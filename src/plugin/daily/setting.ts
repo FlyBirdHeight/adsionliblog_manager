@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { formatDate } from '@/utils/date';
+/**
+ * @interface DateSetting 后端取回数据的数据格式，也被用于前端展示的时候的数据格式
+ */
 interface DateSetting {
     start_time: string,
     end_time: string,
@@ -8,6 +11,9 @@ interface DateSetting {
     target: string,
     status: number
 }
+/**
+ * @interface DateInfo 在日历展示页中，需要记录当前月，上一月、下一月的日期的数据格式
+ */
 interface DateInfo {
     currentYear: number,
     currentMonth: number,
@@ -17,6 +23,9 @@ interface DateInfo {
     nextYear: number,
 }
 
+/**
+ * @enum DateType 枚举类，用来枚举日程类型
+ */
 enum DateType {
     NORMAL = 0,
     LEARNING = 1,
@@ -27,6 +36,9 @@ enum DateType {
     PALYING = 6,
     WIFE = 7,
 }
+/**
+ * @enum DateStatus 枚举类，用来枚举日程状态
+ */
 enum DateStatus {
     READY = 0,
     RUNNING = 1,

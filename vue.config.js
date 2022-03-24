@@ -36,7 +36,9 @@ module.exports = {
     configureWebpack: {
         plugins: [
             AutoImport({
-                resolvers: [ElementPlusResolver()],
+                resolvers: [ElementPlusResolver({
+                    exclude: new RegExp(/^(?!.*loading-directive).*$/) //修改此处
+                })],
             }),
             Components({
                 resolvers: [ElementPlusResolver()],

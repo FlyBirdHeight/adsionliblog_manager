@@ -75,6 +75,7 @@ const submitCategoryForm = async () => {
   try {
     const form = unref(categoryForm)
     if (!form) {
+      emit('changeStatus', false)
       return
     }
     await form.validate((valid, fields) => {
