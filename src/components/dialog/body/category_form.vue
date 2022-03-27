@@ -48,7 +48,7 @@ const changeStatus = function (val: boolean) {
  * @param {*} form 表单数据
  */
 const insertForm = (form) => {
-  insertCategory(form)
+  insertCategory(form.value)
     .then((res) => {
       if (res.data.status) {
         ElMessage({

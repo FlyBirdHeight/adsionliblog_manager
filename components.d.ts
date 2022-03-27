@@ -42,7 +42,6 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Item_menu: typeof import('./src/components/utils/menu/item_menu.vue')['default']
     Left_menu: typeof import('./src/components/layout/left_menu.vue')['default']
-    Loading: typeof import('element-plus/es')['ElLoadingDirective']
     Page_info: typeof import('./src/components/pages/write/page_info.vue')['default']
     Pagination: typeof import('./src/components/utils/pagination.vue')['default']
     Setting_form: typeof import('./src/components/dialog/daily/setting_form.vue')['default']

@@ -57,28 +57,26 @@ const getFormData = (val: DateForm) => {
   submit.value = false
   insertData()
 }
-const insertData = async () => {
-  try {
-    let status = await insertDailyForm(form.value)
-    waitSubmit.value = false
-    submit.value = false
-    if (status.status) {
-      ElMessage({
-        message: '日程添加成功',
-        type: 'success',
-      })
-      submitStatus.value = true
-      closeDialog(false)
-    } else {
-      submitStatus.value = false
-    }
-  } catch (e) {
-    console.log(e)
-    ElMessage({
-      message: '日程添加失败：' + e,
-      type: 'error',
+const insertData = () => {
+  insertDailyForm(form.value)
+    .then((res) => {
+      let status = res
+      waitSubmit.value = false
+      submit.value = false
+      if (status.status) {
+        ElMessage({
+          type: 'success',
+          message: '日程添加成功',
+        })
+        submitStatus.value = true
+        closeDialog(false)
+      } else {
+        submitStatus.value = false
+      }
     })
-  }
+    .catch((error) => {
+      console.log(error)
+    })
 }
 const changeStatus = (val: boolean) => {
   submit.value = val

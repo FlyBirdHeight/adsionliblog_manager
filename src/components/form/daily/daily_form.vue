@@ -1,6 +1,6 @@
 <template>
   <el-form
-    v-loading="waitSubmit"
+    v-load="waitSubmit"
     ref="dailyForm"
     :rules="rules"
     :model="formData"

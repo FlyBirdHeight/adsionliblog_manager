@@ -46,24 +46,19 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, unref, reactive, computed, watch, defineProps, defineEmits, inject } from 'vue';
+import { ref, unref, reactive, computed, watch, defineProps, defineEmits, inject, watchEffect } from 'vue'
 import { CategoryForm, validateName } from '@/plugin/page/category_tag/category_tag_handle'
 const props = defineProps({
   isSubmit: {
     type: Boolean,
     default: false,
-  }
+  },
 })
 const emit = defineEmits(['submitForm', 'changeStatus'])
 
 const formType = ref<string>('insert')
-const formData = inject('submitCategoryFormData');
-if (formData.id === 0) {
-  formType.value = "insert"
-  Reflect.deleteProperty(formData, 'id')
-} else {
-  formType.value = 'update'
-}
+const formData = inject('submitCategoryFormData')
+
 const formSize = 'small'
 const labelPosition = 'left'
 const categoryForm = ref()
@@ -87,7 +82,7 @@ const submitCategoryForm = async () => {
         formData.sort = 0
         emit('submitForm', {
           form: formData,
-          type: formType
+          type: formType.value,
         })
       } else {
         emit('changeStatus', false)
@@ -106,5 +101,13 @@ watch(
   },
   { immediate: true }
 )
+watchEffect(() => {
+  if (formData.value.id === 0) {
+    formType.value = 'insert'
+    Reflect.deleteProperty(formData.value, 'id')
+  } else {
+    formType.value = 'update'
+  }
+})
 </script>
 <style lang="scss"></style>

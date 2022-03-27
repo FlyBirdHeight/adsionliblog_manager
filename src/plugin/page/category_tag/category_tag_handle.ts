@@ -18,7 +18,7 @@ const validateName = {
     type: 'string',
     required: true,
     message: '请输入分类名称',
-    trigger: 'change',
+    trigger: 'blur',
 }
 
 const insertCategory = function (val: CategoryForm): Promise<any> {

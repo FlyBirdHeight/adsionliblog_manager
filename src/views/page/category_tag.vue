@@ -112,6 +112,15 @@ const deleteData = function () {
  */
 const add = function () {
   if (checkTab.value === 'category') {
+    submitCategoryFormData.value = {
+      id: 0,
+      name: '',
+      des: '',
+      is_show: 1,
+      is_recommend: 1,
+      sort: 0,
+    }
+    console.log(submitCategoryFormData.value)
     commit('dialog/setCategoryAddShow', true)
   } else {
     commit('dialog/setTagAddShow', true)
