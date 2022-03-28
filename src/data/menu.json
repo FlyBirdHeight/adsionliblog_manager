@@ -77,10 +77,10 @@
                     "icon": "Calendar"
                 },
                 {
-                    "name": "完成情况",
-                    "routeName": "DailyEnding",
-                    "path": "ending",
-                    "component": "views/daily/ending",
+                    "name": "状态管理",
+                    "routeName": "DailyStatusSetting",
+                    "path": "status",
+                    "component": "views/daily/status",
                     "icon": "Finished"
                 },
                 {

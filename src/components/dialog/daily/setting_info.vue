@@ -78,6 +78,8 @@ const tableRowClassName = ({ row, rowIndex }: { DateSetting; number }): string =
     case 3:
       returnClass = 'success-row'
       break
+    case 4:
+      returnClass = 'not-start-row'
     default:
       break
   }
@@ -88,27 +90,32 @@ const indexMethod = (index: number) => {
 }
 </script>
 <style lang="scss">
-.el-table .warning-row {
+.setting-info-table .el-table .warning-row {
   --el-table-tr-bg-color: rgba(218, 111, 0, 0.7);
   font-weight: 600;
   color: #fff;
 }
-.el-table .primary-row {
+.setting-info-table .el-table .primary-row {
   --el-table-tr-bg-color: rgba(42, 58, 125, 0.7);
   font-weight: 600;
   color: #fff;
 }
-.el-table .danger-row {
+.setting-info-table .el-table .danger-row {
   --el-table-tr-bg-color: rgba(174, 23, 0, 0.7);
   font-weight: 600;
   color: #fff;
 }
-.el-table .success-row {
+.setting-info-table .el-table .success-row {
   --el-table-tr-bg-color: rgba(77, 129, 82, 0.7);
   font-weight: 600;
   color: #fff;
 }
-.el-table .el-icon {
+.setting-info-table .el-table .not-start-row {
+  --el-table-tr-bg-color: rgb(110, 7, 228);
+  font-weight: 600;
+  color: #fff;
+}
+.setting-info-table .el-table .el-icon {
   color: #fff;
   font-weight: 600;
 }

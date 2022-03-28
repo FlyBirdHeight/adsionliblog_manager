@@ -29,6 +29,13 @@
               </el-tag>
             </el-tooltip>
           </div>
+          <div class="date-body_info" v-if="dateMap.get(data.day)[4].length != 0">
+            <el-tooltip :content="`未开始日程数：${dateMap.get(data.day)[4].length}`" placement="right" effect="light">
+              <el-tag class="date-body_info_tag" type="info" effect="light">
+                {{ dateMap.get(data.day)[4][0].target }}
+              </el-tag>
+            </el-tooltip>
+          </div>
           <div class="date-body_info" v-if="dateMap.get(data.day)[1].length != 0">
             <el-tooltip :content="`进行中日程数：${dateMap.get(data.day)[1].length}`" placement="right" effect="light">
               <el-tag class="date-body_info_tag" effect="light">
@@ -50,6 +57,7 @@
               </el-tag>
             </el-tooltip>
           </div>
+          
         </div>
         <div class="setting">
           <el-tooltip :content="'添加日程'" placement="top" effect="light">
@@ -77,7 +85,7 @@
     </template>
   </el-calendar>
   <daily-setting-info-dialog @closeDialog="closeDialog" />
-  <daily-setting-form-dialog @closeDialog="closeFormDialog" />
+  <daily-setting-form-dialog @closeDialog="closeFormDialog" @updateDailyList="updateDailyList" />
 </template>
 <script lang="ts" setup>
 import {
@@ -200,6 +208,11 @@ const closeDialog = (val: boolean) => {
 }
 const closeFormDialog = (val: boolean) => {
   showDailyFormDialog.value = false
+}
+const updateDailyList = (val: boolean) => {
+  if (val) {
+    getDateInfoList(dateList.value.currentYear, dateList.value.currentMonth)
+  }
 }
 </script>
 <style lang="scss">

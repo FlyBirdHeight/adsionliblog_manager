@@ -19,7 +19,7 @@ import { ref, defineProps, defineEmits, computed, watch, reactive, inject, provi
 import { DateForm, insertDailyForm } from '@/plugin/daily/form'
 import DailyForm from '@/components/form/daily/daily_form.vue'
 import DialogShow from '@/components/dialog/dialog.vue'
-const emit = defineEmits(['closeDialog'])
+const emit = defineEmits(['closeDialog', 'updateDailyList'])
 
 const dateTime = inject('dateTime')
 const show = inject('dateSettingFormShow')
@@ -69,6 +69,7 @@ const insertData = () => {
           message: '日程添加成功',
         })
         submitStatus.value = true
+        emit('updateDailyList', true)
         closeDialog(false)
       } else {
         submitStatus.value = false

@@ -44,6 +44,7 @@ enum DateStatus {
     RUNNING = 1,
     OVERTIME = 2,
     ENDING = 3,
+    NOTSTART = 4,
 }
 
 const getType = (val: number): { type: string, color: string } => {
@@ -85,13 +86,16 @@ const getType = (val: number): { type: string, color: string } => {
     }
     return { type, color };
 }
-
+/**
+ * @method getStatus 获取列表状态
+ * @param val 状态码
+ */
 const getStatus = (val: number): { type: string, color: string } => {
     let type = '';
     let color = '';
     switch (val) {
         case DateStatus.READY:
-            type = '未开始';
+            type = '未确认';
             color = '#fdbd10'
             break;
         case DateStatus.RUNNING:
@@ -106,13 +110,20 @@ const getStatus = (val: number): { type: string, color: string } => {
             type = '已完成';
             color = '#00d1b2';
             break;
+        case DateStatus.NOTSTART:
+            type = '未开始';
+            color = "rgb(110, 7, 228)";
     }
     return {
         type,
         color
     };
 }
-
+/**
+ * @method getMonth 获取当前日期列表月份
+ * @param {number} year 当前年份
+ * @param {number} month 当前月份
+ */
 const getMonth = (year: number, month: number) => {
     const date = new Date(year, month - 1);
     const cyear = date.getFullYear();
@@ -239,6 +250,7 @@ const generateDataList = (year: number, month: number) => {
             "1": [],
             "2": [],
             "3": [],
+            "4": [],
             "length": 0
         });
     }
@@ -248,6 +260,7 @@ const generateDataList = (year: number, month: number) => {
             "1": [],
             "2": [],
             "3": [],
+            "4": [],
             "length": 0
         });
     }
@@ -257,6 +270,7 @@ const generateDataList = (year: number, month: number) => {
             "1": [],
             "2": [],
             "3": [],
+            "4": [],
             "length": 0
         });
     }
