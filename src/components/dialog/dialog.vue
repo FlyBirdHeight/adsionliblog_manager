@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    v-model="props.show"
+    v-model="showDialog"
     @close="closeDialog"
     :modal="props.modal"
     :append-to-body="true"
@@ -43,6 +43,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+})
+const showDialog = ref<boolean>(false);
+watch(() => props.show, (newV, oldV) => {
+  showDialog.value = newV;
 })
 const closeDialog = function () {
   emit('closeDialog', false)

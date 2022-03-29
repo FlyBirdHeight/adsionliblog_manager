@@ -10,15 +10,19 @@
     @current-change="handleCurrentChange"
   />
 </template>
+<script lang="ts">
+export default {
+  name: 'Pagination',
+}
+</script>
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, computed, watch } from 'vue'
+import { ref, defineProps, defineEmits, computed, watch, inject } from 'vue'
 
 const props = defineProps<{
   totalSize: number
   pageSizes?: number[]
 }>()
 const emit = defineEmits(['setCurrentPage', 'setPageSize'])
-
 const page = ref<number>(1)
 const pageList = ref<number[]>([10, 20, 30, 40])
 const totalPage = ref<number>(0)

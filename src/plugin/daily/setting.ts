@@ -9,7 +9,11 @@ interface DateSetting {
     type: number,
     creator: string,
     target: string,
-    status: number
+    status: number,
+    advance_time: string,
+    is_advance: number,
+    overtime_date: string,
+    real_end_time: string,
 }
 /**
  * @interface DateInfo 在日历展示页中，需要记录当前月，上一月、下一月的日期的数据格式
@@ -287,5 +291,6 @@ export {
     handleDailyData,
     generateDataList,
     getType,
-    getStatus
+    getStatus,
+    DateStatus
 }

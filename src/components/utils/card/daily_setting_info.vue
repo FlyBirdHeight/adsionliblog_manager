@@ -33,10 +33,24 @@
         <div style="display: flex; align-items: center">
           {{ data.send_email ? '已开启' : '未开启' }}
           <el-icon style="margin-left: 6px">
-            <component style="color:#67C23A" v-if="data.send_email" :is="$icon['CircleCheckFilled']" />
-            <component style="color:#F56C6C" v-else :is="$icon['CircleCloseFilled']" />
+            <component style="color: #67c23a" v-if="data.send_email" :is="$icon['CircleCheckFilled']" />
+            <component style="color: #f56c6c" v-else :is="$icon['CircleCloseFilled']" />
           </el-icon>
         </div>
+      </el-descriptions-item>
+      <el-descriptions-item label="提前开始">
+        <el-tag effect="dark" :type="data.is_advance == 1 ? 'warning' : ''">
+          {{ data.is_advance == 1 ? '是' : '否' }}
+        </el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="提前开始时间" v-if="data.is_advance == 1">
+        {{ data.advance_time.substr(0,10) }}
+      </el-descriptions-item>
+      <el-descriptions-item label="延期完成时间" v-if="data.overtime_date">
+        {{ data.overtime_date.substr(0,10) }}
+      </el-descriptions-item>
+      <el-descriptions-item label="最终完成时间" v-if="data.status == 3">
+        {{ data.real_end_time.substr(0,10) }}
       </el-descriptions-item>
     </el-descriptions>
   </div>
@@ -55,6 +69,7 @@ const props = defineProps({
     default: {},
   },
 })
+console.log(props.data)
 </script>
 <style lang="scss" scoped>
 .daily-setting-info {
