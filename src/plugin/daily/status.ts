@@ -8,13 +8,19 @@ interface UpdateDaily {
     real_end_time?: string,
     is_advance?: number,
     advance_time?: string,
+    overtime_date?: string,
+    daily_range?: number
     target?: string,
     send_email?: number,
     email_address?: string,
-    overtime_date?: string,
-    daily_range?: number
-}
 
+}
+/**
+ * @method getStatusList 获取状态列表日程
+ * @param {number} status 状态
+ * @param {number} page 页码
+ * @param {number} count 页数
+ */
 const getStatusList = async (status: number, page: number, count: number) => {
     let returnData: DateSetting[] = [];
     returnData = await new Promise<DateSetting[]>((resolve, reject) => {
@@ -93,11 +99,30 @@ const updateData = (id: number, status: number, option: any = {}) => {
 const advancedDaily = (id: number) => {
     return updateData(id, DateStatus.RUNNING, { is_advance: 1, advance_time: formatDate(new Date(), "yyyy-MM-dd") })
 }
-
+/**
+ * @method deleteDaily 删除日程
+ * @param {number} id 待删除id数组 
+ */
+const deleteDaily = (id: number[]) => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "delete",
+            url: "/api/daily/delete",
+            data: {
+                id
+            }
+        }).then(res => {
+            resolve(res.data)
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
 export {
     getStatusList,
     updateData,
     advancedDaily,
     handleOvertime,
-    compareDaily
+    compareDaily,
+    deleteDaily
 }

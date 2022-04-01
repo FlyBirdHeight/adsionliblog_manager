@@ -1,5 +1,14 @@
 <template>
-  <el-table border :data="tableData" height="600" style="width: 100%" class="daily_status-table">
+  <el-table
+    border
+    ref="dailyTableMultip"
+    @selection-change="handleSelectionChange"
+    :data="tableData"
+    height="600"
+    style="width: 100%"
+    class="daily_status-table"
+  >
+    <el-table-column type="selection" width="55" />
     <el-table-column type="expand">
       <template #default="props">
         <daily-setting-info :data="props.row"></daily-setting-info>
@@ -19,13 +28,13 @@
             :icon="$icon['InfoFilled']"
             icon-color="red"
             title="确认是否删除该日程，一旦删除无法恢复！"
-            @confirm="destory([props.row.id])"
+            @confirm="deleteData(props.row.id)"
           >
             <template #reference>
               <el-button type="danger">删除</el-button>
             </template>
           </el-popconfirm>
-          <el-button type="primary" @click="update(props.row.id)">修改</el-button>
+          <el-button type="primary" @click="update(props.row)">修改</el-button>
           <el-popconfirm
             confirm-button-text="确认"
             cancel-button-text="关闭"
@@ -76,19 +85,38 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, computed, watch, reactive, watchEffect, onMounted, inject, defineEmits, provide } from 'vue'
+import { ref, watch, watchEffect, inject, defineEmits, provide, toRefs } from 'vue';
 import OvertimeSetting from '@/components/dialog/daily/overtime.vue'
 import DailySettingInfo from '@/components/utils/card/daily_setting_info.vue'
 import { DateSetting } from '@/plugin/daily/setting'
-import { getStatusList, handleOvertime, updateData, advancedDaily, compareDaily } from '@/plugin/daily/status'
+import {
+  getStatusList,
+  handleOvertime,
+  updateData,
+  advancedDaily,
+  compareDaily,
+  deleteDaily,
+} from '@/plugin/daily/status'
 import { formatDate } from '../../../utils/date'
-const emit = defineEmits(['setTotal', 'refreshStatus'])
+const emit = defineEmits(['setTotal', 'refreshStatus', 'updateData'])
 
 const status = inject('dailyStatus')
 const page = inject('page')
 const count = inject('count')
 const refreshList = inject('refreshList')
-
+const deleteChecked = inject('deleteChecked')
+/**
+ * @property {InstanceType<typeof ElTable>} dailyTableMultip 这个是用来获取模板中的ref对象的那个table的
+ * @property {number[]} checkedValue 用来保存选中框中的内容的
+ */
+const dailyTableMultip = ref<InstanceType<typeof ElTable>>()
+const checkedValue = ref<number[]>([])
+/**
+ * @description 下面的三个属性都是用来控制延期时，重新选择延期完成时间时传入到Dialog中的参数
+ * @property {boolean} setOvertime 控制延时完成时间选择dialog的显示
+ * @property {number} overtimeId 需要调整延期的日程id
+ * @property {string} overtimeEndTime 一个初始化延期时间，主要用来效验最后的延期时间不得小于原本计划的时间
+ */
 const setOvertime = ref<boolean>(false)
 const overtimeId = ref<number>(-1)
 const overtimeEndTime = ref<string>('')
@@ -97,7 +125,9 @@ provide('overtimeId', overtimeId)
 provide('overtimeEndTime', overtimeEndTime)
 
 const tableData = ref<DateSetting[]>([])
-
+/**
+ * @method getList 获取日程列表
+ */
 const getList = () => {
   getStatusList(status.value, page.value, count.value)
     .then((res) => {
@@ -116,19 +146,19 @@ const getList = () => {
 const indexMethod = (index: number) => {
   return (page.value - 1) * count.value + index + 1
 }
-/**
- * @method destory 删除日程
- * @param {number[]} index 日程id
- */
-const destory = (index: number[]) => {
-  console.log(index)
+const handleSelectionChange = (val: any[]) => {
+  checkedValue.value = []
+  val.forEach((v) => {
+    checkedValue.value.push(v.id)
+  })
 }
 /**
  * @method update 更新日程
- * @param {number} index 日程id
+ * @param {DateSetting} info 日程内容
  */
-const update = (index: number) => {
-  console.log(index)
+const update = (info: DateSetting) => {
+  let data = JSON.parse(JSON.stringify(Object.assign({}, info)));
+  emit("updateData", data)
 }
 /**
  * @method changeStatus 修改状态
@@ -177,20 +207,62 @@ const changeStatus = (id: number, status: number, type: string = 'normal', time?
 const advanceDaily = (id: number) => {
   advancedDaily(id)
 }
-
+/**
+ * @method closeDialog 关闭对话框,用于提交表单之后
+ * @param {boolean} val
+ */
 const closeDialog = (val: boolean) => {
   setOvertime.value = val
-  getList()
 }
+/**
+ * @method clearSelection 清空列表选项
+ */
+const clearSelection = function () {
+  dailyTableMultip.value!.clearSelection()
+}
+/**
+ * @method deleteData 删除数据
+ */
+const deleteData = async (id?: number) => {
+  try {
+    let status = await deleteDaily(id ? [id] : checkedValue.value)
+    if (status.status) {
+      ElMessage({
+        message: '删除成功！',
+        type: 'success',
+      })
+    } else {
+      ElMessage({
+        message: '删除失败!' + (status.data | ''),
+        type: 'error',
+      })
+    }
+    emit("refreshStatus", false, 'delete')
+  } catch (e) {
+    ElMessage({
+      message: '删除失败!' + e,
+      type: 'error',
+    })
+    emit("refreshStatus", false, 'delete')
+  }
+}
+watch(deleteChecked, (newV, oldV) => {
+  if (newV) {
+    deleteData()
+  }
+})
+//NOTE 下方均为监听副作用的模块内容
 /**
  * @description 这个副作用用来监听状态值的改变，页数的改变，页数大小改变，重新获取列表
  */
 watchEffect(() => {
   getList()
 })
-
+/**
+ * @description 本副作用用来监听刷新列表按钮点击事件、设置超时时间、删除操作的副作用
+ */
 watchEffect(() => {
-  if (refreshList.value) {
+  if (refreshList.value || setOvertime.value) {
     getList()
   }
 })

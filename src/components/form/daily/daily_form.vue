@@ -56,10 +56,6 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="状态:" prop="status">
-      <el-radio v-model="formData.status" :label="0" border>待确认</el-radio>
-      <el-radio v-model="formData.status" :label="1" border>进行中</el-radio>
-    </el-form-item>
     <el-form-item label="邮件通知:" prop="send_email">
       <el-radio v-model="formData.send_email" :label="0" border>不通知</el-radio>
       <el-radio v-model="formData.send_email" :label="1" border>通知</el-radio>
@@ -195,21 +191,31 @@ const submitForm = async () => {
   }
 }
 
-watch(submitStatus, (newV, oldV) => {
-  console.log(newV)
-  if (newV) {
-    formData.value = {
-      start_time: '',
-      end_time: '',
-      creator: '',
-      target: '',
-      type: 0,
-      status: 0,
-      send_email: 1,
-      email_address: '',
+watch(
+  submitStatus,
+  (newV, oldV) => {
+    if (newV) {
+      formData.value = {
+        start_time: '',
+        end_time: '',
+        creator: '',
+        target: '',
+        type: 0,
+        status: 0,
+        send_email: 1,
+        email_address: '',
+      }
     }
+  },
+  { immediate: true }
+)
+watch(
+  () => props.form,
+  (newV, oldV) => {
+    console.log(newV);
+    formData.value = newV
   }
-})
+)
 watchEffect(() => {
   submitForm()
 })

@@ -69,7 +69,6 @@ const props = defineProps({
     default: {},
   },
 })
-console.log(props.data)
 </script>
 <style lang="scss" scoped>
 .daily-setting-info {

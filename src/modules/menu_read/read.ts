@@ -101,6 +101,28 @@ class GenerateMenuData {
         }
         return res;
     }
+
+    /**
+     * @method findMenuIndex 寻找列表数据匹配的routePath的值，并返回index
+     * @param {Array<MenuData>} data menuList值
+     * @param {string} path 路由路径
+     */
+    findMenuIndex(data: Array<MenuData>, path: string): any {
+        for (let v of data) {
+            if (Reflect.has(v, 'path')) {
+                if (path == v.path) {
+                    return v.index;
+                }
+            }
+            if (Reflect.has(v, 'children') && Reflect.get(v, 'children').length != 0) {
+                let returnData = this.findMenuIndex(Reflect.get(v, 'children'), path);
+                if (returnData != '') {
+                    return returnData;
+                }
+            }
+        }
+        return '';
+    }
 }
 
 export default GenerateMenuData;

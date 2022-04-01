@@ -53,7 +53,6 @@ watch(
 const uploadImage = async (files: FileList, callback: (urls: string[]) => void) => {
   try {
     const res: any = await upload.uploadImage(files)
-    console.log(res)
     if (res.length != 0) {
       let callbackImageList: Array<string> = new Array<string>(res.length)
       let statusFalseImage = new Array()
