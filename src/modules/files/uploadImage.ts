@@ -13,6 +13,11 @@ interface WritingForm {
     writingDate: string
     page: string
 }
+
+interface UploadStatus {
+    precent: number
+    status: string
+}
 class UploadImage {
     /**
      * @method uploadImage
@@ -43,5 +48,6 @@ class UploadImage {
 export {
     UploadImage,
     UploadImageResponse,
-    WritingForm
+    WritingForm,
+    UploadStatus
 };

@@ -1,9 +1,9 @@
 <template>
-<h1>图床整理</h1>
+  <div class="current-image-list"></div>
 </template>
 <script lang="ts">
 export default {
-  name: "ArrangeImage"
+  name: 'CurrentImageShow',
 }
 </script>
 <script lang="ts" setup>
@@ -12,4 +12,13 @@ const props = defineProps()
 const emit = defineEmits([])
 </script>
 <style lang="scss" scoped>
+.current-image-list {
+  display: flex;
+  width: 100%;
+  height: 400px;
+  @media screen and(min-width: 500px) {
+      height: 300px;
+  }
+  border: 1px solid #ebeef5;
+}
 </style>

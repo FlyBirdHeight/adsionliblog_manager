@@ -7,6 +7,7 @@ declare module 'vue' {
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
     Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
     Category_form: typeof import('./src/components/dialog/body/category_form.vue')['default']
+    Current_image: typeof import('./src/components/image/uploadImage/current_image.vue')['default']
     Daily: typeof import('./src/components/daily/setting/daily.vue')['default']
     Daily_form: typeof import('./src/components/form/daily/daily_form.vue')['default']
     Daily_setting_info: typeof import('./src/components/utils/card/daily_setting_info.vue')['default']
@@ -42,8 +43,10 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     Item_menu: typeof import('./src/components/utils/menu/item_menu.vue')['default']
     Left_menu: typeof import('./src/components/layout/left_menu.vue')['default']
+    Max_image: typeof import('./src/components/image/uploadImage/max_image.vue')['default']
     Overtime: typeof import('./src/components/dialog/daily/overtime.vue')['default']
     Page_info: typeof import('./src/components/pages/write/page_info.vue')['default']
     Pagination: typeof import('./src/components/utils/pagination.vue')['default']
@@ -52,6 +55,7 @@ declare module 'vue' {
     Status: typeof import('./src/components/daily/status/status.vue')['default']
     Tag: typeof import('./src/components/pages/category_tag/tag.vue')['default']
     Toolbar: typeof import('./src/components/layout/toolbar.vue')['default']
+    Upload: typeof import('./src/components/image/uploadImage/upload.vue')['default']
     Writing: typeof import('./src/components/pages/write/writing.vue')['default']
   }
 }

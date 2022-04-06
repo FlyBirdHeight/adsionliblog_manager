@@ -85,7 +85,7 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, watch, watchEffect, inject, defineEmits, provide, toRefs } from 'vue';
+import { ref, watch, watchEffect, inject, defineEmits, provide, toRefs } from 'vue'
 import OvertimeSetting from '@/components/dialog/daily/overtime.vue'
 import DailySettingInfo from '@/components/utils/card/daily_setting_info.vue'
 import { DateSetting } from '@/plugin/daily/setting'
@@ -157,8 +157,8 @@ const handleSelectionChange = (val: any[]) => {
  * @param {DateSetting} info 日程内容
  */
 const update = (info: DateSetting) => {
-  let data = JSON.parse(JSON.stringify(Object.assign({}, info)));
-  emit("updateData", data)
+  let data = JSON.parse(JSON.stringify(Object.assign({}, info)))
+  emit('updateData', data)
 }
 /**
  * @method changeStatus 修改状态
@@ -204,8 +204,28 @@ const changeStatus = (id: number, status: number, type: string = 'normal', time?
  * @method advanceDaily 提前开始日程
  * @param {number} id 日程id
  */
-const advanceDaily = (id: number) => {
-  advancedDaily(id)
+const advanceDaily = async (id: number) => {
+  try {
+    let status = await advancedDaily(id)
+    if (status.data.status) {
+      ElMessage({
+        message: '开始成功',
+        type: 'success',
+      })
+    } else {
+      ElMessage({
+        message: '开始失败!' + (status.data | ''),
+        type: 'error',
+      })
+    }
+    emit('refreshStatus', true, 'refresh')
+  } catch (e) {
+    ElMessage({
+      message: '提前开始失败!' + e,
+      type: 'error',
+    })
+    emit('refreshStatus', true, 'refresh')
+  }
 }
 /**
  * @method closeDialog 关闭对话框,用于提交表单之后
@@ -237,13 +257,13 @@ const deleteData = async (id?: number) => {
         type: 'error',
       })
     }
-    emit("refreshStatus", false, 'delete')
+    emit('refreshStatus', false, 'delete')
   } catch (e) {
     ElMessage({
       message: '删除失败!' + e,
       type: 'error',
     })
-    emit("refreshStatus", false, 'delete')
+    emit('refreshStatus', false, 'delete')
   }
 }
 watch(deleteChecked, (newV, oldV) => {

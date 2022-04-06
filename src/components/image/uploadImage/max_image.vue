@@ -1,9 +1,9 @@
 <template>
-<h1>图床整理</h1>
+<h1>最多被使用图片(图片墙，展示16张，一行8张，当然这个视屏幕大小决定，给一个flex)</h1>
 </template>
 <script lang="ts">
 export default {
-  name: "ArrangeImage"
+    name: "MaxUseImage"
 }
 </script>
 <script lang="ts" setup>
