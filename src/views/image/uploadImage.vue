@@ -26,9 +26,10 @@ const emit = defineEmits([])
   justify-content: space-between;
   align-items: center;
   .header-title {
-    font-size: 1.5rem;
+    font-size: 1.65rem;
     line-height: 2rem;
-    font-weight: 900;
+    font-weight: 600;
+    color: #606266;
   }
 }
 </style>

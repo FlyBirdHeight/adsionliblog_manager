@@ -38,7 +38,21 @@
     </div>
     <div class="upload-image_list">
       <div class="header">上传状态列表:</div>
-      <div class="body"></div>
+      <el-scrollbar max-height="calc(100% - 41px)" :always="true">
+        <div class="body">
+          <div class="status" v-for="item in 20">
+            <div class="info">
+              <div class="image_name">adsionli.jpeg</div>
+              <div class="image_status" style="margin-right:15px">
+                123
+              </div>
+            </div>
+            <div class="percent" v-show="percentage[0] != 100">
+              <el-progress :percentage="percentage[0]" :format="format" :color="customColors" />
+            </div>
+          </div>
+        </div>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -56,11 +70,12 @@ const emit = defineEmits([])
 const submitStatus = ref<boolean>(false)
 const uploadList = ref<UploadInstance>()
 const statusList = ref<UploadStatus[]>([])
+const percentage = ref<number[]>([50])
 /**
  * @method getUploadProgress 获取上传文件进度信息
  */
 const getUploadProgress = (evt: UploadProgressEvent, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
-    console.log(e.percent)
+  console.log(e.percent)
 }
 /**
  * @method preview 预览图片信息
@@ -110,6 +125,17 @@ const submitImage = () => {
     })
   }, 1000)
 }
+/**
+ * @method format 获取进度条
+ */
+const format = (percentage) => (percentage === 100 ? '上传成功' : `${percentage}%`)
+const customColors = [
+  { color: '#f56c6c', percentage: 20 },
+  { color: '#e6a23c', percentage: 40 },
+  { color: '#6f7ad3', percentage: 60 },
+  { color: '#1989fa', percentage: 80 },
+  { color: '#5cb87a', percentage: 100 },
+]
 </script>
 <style lang="scss" scoped>
 @mixin uploadHeight {
@@ -164,7 +190,18 @@ const submitImage = () => {
     }
     .body {
       height: calc(100% - 41px);
-      overflow-y: scroll;
+      padding: 5px;
+      .status {
+        margin-top: 10px;
+        border: 1px solid #ebeef5;
+        padding: 5px;
+        border-radius: 5px;
+        .info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
     }
   }
 }
