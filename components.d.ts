@@ -15,8 +15,6 @@ declare module 'vue' {
     Daily_status_table: typeof import('./src/components/utils/table/daily_status_table.vue')['default']
     Dialog: typeof import('./src/components/dialog/dialog.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
-    ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
-    ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
     ElCalendar: typeof import('element-plus/es')['ElCalendar']

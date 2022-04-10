@@ -1,4 +1,5 @@
 import axios from "axios"
+import { MenuDataList } from '@/plugin/image/arrangeImage/arrange';
 
 interface FileMenu {
     name: string,
@@ -23,7 +24,7 @@ interface Directory {
     level: number,
     full_path: string,
     size: number,
-    children: Map<number, Directory>,
+    children: Directory[],
     fileList: FileInfo[]
 }
 
@@ -64,7 +65,9 @@ interface MenuDataList {
     full_path?: string,
     path?: string,
     file_type?: number,
-    children?: MenuDataList[]
+    children?: Map<string, MenuDataList>,
+    getChildren?: false,
+    level?: number
 }
 
 enum FileType {
@@ -124,7 +127,9 @@ const changeDirectoryInfoToMenuData = (directory: Directory) => {
         is_file: false,
         size: directory.size,
         parent_id: directory.parent_id,
-        children: [],
+        getChildren: false,
+        children: new Map<string, MenuDataList>(),
+        level: directory.level,
         index: ''
     }
 
@@ -132,35 +137,34 @@ const changeDirectoryInfoToMenuData = (directory: Directory) => {
 }
 
 /**
- * @method handleMenuList 将文件夹，文件数据处理成可以可视化的列表数据
- * @param {Map<number, Directory>} fileList 待处理数据
- * @param {number} parent_id 父类id
+ * @method handleMenuList 将文件夹，文件数据处理成可以可视化的列表数据,这里不是最终的，只是为了之后可以方便读取
+ * @param {Directory[]} fileList 待处理数据
  * @param {string} pre_index 前置index
  */
-const handleMenuList = (fileList: Map<number, Directory>, parent_id: number, pre_index: string = ''): MenuDataList[] => {
-    let returnData: MenuDataList[] = [];
-    for (let [key, value] of fileList.entries()) {
+const handleMenuList = (fileList: Directory[], pre_index: string = ''): Map<string, MenuDataList> => {
+    let returnData: Map<string, MenuDataList> = new Map<string, MenuDataList>();
+    for (let value of fileList) {
         let index = '';
         if (value.level == 0) {
             index = value.id.toString();
         } else {
             index = `${pre_index}-${value.id}`
         }
-        let children = [];
+        let children = new Map<string, MenuDataList>();
         if (value.fileList.length != 0) {
             for (let file of Reflect.get(value, 'fileList')) {
                 let menuData = changeFileInfoToMenuData(file, value.id);
                 menuData.index = `${pre_index}-${file.id}`
-                children.push(menuData);
+                children.set(menuData.index, menuData);
             }
         }
-        if (value.children.size != 0) {
-            handleMenuList(value.children, value.id);
+        if (value.children.length != 0) {
+            handleMenuList(value.children, index);
         }
         let data = changeDirectoryInfoToMenuData(value);
         data.index = index;
         data.children = children;
-        returnData.push(data);
+        returnData.set(data.index, data);
     }
 
 
@@ -170,21 +174,16 @@ const handleMenuList = (fileList: Map<number, Directory>, parent_id: number, pre
 
 /**
  * @method handleFileData 处理文件数据，放入到相关文件夹内容下
- * @param {Map<number, Directory>} parentList 父文件夹
+ * @param {MenuDataList} parentList 父文件夹
  * @param {Directory[]} fileList 待处理文件列表
  */
-const handleFileData = (parentList: Map<number, Directory>, fileList: Directory[]) => {
+const handleFileData = (parentList: MenuDataList, fileList: Directory[]) => {
     if (fileList.length == 0) {
         return;
     }
-    for (let v of fileList) {
-        let parent_id = v.parent_id;
-        if (!parentList.has(parent_id) && v.level == 0) {
-            parentList.set(v.id, v);
-        }
-        let data = parentList.get(parent_id);
-        data?.children?.set(v.id, v);
-    }
+    let value = handleMenuList(fileList);
+
+    return value;
 }
 /**
  * @method getFileList 获取文件列表
@@ -204,12 +203,59 @@ const getFileList = async (options: FileListOptions = { parent_id: -1, level: 0,
     }
 }
 
+/**
+ * @method returnMenuData 最终完成对menu数据的处理，返回menu可以理解的数据格式
+ * @param {Map<string, MenuDataList>} menuData
+ */
+const returnMenuData = (menuData: Map<string, MenuDataList>) => {
+    if (menuData.size == 0) {
+        return [];
+    }
+    let data = new Map(menuData);
+    let returnData = [];
+    for (let [k, v] of data.entries()) {
+        let value: any = v
+        value.children = []
+        returnData.push(value)
+    }
+
+    return returnData;
+}
+
+/**
+ * @method getMenuData 获取Menu列表可视化数据
+ * @param {MenuDataList} parent 父类数据 
+ * @param {number} level 层级
+ */
+const getMenuData = async (parent: MenuDataList, level: number) => {
+    try {
+        if (parent.getChildren) {
+            return returnMenuData(parent.children || new Map<string, MenuDataList>());
+        }
+        let fileList: any = await getFileList({
+            parent_id: parent.id,
+            level: level,
+            sort: "created_at",
+            orderBy: "desc"
+        });
+        let children = handleFileData(parent, fileList);
+        parent.children = children;
+        Reflect.set(parent, 'getChildren', true);
+
+        return returnMenuData(children || new Map<string, MenuDataList>());
+    } catch (e) {
+        console.log(e)
+        return [];
+    }
+}
+
 
 export {
     FileInfo,
     handleFileData,
     getFileList,
     FileMenu,
-    MenuDataList
+    MenuDataList,
+    getMenuData
 }
 

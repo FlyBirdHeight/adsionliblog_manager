@@ -2,8 +2,6 @@
 // We suggest you to commit this file into source control
 declare global {
   const ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
-  const ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
-  const ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
   const ElButton: typeof import('element-plus/es')['ElButton']
   const ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
   const ElCalendar: typeof import('element-plus/es')['ElCalendar']
