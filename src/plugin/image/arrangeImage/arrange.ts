@@ -1,5 +1,4 @@
 import axios from "axios"
-import { MenuDataList } from '@/plugin/image/arrangeImage/arrange';
 
 interface FileMenu {
     name: string,
@@ -227,7 +226,7 @@ const returnMenuData = (menuData: Map<string, MenuDataList>) => {
  * @param {MenuDataList} parent 父类数据 
  * @param {number} level 层级
  */
-const getMenuData = async (parent: MenuDataList, level: number) => {
+const getMenuData = async (parent: MenuDataList, level: number, index: string) => {
     try {
         if (parent.getChildren) {
             return returnMenuData(parent.children || new Map<string, MenuDataList>());
@@ -244,9 +243,40 @@ const getMenuData = async (parent: MenuDataList, level: number) => {
 
         return returnMenuData(children || new Map<string, MenuDataList>());
     } catch (e) {
-        console.log(e)
-        return [];
+        // console.log(e)
+        parent.children = new Map().set(index + '-' + 1, {
+            id: 1,
+            index: index + '-' + 1,
+            name: 'public' + index + '-' + 1,
+            created_at: '2022-04-10',
+            is_directory: true,
+            is_file: false,
+            icon: 'Folder',
+            size: 0,
+            parent_id: 0,
+            getChildren: false,
+            level: 0,
+            children: new Map<string, MenuDataList>(),
+        })
+        Reflect.set(parent, 'getChildren', true);
+        return returnMenuData(parent.children);
     }
+}
+/**
+ * @method getDirectoryList 根据传入的index，找到相关的内容
+ * @param {T[]} index
+ * @param {Map<string, MenuDataList>} list 父对象数据
+ */
+const getDirectoryList = <T>(index: T[], list: Map<string, MenuDataList>) => {
+    let columnIndex = '' + index[0];
+    let data = list.get(columnIndex);
+    console.log(list, index)
+    for (let i = 1; i < index.length; i++) {
+        columnIndex += `-${index[i]}`;
+        data = data?.children?.get(columnIndex);
+    }
+
+    return data;
 }
 
 
@@ -256,6 +286,8 @@ export {
     getFileList,
     FileMenu,
     MenuDataList,
-    getMenuData
+    getMenuData,
+    returnMenuData,
+    getDirectoryList
 }
 

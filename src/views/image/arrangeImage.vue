@@ -14,7 +14,6 @@ import FileListHeader from '@/components/image/arrangeImage/header'
 import FileListPath from '@/components/image/arrangeImage/menu'
 import FileList from '@/components/image/arrangeImage/list'
 import FileColumn from '@/components/image/arrangeImage/column'
-import RightClickMenu from '@/components/image/arrangeImage/right_menu'
 import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
 
 const showType = ref<number>(1)
