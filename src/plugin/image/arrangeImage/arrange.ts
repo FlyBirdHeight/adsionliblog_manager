@@ -270,7 +270,6 @@ const getMenuData = async (parent: MenuDataList, level: number, index: string) =
 const getDirectoryList = <T>(index: T[], list: Map<string, MenuDataList>) => {
     let columnIndex = '' + index[0];
     let data = list.get(columnIndex);
-    console.log(list, index)
     for (let i = 1; i < index.length; i++) {
         columnIndex += `-${index[i]}`;
         data = data?.children?.get(columnIndex);

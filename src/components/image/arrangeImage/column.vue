@@ -25,9 +25,10 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, provide, watch, watchEffect, nextTick } from 'vue'
+import { ref, shallowRef, provide, watchEffect, nextTick, inject, defineEmits, watch } from 'vue'
 import { MenuDataList, getMenuData, returnMenuData, getDirectoryList } from '@/plugin/image/arrangeImage/arrange'
 import RightClickMenu from '@/components/image/arrangeImage/right_menu'
+const emit = defineEmits(['setFilePath'])
 const list = ref<Map<string, MenuDataList>>(new Map())
 list.value = new Map().set('1', {
   id: 1,
@@ -59,18 +60,28 @@ for (let i = 2; i < 30; i++) {
     children: new Map<string, MenuDataList>(),
   })
 }
-
-const clickRight = (event, data) => {
+console.log(list.value)
+/**
+ * @method clickRight 右键点击事件
+ * @param {any} event 节点Event返回
+ * @param {MenuDataList} data 右键选中的数据
+ */
+const clickRight = (event, data: MenuDataList) => {
   rightClickData.value = getDirectoryList(String(data.index).substr(0).split('-'), list.value)
   showRightList.value = true
   showPosition.value = [event.clientX, event.clientY]
 }
+/**
+ * @method closeRightList 关闭右键菜单
+ */
 const closeRightList = () => {
   showRightList.value = false
 }
 /**
  * @property {MenuDataList} rightClickData 右键点击时的数据
  * @property {boolean} showRightList 是否显示右键列表
+ * @property {number[]} showPosition 右键菜单显示的位置
+ * @property {string[]} menuCheckedFileData 文件路径组件选中位置的时候的数据
  * @property {[]} checkedValue 选中文件数组
  * @property {MenuDataList} currentData 当前最底层选中数据
  * @property {any} fileListColumn 用来获取ref顶级对象
@@ -82,26 +93,34 @@ const showPosition = ref<number[]>([0, 0])
 provide('rightClickData', rightClickData)
 provide('showRight', showRightList)
 provide('showPosition', showPosition)
+const menuCheckedFileData = inject('menuFileChecked')
 const checkedValue = ref([])
 const currentData = ref<MenuDataList>(null)
 const fileListColumn = ref()
 const refreshCurrent = ref<boolean>(false)
-nextTick(() => {
-  console.log(fileListColumn)
-})
 /**
  * @method checkedColumn 展开节点发生改变时候的回调
  */
 const checkedColumn = (value) => {
   checkedValue.value = value
+  //这里需要返回一个路径列表，给到文件路径组件中
   nextTick(() => {
+    let emitData = []
+    for (let v of value) {
+      let column = v.split('-')
+      let d = getDirectoryList(column, list.value)
+      emitData.push({
+        name: d.name,
+        value: v,
+      })
+    }
+    emit('setFilePath', emitData)
     if (!refreshCurrent.value) {
       let length = value.length
       let currentIndex = value[length - 1]
       let idList = currentIndex.split('-')
       currentData.value = getDirectoryList(idList, list.value)
     }
-    console.log(currentData.value)
     refreshCurrent.value = false
   })
 }
@@ -135,6 +154,13 @@ const columnSetting = {
   label: 'name',
   children: 'children',
 }
+
+watch(menuCheckedFileData, (newV, oldV) => {
+  if (newV.length != 0) {
+    fileListColumn.value.menus.splice(newV.length, fileListColumn.value.menus.length - newV.length - 1)
+    checkedColumn(menuCheckedFileData.value)
+  }
+})
 </script>
 <style lang="scss">
 .file-list-column {
