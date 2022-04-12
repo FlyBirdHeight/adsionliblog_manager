@@ -157,7 +157,8 @@ const columnSetting = {
 
 watch(menuCheckedFileData, (newV, oldV) => {
   if (newV.length != 0) {
-    fileListColumn.value.menus.splice(newV.length, fileListColumn.value.menus.length - newV.length - 1)
+    console.log(fileListColumn.menus);
+    fileListColumn.value.menus.splice(newV.length + 1, fileListColumn.value.menus.length - newV.length)
     checkedColumn(menuCheckedFileData.value)
   }
 })
