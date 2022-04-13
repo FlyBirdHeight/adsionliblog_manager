@@ -60,7 +60,6 @@ for (let i = 2; i < 30; i++) {
     children: new Map<string, MenuDataList>(),
   })
 }
-console.log(list.value)
 /**
  * @method clickRight 右键点击事件
  * @param {any} event 节点Event返回
@@ -122,7 +121,21 @@ const checkedColumn = (value) => {
       currentData.value = getDirectoryList(idList, list.value)
     }
     refreshCurrent.value = false
+    scrollToRight();
   })
+}
+/**
+ * @method scrollToRight 设置滚动条移动到最右侧
+ */
+const scrollToRight = () => {
+  return (() => {
+    let el = fileListColumn.value.$.vnode.el
+    let children = el.children
+    el.scrollTo({
+      left: children[children.length - 1].getBoundingClientRect().x,
+      behavior: 'smooth',
+    })
+  })()
 }
 /**
  * @classdesc columnSetting 专门用来处理分栏显示时，懒加载以及相关数据处理的内容
@@ -142,12 +155,7 @@ const columnSetting = {
     }
     resolve(data)
     nextTick(() => {
-      let el = fileListColumn.value.$.vnode.el
-      let children = el.children
-      el.scrollTo({
-        left: children[children.length - 1].getBoundingClientRect().x,
-        behavior: 'smooth',
-      })
+      scrollToRight()
     })
   },
   value: 'index',
@@ -157,7 +165,6 @@ const columnSetting = {
 
 watch(menuCheckedFileData, (newV, oldV) => {
   if (newV.length != 0) {
-    console.log(fileListColumn.menus);
     fileListColumn.value.menus.splice(newV.length + 1, fileListColumn.value.menus.length - newV.length)
     checkedColumn(menuCheckedFileData.value)
   }

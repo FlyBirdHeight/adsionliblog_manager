@@ -37,6 +37,7 @@ watchEffect(() => {
     nextTick(() => {
       let children = menuItemList.value.children
       menuItemListScroll.value!.setScrollLeft(children[children.length - 1].getBoundingClientRect().x)
+      menuItemListScroll.value.update();
     })
   }
 })
