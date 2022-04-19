@@ -25,48 +25,24 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, shallowRef, provide, watchEffect, nextTick, inject, defineEmits, watch } from 'vue'
-import { MenuDataList, getMenuData, returnMenuData, getDirectoryList } from '@/plugin/image/arrangeImage/arrange'
+import { ref, shallowRef, provide, watchEffect, nextTick, inject, defineEmits, watch, onMounted } from 'vue'
+import {
+  MenuDataList,
+  getMenuData,
+  returnMenuData,
+  getDirectoryList,
+  handleGetDirectoryListData,
+} from '@/plugin/image/arrangeImage/arrange'
 import RightClickMenu from '@/components/image/arrangeImage/right_menu'
 const emit = defineEmits(['setFilePath'])
 const list = ref<Map<string, MenuDataList>>(new Map())
-list.value = new Map().set('1', {
-  id: 1,
-  index: '1',
-  name: 'public',
-  created_at: '2022-04-10',
-  is_directory: true,
-  is_file: false,
-  icon: 'Folder',
-  size: 0,
-  parent_id: 0,
-  level: 0,
-  getChildren: false,
-  children: new Map<string, MenuDataList>(),
-})
-for (let i = 2; i < 30; i++) {
-  list.value.set(i.toString(), {
-    id: i,
-    index: i.toString(),
-    name: 'public' + i,
-    created_at: '2022-04-10',
-    is_directory: true,
-    is_file: false,
-    icon: 'Folder',
-    size: 0,
-    parent_id: 0,
-    getChildren: false,
-    level: 0,
-    children: new Map<string, MenuDataList>(),
-  })
-}
 /**
  * @method clickRight 右键点击事件
  * @param {any} event 节点Event返回
  * @param {MenuDataList} data 右键选中的数据
  */
 const clickRight = (event, data: MenuDataList) => {
-  rightClickData.value = getDirectoryList(String(data.index).substr(0).split('-'), list.value)
+  rightClickData.value = handleGetDirectoryListData(list.value, data.index)
   showRightList.value = true
   showPosition.value = [event.clientX, event.clientY]
 }
@@ -105,11 +81,11 @@ const checkedColumn = (value) => {
   //这里需要返回一个路径列表，给到文件路径组件中
   nextTick(() => {
     let emitData = []
+    let findList = list.value
     for (let v of value) {
-      let column = v.split('-')
-      let d = getDirectoryList(column, list.value)
+      findList = getDirectoryList(v, findList, (v.split('-').length + 1) / 2)
       emitData.push({
-        name: d.name,
+        name: findList.name,
         value: v,
       })
     }
@@ -117,11 +93,11 @@ const checkedColumn = (value) => {
     if (!refreshCurrent.value) {
       let length = value.length
       let currentIndex = value[length - 1]
-      let idList = currentIndex.split('-')
-      currentData.value = getDirectoryList(idList, list.value)
+
+      currentData.value = handleGetDirectoryListData(list.value, currentIndex)
     }
     refreshCurrent.value = false
-    scrollToRight();
+    scrollToRight()
   })
 }
 /**
@@ -147,11 +123,14 @@ const columnSetting = {
     let data = []
     refreshCurrent.value = true
     if (node.level == 0) {
+      list.value = await getMenuData({ id: 1 }, true)
       data = returnMenuData(list.value)
       currentData.value = null
     } else if (node.data.is_directory) {
       currentData.value = node.data
-      data = await getMenuData(currentData.value, node.level, currentData.value.index)
+      data = await getMenuData(currentData.value, false)
+    } else if (node.data.is_file) {
+      data = undefined
     }
     resolve(data)
     nextTick(() => {
@@ -161,6 +140,8 @@ const columnSetting = {
   value: 'index',
   label: 'name',
   children: 'children',
+  multiple: false,
+  leaf: 'is_file',
 }
 
 watch(menuCheckedFileData, (newV, oldV) => {

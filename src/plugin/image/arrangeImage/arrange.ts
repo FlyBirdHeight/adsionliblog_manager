@@ -6,7 +6,6 @@ interface FileMenu {
 }
 interface FileListOptions {
     parent_id: number,
-    level: number,
     sort: string,
     orderBy: string
 }
@@ -23,8 +22,8 @@ interface Directory {
     level: number,
     full_path: string,
     size: number,
-    children: Directory[],
-    fileList: FileInfo[]
+    directories: Directory[],
+    files: FileInfo[]
 }
 
 interface FileInfo {
@@ -65,7 +64,7 @@ interface MenuDataList {
     path?: string,
     file_type?: number,
     children?: Map<string, MenuDataList>,
-    getChildren?: false,
+    getChildren?: boolean,
     level?: number
 }
 
@@ -114,8 +113,10 @@ const changeFileInfoToMenuData = (file: FileInfo, parent_id: number): MenuDataLi
 }
 /**
  * @method changeDirectoryInfoToMenuData 将文件夹数据转换成可视化列表数据
+ * @param {Directory} directory 文件
+ * @param {boolean} isChild 是否是子文件夹
  */
-const changeDirectoryInfoToMenuData = (directory: Directory) => {
+const changeDirectoryInfoToMenuData = (directory: Directory, isChild: boolean = false) => {
     let data: MenuDataList = {
         id: directory.id,
         name: directory.name,
@@ -126,7 +127,7 @@ const changeDirectoryInfoToMenuData = (directory: Directory) => {
         is_file: false,
         size: directory.size,
         parent_id: directory.parent_id,
-        getChildren: false,
+        getChildren: !isChild ? true : false,
         children: new Map<string, MenuDataList>(),
         level: directory.level,
         index: ''
@@ -139,33 +140,41 @@ const changeDirectoryInfoToMenuData = (directory: Directory) => {
  * @method handleMenuList 将文件夹，文件数据处理成可以可视化的列表数据,这里不是最终的，只是为了之后可以方便读取
  * @param {Directory[]} fileList 待处理数据
  * @param {string} pre_index 前置index
+ * @param {boolean} isChild 是否是子节点
  */
-const handleMenuList = (fileList: Directory[], pre_index: string = ''): Map<string, MenuDataList> => {
+const handleMenuList = (fileList: Directory[], pre_index: string = '', isChild: boolean = false): Map<string, MenuDataList> => {
     let returnData: Map<string, MenuDataList> = new Map<string, MenuDataList>();
     for (let value of fileList) {
         let index = '';
-        if (value.level == 0) {
+        if (value.level == 1) {
             index = value.id.toString();
         } else {
-            index = `${pre_index}-${value.id}`
+            index = `${pre_index}-d-${value.id}`
         }
         let children = new Map<string, MenuDataList>();
-        if (value.fileList.length != 0) {
-            for (let file of Reflect.get(value, 'fileList')) {
+        if (Reflect.has(value, 'files') && value.files.length != 0) {
+            for (let file of Reflect.get(value, 'files')) {
                 let menuData = changeFileInfoToMenuData(file, value.id);
-                menuData.index = `${pre_index}-${file.id}`
+                menuData.index = `${index}-f-${file.id}`
                 children.set(menuData.index, menuData);
             }
         }
-        if (value.children.length != 0) {
-            handleMenuList(value.children, index);
+        if (Reflect.has(value, 'directories') && value.directories.length != 0) {
+            let data = handleMenuList(value.directories, index, true);
+            if (data.size != 0) {
+                for (let [k, v] of data.entries()) {
+                    Reflect.deleteProperty(v, 'children')
+                    children.set(v.index, v);
+                }
+            }
+
         }
-        let data = changeDirectoryInfoToMenuData(value);
+        let data = changeDirectoryInfoToMenuData(value, isChild);
+
         data.index = index;
         data.children = children;
         returnData.set(data.index, data);
     }
-
 
     return returnData;
 }
@@ -175,27 +184,32 @@ const handleMenuList = (fileList: Directory[], pre_index: string = ''): Map<stri
  * @method handleFileData 处理文件数据，放入到相关文件夹内容下
  * @param {MenuDataList} parentList 父文件夹
  * @param {Directory[]} fileList 待处理文件列表
+ * @param {boolean} first 是否是第一次
  */
-const handleFileData = (parentList: MenuDataList, fileList: Directory[]) => {
+const handleFileData = (parentList: MenuDataList, fileList: Directory[], first: boolean = false) => {
     if (fileList.length == 0) {
         return;
     }
-    let value = handleMenuList(fileList);
-
-    return value;
+    if (first) {
+        let value = handleMenuList(fileList);
+        return value;
+    } else {
+        let value = handleMenuList(fileList, parentList.index, false);
+        return value;
+    }
 }
 /**
  * @method getFileList 获取文件列表
  * @param {FileListOptions} options 获取配置项
  */
-const getFileList = async (options: FileListOptions = { parent_id: -1, level: 0, sort: "created_at", orderBy: "desc" }) => {
+const getFileList = async (options: FileListOptions = { parent_id: 1, sort: "created_at", orderBy: "desc" }) => {
     try {
         const resData = await axios({
-            method: "post",
+            method: "get",
             data: options,
-            url: "/api/file/getList"
+            url: `/api/file/files/getList?id=${options.parent_id}`
         })
-        const fileList: Directory[] = resData.data;
+        const fileList: Directory[] = resData.data.data;
         return fileList;
     } catch (e) {
         console.log(e);
@@ -214,7 +228,14 @@ const returnMenuData = (menuData: Map<string, MenuDataList>) => {
     let returnData = [];
     for (let [k, v] of data.entries()) {
         let value: any = v
-        value.children = []
+        let children = [];
+        if (value.children && value.children.size > 0) {
+            for (let [k, v] of new Map(value.children).entries()) {
+                children.push(v);
+            }
+        }
+
+        value.children = children;
         returnData.push(value)
     }
 
@@ -224,60 +245,70 @@ const returnMenuData = (menuData: Map<string, MenuDataList>) => {
 /**
  * @method getMenuData 获取Menu列表可视化数据
  * @param {MenuDataList} parent 父类数据 
- * @param {number} level 层级
+ * @param {boolean} first 第一次请求
  */
-const getMenuData = async (parent: MenuDataList, level: number, index: string) => {
+const getMenuData = async (parent: MenuDataList, first: boolean = false) => {
     try {
-        if (parent.getChildren) {
+        if (!first && Reflect.has(parent, 'getChildren') && parent.getChildren) {
             return returnMenuData(parent.children || new Map<string, MenuDataList>());
         }
         let fileList: any = await getFileList({
             parent_id: parent.id,
-            level: level,
             sort: "created_at",
             orderBy: "desc"
         });
-        let children = handleFileData(parent, fileList);
-        parent.children = children;
-        Reflect.set(parent, 'getChildren', true);
 
-        return returnMenuData(children || new Map<string, MenuDataList>());
+        if (!first) {
+            let children = handleFileData(parent, fileList);
+            parent.children = children;
+            Reflect.set(parent, 'getChildren', true);
+            return returnMenuData(children || new Map<string, MenuDataList>());
+        } else {
+            let children = handleFileData(parent, fileList, true);
+            return children;
+        }
+
     } catch (e) {
-        // console.log(e)
-        parent.children = new Map().set(index + '-' + 1, {
-            id: 1,
-            index: index + '-' + 1,
-            name: 'public' + index + '-' + 1,
-            created_at: '2022-04-10',
-            is_directory: true,
-            is_file: false,
-            icon: 'Folder',
-            size: 0,
-            parent_id: 0,
-            getChildren: false,
-            level: 0,
-            children: new Map<string, MenuDataList>(),
-        })
-        Reflect.set(parent, 'getChildren', true);
-        return returnMenuData(parent.children);
+        console.log(e);
     }
 }
 /**
  * @method getDirectoryList 根据传入的index，找到相关的内容
- * @param {T[]} index
- * @param {Map<string, MenuDataList>} list 父对象数据
+ * @param {T} index
+ * @param {*} list 父对象数据
+ * @param {number} level 层级
  */
-const getDirectoryList = <T>(index: T[], list: Map<string, MenuDataList>) => {
-    let columnIndex = '' + index[0];
-    let data = list.get(columnIndex);
-    for (let i = 1; i < index.length; i++) {
-        columnIndex += `-${index[i]}`;
-        data = data?.children?.get(columnIndex);
+const getDirectoryList = <T>(index: T, list: any, level: number) => {
+    if (level == 2) {
+        for (let i = 0; i < list.children.length; i++) {
+            if (list.children[i].index == index) {
+                return list.children[i]
+            }
+        }
+    } else if (level == 1) {
+        return list.get(index)
+    } else {
+        return list.children.get(index);
+    }
+}
+/**
+ * @method handleGetDirectoryListData 因为list第二层变成了数组，所以需要一些特殊处理的内容，调用这个方法
+ * @param {*} list 父对象数据
+ * @param {string} index 查询的index
+ */
+const handleGetDirectoryListData = (list: any, index: string) => {
+    let idx = index.substr(0).split('-')
+    let value = []
+    for (let i = 0; i < idx.length; i += 2) {
+        value.push(idx.slice(0, i + 1).join('-'))
+    }
+    let findList = list
+    for (let v of value) {
+        findList = getDirectoryList(v, findList, (v.split('-').length + 1) / 2)
     }
 
-    return data;
+    return findList;
 }
-
 
 export {
     FileInfo,
@@ -287,6 +318,7 @@ export {
     MenuDataList,
     getMenuData,
     returnMenuData,
-    getDirectoryList
+    getDirectoryList,
+    handleGetDirectoryListData
 }
 
