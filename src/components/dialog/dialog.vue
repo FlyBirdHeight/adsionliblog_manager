@@ -9,7 +9,7 @@
     :draggable="props.draggable"
   >
     <slot name="mainBody"></slot>
-    <template #footer>
+    <template #footer v-if="showFooter">
       <slot name="foot"></slot>
     </template>
   </el-dialog>
@@ -43,11 +43,18 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showFooter: {
+    type: Boolean,
+    default: true
+  }
 })
-const showDialog = ref<boolean>(false);
-watch(() => props.show, (newV, oldV) => {
-  showDialog.value = newV;
-})
+const showDialog = ref<boolean>(false)
+watch(
+  () => props.show,
+  (newV, oldV) => {
+    showDialog.value = newV
+  }
+)
 const closeDialog = function () {
   emit('closeDialog', false)
 }

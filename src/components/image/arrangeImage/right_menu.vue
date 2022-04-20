@@ -5,23 +5,29 @@
     v-show="rightShow"
     :style="{ left: `${showPosition[0]}px`, top: `${showPosition[1]}px` }"
   >
-    <li class="upload" @click.stop="handle('upload')">
+    <li class="upload" v-show="rightData && rightData.is_directory" @click.stop="handle('upload')">
       <el-icon><component :is="$icon['Upload']" /></el-icon>
       <span>上传文件</span>
     </li>
-    <li class="delete" @click.stop="handle('delete')">
-      <el-icon><component :is="$icon['Delete']" /></el-icon>
-      <span>删除文件</span>
+    <li class="download" v-show="rightData && rightData.is_file" @click.stop="handle('download')">
+      <el-icon><component :is="$icon['Download']" /></el-icon>
+      <span>下载文件</span>
     </li>
     <li class="info" @click.stop="handle('info')">
       <el-icon><component :is="$icon['More']" /></el-icon>
       <span>查看详情</span>
     </li>
-    <li class="download" @click.stop="handle('download')">
-      <el-icon><component :is="$icon['Download']" /></el-icon>
-      <span>下载文件</span>
+    <li class="create-directory" v-show="rightData && rightData.is_directory" @click.stop="handle('directory')">
+      <el-icon><component :is="$icon['FolderAdd']" /></el-icon>
+      <span>创建文件夹</span>
+    </li>
+    <li class="delete" @click.stop="handle('delete')">
+      <el-icon><component :is="$icon['Delete']" /></el-icon>
+      <span>删除文件</span>
     </li>
   </ul>
+  <file-info @closeDialog="closeDialog"></file-info>
+  <arrange-image-upload @closeDialog="closeDialog"></arrange-image-upload>
 </template>
 <script lang="ts">
 export default {
@@ -29,14 +35,28 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, watch, watchEffect, inject, onMounted } from 'vue'
-import { HANDLEFILE } from '@/plugin/image/arrangeImage/handle'
-const props = defineProps()
+import { ref, defineEmits, inject, onMounted, reactive, provide } from 'vue'
+import { HandleFile } from '@/plugin/image/arrangeImage/handle'
+import FileInfo from '@/components/dialog/image/arrange/info.vue'
+import ArrangeImageUpload from '@/components/dialog/image/arrange/upload.vue'
 const emit = defineEmits(['closeRightList'])
+/**
+ * @property {boolean} rightShow 控制右键菜单显隐
+ * @property {*} rightData 右键菜单的数据
+ * @property {number[]} showPosition 右键菜单显示的位置
+ * @property {*} rightMenuList 右键菜单的dom
+ * @property {*} dialogShow 控制相关窗口的显隐
+ */
 const rightShow = inject('showRight')
 const rightData = inject('rightClickData')
+
 const showPosition = inject('showPosition')
 const rightMenuList = ref()
+const dialogShow = reactive({
+  info: false,
+  upload: false,
+})
+provide('fileDialog', dialogShow)
 const displayRight = () =>
   document.addEventListener('click', (e) => {
     if (e.target.className !== 'right_menu_list') {
@@ -47,20 +67,28 @@ const displayRight = () =>
 onMounted(() => {
   displayRight()
 })
+/**
+ * @method closeDialog 控制dialog显隐，主要是两个：详情、上传
+ */
+const closeDialog = (show: boolean, type: string) => {
+  dialogShow[type] = show
+}
 const handle = (type: string) => {
-  console.log(rightData)
   switch (type) {
-    case HANDLEFILE.UPLOAD_FILE:
+    case HandleFile.UPLOAD_FILE:
+      dialogShow.upload = true
+      break
+    case HandleFile.DOWNLOAD_FILE:
       console.log(type)
       break
-    case HANDLEFILE.DOWNLOAD_FILE:
+    case HandleFile.DELETE_FILE:
       console.log(type)
       break
-    case HANDLEFILE.DELETE_FILE:
+    case HandleFile.CREATE_DIRECTORY:
       console.log(type)
       break
-    case HANDLEFILE.SEE_INFO:
-      console.log(type)
+    case HandleFile.SEE_INFO:
+      dialogShow.info = true
       break
   }
   emit('closeRightList')
@@ -69,10 +97,8 @@ const handle = (type: string) => {
 <style lang="scss" scoped>
 ul {
   position: fixed;
-  bottom: 150px;
-  right: 150px;
   width: 170px;
-  height: 190px;
+  height: auto;
   list-style: none;
   border: 1px solid #dcdfe6;
   border-radius: 5px;
@@ -107,6 +133,10 @@ ul {
   }
   li.info {
     color: #409eff;
+    font-weight: 500;
+  }
+  li.create-directory {
+    color: #7950f4;
     font-weight: 500;
   }
   li:hover {

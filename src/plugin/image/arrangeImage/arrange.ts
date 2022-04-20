@@ -6,8 +6,7 @@ interface FileMenu {
 }
 interface FileListOptions {
     parent_id: number,
-    sort: string,
-    orderBy: string
+    first: boolean
 }
 
 interface Directory {
@@ -17,6 +16,7 @@ interface Directory {
     image_count: number,
     directory_count: number,
     created_at: string,
+    updated_at?: string,
     file_count: number,
     parent_id: number,
     level: number,
@@ -35,7 +35,8 @@ interface FileInfo {
     des?: string,
     size: number,
     type: number,
-    directory_id: number
+    directory_id: number,
+    updated_at?: string
 }
 /**
  * @interface MenuDataList 用于文件列表生成的数据
@@ -59,6 +60,7 @@ interface MenuDataList {
     icon: string,
     size: number,
     parent_id: number,
+    updated_at?: string,
     url?: string,
     full_path?: string,
     path?: string,
@@ -106,6 +108,7 @@ const changeFileInfoToMenuData = (file: FileInfo, parent_id: number): MenuDataLi
         size: file.size,
         file_type: file.type,
         parent_id: file.directory_id,
+        updated_at!: file?.updated_at,
         index: ''
     };
 
@@ -121,6 +124,7 @@ const changeDirectoryInfoToMenuData = (directory: Directory, isChild: boolean = 
         id: directory.id,
         name: directory.name,
         created_at: directory.created_at,
+        updated_at!: directory?.updated_at,
         full_path: directory.full_path,
         icon: 'Folder',
         is_directory: true,
@@ -142,14 +146,16 @@ const changeDirectoryInfoToMenuData = (directory: Directory, isChild: boolean = 
  * @param {string} pre_index 前置index
  * @param {boolean} isChild 是否是子节点
  */
-const handleMenuList = (fileList: Directory[], pre_index: string = '', isChild: boolean = false): Map<string, MenuDataList> => {
+const handleMenuList = (fileList: Directory[], preOpt: { index: string, id: number } = { index: '', id: 1 }, isChild: boolean = false): Map<string, MenuDataList> => {
     let returnData: Map<string, MenuDataList> = new Map<string, MenuDataList>();
     for (let value of fileList) {
         let index = '';
         if (value.level == 1) {
             index = value.id.toString();
+        } else if (preOpt.id !== value.id) {
+            index = `${preOpt.index}-d-${value.id}`
         } else {
-            index = `${pre_index}-d-${value.id}`
+            index = preOpt.index
         }
         let children = new Map<string, MenuDataList>();
         if (Reflect.has(value, 'files') && value.files.length != 0) {
@@ -160,7 +166,7 @@ const handleMenuList = (fileList: Directory[], pre_index: string = '', isChild: 
             }
         }
         if (Reflect.has(value, 'directories') && value.directories.length != 0) {
-            let data = handleMenuList(value.directories, index, true);
+            let data = handleMenuList(value.directories, { index, id: value.id }, true);
             if (data.size != 0) {
                 for (let [k, v] of data.entries()) {
                     Reflect.deleteProperty(v, 'children')
@@ -194,7 +200,7 @@ const handleFileData = (parentList: MenuDataList, fileList: Directory[], first: 
         let value = handleMenuList(fileList);
         return value;
     } else {
-        let value = handleMenuList(fileList, parentList.index, false);
+        let value = handleMenuList(fileList, { index: parentList.index, id: parentList.id }, false);
         return value;
     }
 }
@@ -202,14 +208,15 @@ const handleFileData = (parentList: MenuDataList, fileList: Directory[], first: 
  * @method getFileList 获取文件列表
  * @param {FileListOptions} options 获取配置项
  */
-const getFileList = async (options: FileListOptions = { parent_id: 1, sort: "created_at", orderBy: "desc" }) => {
+const getFileList = async (options: FileListOptions = { parent_id: 1, first: true }) => {
     try {
         const resData = await axios({
             method: "get",
             data: options,
-            url: `/api/file/files/getList?id=${options.parent_id}`
+            url: `/api/file/files/getList?id=${options.parent_id}&first=${Number(options.first)}`
         })
-        const fileList: Directory[] = resData.data.data;
+        let fileList: any = resData.data.data;
+
         return fileList;
     } catch (e) {
         console.log(e);
@@ -254,15 +261,15 @@ const getMenuData = async (parent: MenuDataList, first: boolean = false) => {
         }
         let fileList: any = await getFileList({
             parent_id: parent.id,
-            sort: "created_at",
-            orderBy: "desc"
+            first
         });
 
         if (!first) {
-            let children = handleFileData(parent, fileList);
-            parent.children = children;
+            let data = handleFileData(parent, fileList);
+            parent.children = data?.get(parent.index)?.children;
             Reflect.set(parent, 'getChildren', true);
-            return returnMenuData(children || new Map<string, MenuDataList>());
+
+            return returnMenuData(parent.children || new Map<string, MenuDataList>());
         } else {
             let children = handleFileData(parent, fileList, true);
             return children;
@@ -319,6 +326,7 @@ export {
     getMenuData,
     returnMenuData,
     getDirectoryList,
-    handleGetDirectoryListData
+    handleGetDirectoryListData,
+    FileType
 }
 
