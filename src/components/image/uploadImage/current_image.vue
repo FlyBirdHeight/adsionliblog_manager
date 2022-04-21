@@ -2,24 +2,37 @@
   <div class="current-image-title">
     <span>最新上传</span>
   </div>
-  <el-scrollbar style="height: auto" :always="true">
-    <div class="current-image-list">
-      <el-card v-for="(item, index) in 8" shadow="hover" class="card" :body-style="{ padding: '0px', height: '100%' }">
-        <el-image class="card_image" :src="list[index]" :preview-src-list="list" :initial-index="index" fit="cover" />
+  <el-scrollbar ref="currentImageScroll" style="height: auto" :always="true">
+    <div v-if="imageList.length != 0" class="current-image-list">
+      <el-card
+        v-for="(item, index) in imageList"
+        shadow="hover"
+        class="card"
+        :body-style="{ padding: '0px', height: '100%' }"
+      >
+        <el-image
+          class="card_image"
+          :src="item.url"
+          :preview-src-list="list"
+          :initial-index="index"
+          :hide-on-click-modal="true"
+          fit="cover"
+        />
         <div class="card—body">
-          <span class="image-name">汉堡包</span>
+          <span class="image-name">{{ item.name }}</span>
           <div class="card-bottom">
-            <div class="created_at">上传时间：2022-04-08</div>
+            <div class="created_at">上传时间：{{ item.created_at }}</div>
             <div class="button-group">
-              <el-button size="small" type="info">详情</el-button>
-              <el-button size="small" type="success">外链复制</el-button>
-              <el-button size="small" type="primary">下载</el-button>
+              <el-button size="small" type="info" @click.stop="seeInfo(item)">详情</el-button>
+              <el-button class="copyOutline" size="small" type="success" @click="copy(item.url)">外链复制</el-button>
+              <el-button size="small" type="primary" @click.stop="download(item.id, item.name)">下载</el-button>
             </div>
           </div>
         </div>
       </el-card>
     </div>
   </el-scrollbar>
+  <image-list-info @closeDialog="closeDialog"></image-list-info>
 </template>
 <script lang="ts">
 export default {
@@ -27,32 +40,64 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
-import { ImageList, getCurrent } from '@/modules/files/image'
-const props = defineProps()
-const emit = defineEmits([])
-
-const imageList = ref<ImageList[]>([])
-const list = [
-  'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-  'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-  'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-  'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
-  'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
-  'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
-  'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
-  'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-]
-const size = ref<number>(8)
-const getList = async () => {
-  try {
-    let returnData = await getCurrent(size.value)
-    if (returnData.data.length != 0) {
-      imageList.value = returnData
-    }
-  } catch (e) {
-    console.log(e)
-  }
+import ImageListInfo from '@/components/dialog/image/upload/info.vue'
+import { ref, onMounted, nextTick, provide } from 'vue'
+import { Image, getCurrent, getDownLoadImage, downloadFile } from '@/modules/files/image'
+import Clipboard from 'clipboard'
+const imageList = ref<Image[]>([])
+const list = ref<string[]>([])
+const currentImageScroll = ref()
+const show = ref<boolean>(false)
+const checkedImageData = ref<Image>(null)
+provide('showImageInfo', show)
+provide('imageData', checkedImageData)
+onMounted(async () => {
+  imageList.value = await getCurrent()
+  list.value = imageList.value.map((v) => {
+    return v.url
+  })
+  nextTick(() => {
+    currentImageScroll.value.update()
+  })
+})
+/**
+ * @method seeInfo 查看详情
+ * @param {Image} file 图片文件
+ */
+const seeInfo = (file: Image) => {
+  checkedImageData.value = file
+  show.value = true
+}
+const closeDialog = () => {
+  show.value = false
+}
+/**
+ * @method copy 复制外链
+ * @param {string} url 外链地址
+ */
+const copy = (url: string) => {
+  let clipboard = new Clipboard('.copyOutline', {
+    text: () => {
+      return url
+    },
+  })
+  clipboard.on('success', function (e) {
+    ElMessage.success('图片外链复制成功，请使用Ctrl+V进行使用！')
+    clipboard.destroy()
+  })
+  clipboard.on('error', function (e) {
+    ElMessage.error('当前不支持复制到剪切板！')
+    clipboard.destroy()
+  })
+}
+/**
+ * @method download 下载图片
+ * @param {string | number} id 图片的id
+ * @param {string} name 图片名称
+ */
+const download = async (id: number | string, name: string) => {
+  let file = await getDownLoadImage(id)
+  downloadFile(file.data, name)
 }
 </script>
 <style lang="scss" scoped>

@@ -4,6 +4,7 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Arrange_upload: typeof import('./src/components/form/image/arrange_upload.vue')['default']
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
     Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
     Category_form: typeof import('./src/components/dialog/body/category_form.vue')['default']
@@ -29,6 +30,7 @@ declare module 'vue' {
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElImage: typeof import('element-plus/es')['ElImage']
+    ElImageViewer: typeof import('element-plus/es')['ElImageViewer']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     ElMenu: typeof import('element-plus/es')['ElMenu']
@@ -51,6 +53,8 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Header: typeof import('./src/components/image/arrangeImage/header.vue')['default']
+    Image_preview: typeof import('./src/components/utils/image_preview.vue')['default']
+    Info: typeof import('./src/components/dialog/image/arrange/info.vue')['default']
     Item_menu: typeof import('./src/components/utils/menu/item_menu.vue')['default']
     Left_menu: typeof import('./src/components/layout/left_menu.vue')['default']
     List: typeof import('./src/components/image/arrangeImage/list.vue')['default']
@@ -60,6 +64,7 @@ declare module 'vue' {
     Page_info: typeof import('./src/components/pages/write/page_info.vue')['default']
     Pagination: typeof import('./src/components/utils/pagination.vue')['default']
     Right_menu: typeof import('./src/components/image/arrangeImage/right_menu.vue')['default']
+    Set_info: typeof import('./src/components/dialog/image/upload/set_info.vue')['default']
     Setting_form: typeof import('./src/components/dialog/daily/setting_form.vue')['default']
     Setting_info: typeof import('./src/components/dialog/daily/setting_info.vue')['default']
     Status: typeof import('./src/components/daily/status/status.vue')['default']

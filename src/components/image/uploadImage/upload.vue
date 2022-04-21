@@ -40,12 +40,10 @@
       <div class="header">上传状态列表:</div>
       <el-scrollbar max-height="calc(100% - 41px)" :always="true">
         <div class="body">
-          <div class="status" v-for="item in 20">
+          <div class="status" v-for="item in 1">
             <div class="info">
               <div class="image_name">adsionli.jpeg</div>
-              <div class="image_status" style="margin-right:15px">
-                123
-              </div>
+              <div class="image_status" style="margin-right: 15px">123</div>
             </div>
             <div class="percent" v-show="percentage[0] != 100">
               <el-progress :percentage="percentage[0]" :format="format" :color="customColors" />
@@ -55,6 +53,13 @@
       </el-scrollbar>
     </div>
   </div>
+  <image-preview
+    :previewList="previewList"
+    :previewIndex="previewIndex"
+    :showPreview="extraWindow.image_preview"
+    @closePreview="handleExtraWindow"
+  />
+  <image-upload-info-set @closeDialog="handleExtraWindow" @submitImageSetting="setImageInfo"></image-upload-info-set>
 </template>
 <script lang="ts">
 export default {
@@ -62,15 +67,33 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
-import { UploadStatus } from '../../../modules/files/uploadImage'
-const props = defineProps()
-const emit = defineEmits([])
-
+import { ref, reactive, provide, onMounted } from 'vue';
+import { UploadStatus } from '@/modules/files/uploadImage'
+import ImagePreview from '@/components/utils/image_preview.vue'
+import ImageUploadInfoSet from '@/components/dialog/image/upload/set_info.vue'
+/**
+ * @property {boolean} submitStatus 提交的状态
+ * @property {UploadInstance} uploadList 提交列表
+ * @property {UploadStatus[]} statusList 提交状态列表
+ * @property {number[]} percentage 提交进度列表
+ * @property {string[]} previewList 预览显示列表
+ * @property {number} previewIndex 预览显示起始位置
+ * @property {boolean} extraWindow 额外窗口显示控制
+ * @property {UploadFile} checkedImage 选中修改的图片
+ */
 const submitStatus = ref<boolean>(false)
 const uploadList = ref<UploadInstance>()
 const statusList = ref<UploadStatus[]>([])
 const percentage = ref<number[]>([50])
+const previewList = ref<string[]>([])
+const previewIndex = ref<number>(0)
+const extraWindow = reactive({
+  image_preview: false,
+  info_set: false,
+})
+const checkedImage = ref<UploadFile>(null)
+provide('extraWindow', extraWindow)
+provide('checkedImage', checkedImage)
 /**
  * @method getUploadProgress 获取上传文件进度信息
  */
@@ -81,14 +104,23 @@ const getUploadProgress = (evt: UploadProgressEvent, uploadFile: UploadFile, upl
  * @method preview 预览图片信息
  */
 const preview = (file: UploadFile) => {
-  console.log(file)
-  console.log(uploadList.value.uploadFiles.length)
+  previewIndex.value = previewList.value.indexOf(file.url)
+  handleExtraWindow(true, 'image_preview')
+}
+/**
+ * @method handleExtraWindow 关闭额外的窗口显示
+ * @param {boolean} val 显隐控制
+ * @param {string} type 显隐控制类型
+ */
+const handleExtraWindow = (val: boolean, type: string) => {
+  extraWindow[type] = val
 }
 /**
  * @method remindSetting 提醒设置图片路径
  */
 const remindSetting = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
   if (uploadFile.status === 'ready') {
+    previewList.value.push(uploadFile.url)
     ElMessage({
       type: 'warning',
       message: '请设置图片保存路径',
@@ -97,19 +129,34 @@ const remindSetting = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
 }
 /**
  * @method setting 设置图片信息
+ * @param {UploadFile} file 选中的数据
  */
 const setting = (file: UploadFile) => {
-  console.log(file)
-  file.path = '/image/js'
+  if (!Reflect.has(file, 'path')) {
+    file.path = '/images'
+  }
+  checkedImage.value = file
+  handleExtraWindow(true, 'info_set')
+}
+/**
+ * @method setImageInfo 设置图片信息内容，通过组件回调
+ * @param {*} val 回调数值
+ */
+const setImageInfo = (val: { name: string; path: { value: string; id: number | null; is_create: boolean } }) => {
+  checkedImage.value.name = val.name
+  checkedImage.value.path = val.path.value
+  checkedImage.value.is_create = val.path.is_create
+  if (val.path.id !== null) {
+    checkedImage.value.directory_id = val.path.id
+  }
+  handleExtraWindow(false, 'info_set')
 }
 /**
  * @method remove 移除图片
  */
 const remove = (file: UploadFile) => {
-  console.log(file)
-  console.log(uploadList.value)
+  previewList.value.splice(previewList.value.indexOf(file.url), 1)
   uploadList.value.handleRemove(file)
-  console.log(uploadList.value.uploadFiles.length)
 }
 /**
  * @method submitImage 将图片上传到服务器上
