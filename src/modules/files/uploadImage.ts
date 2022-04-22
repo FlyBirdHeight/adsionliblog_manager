@@ -30,7 +30,7 @@ class UploadImage {
                 return new Promise((resolve, reject) => {
                     const form = new FormData()
                     form.append('image', file)
-                    axios.post('/api/file/image/upload', form, {
+                    axios.post('/api/file/image/upload/one', form, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },

@@ -5,11 +5,12 @@
         <el-upload
           :on-change="remindSetting"
           ref="uploadList"
-          action="#"
           list-type="picture-card"
           :auto-upload="false"
-          :action="'/api/file/image/upload'"
           :on-progress="getUploadProgress"
+          :action="'/api/file/image/upload/any'"
+          :before-upload="beforeUpload"
+          :name="'file'"
         >
           <el-icon><component :is="$icon['Plus']" /></el-icon>
           <template #file="{ file }">
@@ -67,8 +68,9 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, reactive, provide, onMounted } from 'vue';
+import { ref, reactive, provide, onMounted } from 'vue'
 import { UploadStatus } from '@/modules/files/uploadImage'
+import { uploadAny } from '@/modules/files/upload.ts'
 import ImagePreview from '@/components/utils/image_preview.vue'
 import ImageUploadInfoSet from '@/components/dialog/image/upload/set_info.vue'
 /**
@@ -121,6 +123,8 @@ const handleExtraWindow = (val: boolean, type: string) => {
 const remindSetting = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
   if (uploadFile.status === 'ready') {
     previewList.value.push(uploadFile.url)
+    uploadFile.path = '/'
+    uploadFile.directory_id = 1
     ElMessage({
       type: 'warning',
       message: '请设置图片保存路径',
@@ -132,9 +136,6 @@ const remindSetting = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
  * @param {UploadFile} file 选中的数据
  */
 const setting = (file: UploadFile) => {
-  if (!Reflect.has(file, 'path')) {
-    file.path = '/images'
-  }
   checkedImage.value = file
   handleExtraWindow(true, 'info_set')
 }
@@ -158,12 +159,19 @@ const remove = (file: UploadFile) => {
   previewList.value.splice(previewList.value.indexOf(file.url), 1)
   uploadList.value.handleRemove(file)
 }
+const beforeUpload = (rawFile: UploadRawFile) => {
+  console.log(rawFile)
+  console.log(uploadList.value)
+}
 /**
  * @method submitImage 将图片上传到服务器上
  */
 const submitImage = () => {
   submitStatus.value = true
-  console.log(uploadList.value.uploadFiles)
+  console.log(uploadList.value);
+  
+  uploadAny(uploadList.value.uploadFiles)
+  // uploadList.value.submit()
   setTimeout(() => {
     submitStatus.value = false
     ElMessage({

@@ -83,7 +83,8 @@ const getList = (option: any) => {
 const getDownLoadImage = (id: number) => {
     return axios({
         method: "get",
-        url: "/api/file/image/download?id=" + id
+        url: "/api/file/image/download?id=" + id,
+        responseType: 'blob'
     })
 }
 /**

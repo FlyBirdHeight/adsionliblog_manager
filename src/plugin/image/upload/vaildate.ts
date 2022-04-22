@@ -40,13 +40,13 @@ const judgeNewPath = (path: string, list: { value: string, id: number }[]) => {
         if (v.value === path) {
             return {
                 id: v.id,
-                status: false
+                status: true
             };
         }
     })
 
     return {
-        status: true
+        status: false
     }
 }
 

@@ -5,10 +5,6 @@ const findPathList = {
         full_path: {
             type: 'like',
             data: '%%',
-        },
-        id: {
-            type: "!=",
-            data: 1
         }
     },
 }
@@ -22,6 +18,12 @@ const getFilePath = async () => {
         return []
     }
     return fullPath.map(v => {
+        if (v.id == 1) {
+            return {
+                value: "/",
+                id: v.id
+            }
+        }
         return {
             value: v.path.replace('/public', ''),
             id: v.id

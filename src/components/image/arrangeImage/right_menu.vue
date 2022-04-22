@@ -39,6 +39,7 @@ import { ref, defineEmits, inject, onMounted, reactive, provide } from 'vue'
 import { HandleFile } from '@/plugin/image/arrangeImage/handle'
 import FileInfo from '@/components/dialog/image/arrange/info.vue'
 import ArrangeImageUpload from '@/components/dialog/image/arrange/upload.vue'
+import { getDownLoadImage, downloadFile } from '@/modules/files/image'
 const emit = defineEmits(['closeRightList'])
 /**
  * @property {boolean} rightShow 控制右键菜单显隐
@@ -73,13 +74,14 @@ onMounted(() => {
 const closeDialog = (show: boolean, type: string) => {
   dialogShow[type] = show
 }
-const handle = (type: string) => {
+const handle = async (type: string) => {
   switch (type) {
     case HandleFile.UPLOAD_FILE:
       dialogShow.upload = true
       break
     case HandleFile.DOWNLOAD_FILE:
-      console.log(type)
+      let file = await getDownLoadImage(rightData.value.id)
+      downloadFile(file.data, rightData.value.name)
       break
     case HandleFile.DELETE_FILE:
       console.log(type)
