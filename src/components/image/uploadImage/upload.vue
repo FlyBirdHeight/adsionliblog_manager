@@ -9,7 +9,6 @@
           :auto-upload="false"
           :on-progress="getUploadProgress"
           :action="'/api/file/image/upload/any'"
-          :before-upload="beforeUpload"
           :name="'file'"
         >
           <el-icon><component :is="$icon['Plus']" /></el-icon>
@@ -160,25 +159,25 @@ const remove = (file: UploadFile) => {
   uploadList.value.handleRemove(file)
 }
 const beforeUpload = (rawFile: UploadRawFile) => {
-  console.log(rawFile)
-  console.log(uploadList.value)
+
 }
 /**
  * @method submitImage 将图片上传到服务器上
  */
 const submitImage = () => {
   submitStatus.value = true
-  console.log(uploadList.value);
+  console.log(uploadList.value.uploadFiles);
   
-  uploadAny(uploadList.value.uploadFiles)
+  
+  // uploadAny(uploadList.value.uploadFiles)
   // uploadList.value.submit()
-  setTimeout(() => {
-    submitStatus.value = false
-    ElMessage({
-      type: 'success',
-      message: '图片上传成功',
-    })
-  }, 1000)
+  // setTimeout(() => {
+  //   submitStatus.value = false
+  //   ElMessage({
+  //     type: 'success',
+  //     message: '图片上传成功',
+  //   })
+  // }, 1000)
 }
 /**
  * @method format 获取进度条
