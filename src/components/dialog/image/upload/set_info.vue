@@ -99,7 +99,7 @@ const submitForm = () => {
   if (!imageInfo.value) {
     return
   }
-  let newPath = judgeNewPath(formData.path.name, pathList.value)
+  let newPath = judgeNewPath(formData.path.value, pathList.value)
   if (!newPath.status) {
     formData.path.id = newPath.id
     formData.path.is_create = false

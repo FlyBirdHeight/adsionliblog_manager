@@ -70,6 +70,7 @@ export default {
 import { ref, reactive, provide, onMounted } from 'vue'
 import { UploadStatus } from '@/modules/files/uploadImage'
 import { uploadAny } from '@/modules/files/upload.ts'
+import { doFileHash, handleAndUpload } from '@/modules/files/slice.ts'
 import ImagePreview from '@/components/utils/image_preview.vue'
 import ImageUploadInfoSet from '@/components/dialog/image/upload/set_info.vue'
 /**
@@ -124,6 +125,7 @@ const remindSetting = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
     previewList.value.push(uploadFile.url)
     uploadFile.path = '/'
     uploadFile.directory_id = 1
+    uploadFile.is_create = false
     ElMessage({
       type: 'warning',
       message: '请设置图片保存路径',
@@ -158,27 +160,38 @@ const remove = (file: UploadFile) => {
   previewList.value.splice(previewList.value.indexOf(file.url), 1)
   uploadList.value.handleRemove(file)
 }
-const beforeUpload = (rawFile: UploadRawFile) => {
-
-}
+const beforeUpload = (rawFile: UploadRawFile) => {}
 /**
  * @method submitImage 将图片上传到服务器上
  */
 const submitImage = () => {
   submitStatus.value = true
-  console.log(uploadList.value.uploadFiles);
-  
-  
+  const uploadFileList = []
+  uploadList.value.uploadFiles.forEach((v) => {
+    let uploadFile = {
+      file: v.raw,
+      sliceFile: [],
+      name: v.name,
+      is_create: v.is_create,
+      directory_id: v.directory_id,
+      status: v.status,
+      path: v.path,
+    }
+    uploadFileList.push(uploadFile)
+  })
+  handleAndUpload(uploadFileList);
+
   // uploadAny(uploadList.value.uploadFiles)
   // uploadList.value.submit()
-  // setTimeout(() => {
-  //   submitStatus.value = false
-  //   ElMessage({
-  //     type: 'success',
-  //     message: '图片上传成功',
-  //   })
-  // }, 1000)
+  setTimeout(() => {
+    submitStatus.value = false
+    ElMessage({
+      type: 'success',
+      message: '图片上传成功',
+    })
+  }, 100)
 }
+
 /**
  * @method format 获取进度条
  */

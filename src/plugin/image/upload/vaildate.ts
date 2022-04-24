@@ -36,18 +36,17 @@ const getFindPath = (queryString: string, list: { value: string, id: number }[])
  * @param {{value: string, id: number}[]} list 路径表
  */
 const judgeNewPath = (path: string, list: { value: string, id: number }[]) => {
+    let returnData: { status: boolean, id?: number } = { status: true }
     list.forEach(v => {
         if (v.value === path) {
-            return {
+            returnData = {
                 id: v.id,
-                status: true
+                status: false
             };
         }
     })
 
-    return {
-        status: false
-    }
+    return returnData;
 }
 
 
