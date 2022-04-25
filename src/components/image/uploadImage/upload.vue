@@ -126,6 +126,7 @@ const remindSetting = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
     uploadFile.path = '/'
     uploadFile.directory_id = 1
     uploadFile.is_create = false
+    uploadFile.isExist = false
     ElMessage({
       type: 'warning',
       message: '请设置图片保存路径',
@@ -167,6 +168,8 @@ const beforeUpload = (rawFile: UploadRawFile) => {}
 const submitImage = () => {
   submitStatus.value = true
   const uploadFileList = []
+  console.log(uploadList.value);
+  
   uploadList.value.uploadFiles.forEach((v) => {
     let uploadFile = {
       file: v.raw,
@@ -176,6 +179,7 @@ const submitImage = () => {
       directory_id: v.directory_id,
       status: v.status,
       path: v.path,
+      isExist: v.isExist
     }
     uploadFileList.push(uploadFile)
   })
