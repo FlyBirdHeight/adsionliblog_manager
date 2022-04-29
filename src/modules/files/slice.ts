@@ -9,7 +9,7 @@ type Deadline = {
 }
 type UploadFile = {
     file: File,
-    sliceFile?: Blob[],
+    sliceFile?: { file: File, idx: number }[],
     name: string,
     is_create: boolean,
     directory_id: number | null,
@@ -19,6 +19,7 @@ type UploadFile = {
     isExist: boolean,
     uploadSuccess?: boolean,
     precentage?: number,
+    type?: string
 }
 /**
  * @property {number} maxErrorCount 最大失败次数
@@ -30,11 +31,11 @@ type UploadFile = {
  * @property {number[]} dataSliceNumber 数据分片份数
  */
 const maxErrorCount = 3;
-const uploadUrl = "/api/file/image/any";
+const uploadUrl = "/api/file/image/upload/slice";
 const uploadFormData: string[] = ["file", "name", "is_create", "directory_id", "path", "hash_key"];
 const freeChannels = 5;
 const maxChannels = 5;
-const minSliceSize = 2 * 1024 * 1024;
+const minSliceSize = 1 * 1024 * 1024;
 const sliceTagSize = 2;
 const dataSliceNumber = 3;
 /**
@@ -64,13 +65,13 @@ const hashFileList = (file: UploadFile) => {
                 window?.requestIdleCallback!(doFileHash);
             }
         }
-        const hash = (sliceFile: Blob, currentIdx: number, fileSize: number) => {
+        const hash = (sliceFile: { file: File, idx: number }, currentIdx: number, fileSize: number) => {
             return new Promise((resolve, reject) => {
                 if (fileSize == 0) {
                     return "";
                 }
                 const fileReader = new FileReader();
-                fileReader.readAsArrayBuffer(sliceFile);
+                fileReader.readAsArrayBuffer(sliceFile.file);
                 fileReader.onload = function (e) {
                     let sliceData = extractDataSlice(e.target?.result, currentIdx, fileSize);
                     if (sliceData.length === 0 && taskCount - 1 != 0) {
@@ -96,19 +97,31 @@ const hashFileList = (file: UploadFile) => {
  * @param {File} file 待处理文件
  * @param {number} size 文件切割大小
  */
-const sliceFile = (file: File, size: number = minSliceSize): Blob[] => {
+const sliceFile = (file: File, size: number = minSliceSize): { file: File, idx: number }[] => {
     if (file.size < minSliceSize) {
-        return [file];
+        return [{
+            idx: 0,
+            file: file
+        }];
     }
-    const fileChunkList: Blob[] = [];
+
+    const fileChunkList: { file: File, idx: number }[] = [];
     let cur = 0;
+    let count = 0;
     while (cur < file.size) {
         if (cur + size > file.size) {
-            fileChunkList.push(file.slice(cur, file.size, file.type));
+            fileChunkList.push({
+                idx: count,
+                file: new File([file.slice(cur, file.size, file.type)], `${file.name}_${count}`, { type: file.type })
+            });
             break;
         }
-        fileChunkList.push(file.slice(cur, cur + size, file.type));
+        fileChunkList.push({
+            idx: count,
+            file: new File([file.slice(cur, cur + size, file.type)], `${file.name}_${count}`, { type: file.type })
+        });
         cur += size;
+        count++;
     }
 
     return fileChunkList;
@@ -194,17 +207,21 @@ const getFormData = (file: UploadFile): FormData => {
  * @param {UploadFile} file 等待合并的文件 
  */
 const mergeFile = (file: UploadFile) => {
+    console.log(file);
+    
     return new Promise((resolve, reject) => {
         axios({
             method: "post",
-            url: "/api/file/image/merge",
+            url: "/api/file/image/upload/merge",
             data: {
                 name: file.name,
                 size: file.file.size,
                 path: file.path,
                 hash_key: file.hash_key,
                 directory_id: file.directory_id,
-                is_create: file.is_create
+                is_create: file.is_create,
+                type: file.type || 'image',
+                sliceCount: file.sliceFile?.length || 1
             }
         }).then(res => {
             console.log(res.data);
@@ -223,59 +240,58 @@ const mergeFile = (file: UploadFile) => {
  * @param {number} sliceCount 分片个数
  * @param {number} uploadSuccess 分片上传成功个数
  */
-const requestFile = (sliceFile: Blob, sliceIdx: number, file: UploadFile, errorQueue: any, sliceCount: number, uploadSuccess: number): Promise<{ status: boolean, data: any }> => {
+const requestFile = (sliceFile: { file: File, idx: number }, file: UploadFile, errorQueue: any, options: { sliceCount: number, uploadSuccess: number }): Promise<{ status: boolean, data: any }> => {
     return new Promise((resolve, reject) => {
         const formData = new FormData;
-        formData.append('file', sliceFile, `${file.name}_${sliceIdx}`);
+        formData.append('hash_key', file.hash_key)
+        formData.append('idx', String(sliceFile.idx));
+        formData.append('file', sliceFile.file, sliceFile.file.name);
         const xhr = new XMLHttpRequest();
         xhr.open("POST", uploadUrl);
         xhr.send(formData);
         xhr.responseType = 'json';
         xhr.onload = (e) => {
-            if (xhr.readyState === xhr.DONE) {
-                if (xhr.status < 200 && xhr.status >= 300 || xhr.status != 304) {
-                    //NOTE: 如果失败了就放入到失败队列并记录失败次数
-                    errorQueue.set(sliceIdx, {
-                        errorCount: errorQueue.has(sliceIdx) ? 1 : errorQueue.get(sliceCount).errorCount++,
-                        file: sliceFile
-                    })
-                    reject({
-                        status: false,
-                        data: xhr.statusText
-                    });
-                }
-                file.precentage = uploadSuccess / sliceCount * 100;
-                uploadSuccess++;
-                console.log(xhr.responseType);
-                console.log(xhr.responseXML);
-                console.log(xhr.responseText);
-                resolve({
-                    status: true,
-                    data: xhr.response
+            if (xhr.status < 200 && xhr.status >= 300 && xhr.status != 304) {
+                //NOTE: 如果失败了就放入到失败队列并记录失败次数
+                errorQueue.set(sliceFile.idx, {
+                    errorCount: errorQueue.has(sliceFile.idx) ? 1 : errorQueue.get(options.sliceCount).errorCount++,
+                    file: sliceFile
+                })
+                reject({
+                    status: false,
+                    data: xhr.statusText
                 });
             }
+            file.precentage = options.uploadSuccess / options.sliceCount * 100;
+            options.uploadSuccess++;
+            console.log(options.uploadSuccess);
+
+            resolve(xhr.response);
         }
     })
 }
 /**
- * @method uploadFile 上传文件(分片形式)
+ * @method uploadSliceFile 上传文件(分片形式)
  * @param {UploadFile} file 等待上传文件
  */
-const uploadFile = async (file: UploadFile) => {
-    let sliceCount = file.sliceFile?.length || 1;
-    let uploadSuccess = 0;
+const uploadSliceFile = async (file: UploadFile) => {
+    let options = {
+        sliceCount: file.sliceFile?.length || 1,
+        uploadSuccess: 0
+    }
     let sliceFile = file.sliceFile;
     //NOTE: 失败队列，如果分片上传失败，进入此队列，记录失败次数，一旦超过次数，整个文件上传失败，并删除服务器上文件内容
     const errorQueue = new Map();
     //TODO: 创建同步线程，直接发起多重http请求，暂不优化，可以优化
-    let requestSlice = sliceFile?.map(async (v, index) => {
-        return await requestFile(v, index, file, errorQueue, sliceCount, uploadSuccess);
+    let requestSlice = sliceFile?.map(async (v) => {
+        return await requestFile(v, file, errorQueue, options);
     });
     await Promise.all(requestSlice || []);
+
     //NOTE: 这里依然要判断是否上传失败
     let uploadError = false;
     //NOTE: 失败重传队列的执行
-    while (errorQueue.size > 0 || !uploadError) {
+    while (errorQueue.size != 0 || uploadError) {
         for (let [key, value] of errorQueue.entries()) {
             if (value.errorCount >= maxErrorCount) {
                 uploadError = true;
@@ -283,7 +299,7 @@ const uploadFile = async (file: UploadFile) => {
                 break;
             }
             try {
-                let status = await requestFile(value.file, key, file, errorQueue, sliceCount, uploadSuccess);
+                let status = await requestFile(value.file, file, errorQueue, options);
                 status.status && errorQueue.delete(key);
             } catch (e) {
                 console.log(e);
@@ -306,6 +322,7 @@ const handleAndUpload = async (fileList: UploadFile[]) => {
         v.sliceFile = sliceFile(v.file);
         return v;
     })
+    
     let verifyData = fileListSlice.map(async v => {
         v.hash_key = await hashFileList(v);
         let verifyData = await verifyUpload(v.name, v.hash_key);
@@ -320,20 +337,19 @@ const handleAndUpload = async (fileList: UploadFile[]) => {
         return v;
     });
     let uploadData = (await Promise.all(verifyData)).filter(v => {
-        v.uploadSuccess == true;
+        return v.uploadSuccess == false;
     })
-    console.log(uploadData);
 
-    // await uploadData.forEach(async v => {
-    //     try {
-    //         let responseData = await uploadFile(v);
-    //         console.log(v);
-    //         console.log(responseData);
-    //     } catch (e) {
-    //         console.log(e);
+    await uploadData.forEach(async v => {
+        try {
+            let responseData = await uploadSliceFile(v);
+            // console.log(v);
+            // console.log(responseData);
+        } catch (e) {
+            console.log(e);
 
-    //     }
-    // })
+        }
+    })
 
     return true;
 }

@@ -146,7 +146,7 @@ const setting = (file: UploadFile) => {
  * @param {*} val 回调数值
  */
 const setImageInfo = (val: { name: string; path: { value: string; id: number | null; is_create: boolean } }) => {
-  checkedImage.value.name = val.name
+  checkedImage.value.name = val.name + `.${checkedImage.value.raw.type.split('/')[1] == 'jpeg' ? 'jpg' : checkedImage.value.raw.type.split('/')[1]}`
   checkedImage.value.path = val.path.value
   checkedImage.value.is_create = val.path.is_create
   if (val.path.id !== null) {
@@ -168,8 +168,7 @@ const beforeUpload = (rawFile: UploadRawFile) => {}
 const submitImage = () => {
   submitStatus.value = true
   const uploadFileList = []
-  console.log(uploadList.value);
-  
+
   uploadList.value.uploadFiles.forEach((v) => {
     let uploadFile = {
       file: v.raw,
@@ -179,11 +178,11 @@ const submitImage = () => {
       directory_id: v.directory_id,
       status: v.status,
       path: v.path,
-      isExist: v.isExist
+      isExist: v.isExist,
     }
     uploadFileList.push(uploadFile)
   })
-  handleAndUpload(uploadFileList);
+  handleAndUpload(uploadFileList)
 
   // uploadAny(uploadList.value.uploadFiles)
   // uploadList.value.submit()

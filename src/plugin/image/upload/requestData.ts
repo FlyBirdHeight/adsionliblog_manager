@@ -25,7 +25,7 @@ const getFilePath = async () => {
             }
         }
         return {
-            value: v.path.replace('/public', ''),
+            value: v.path.replace('/file', ''),
             id: v.id
         };
     })
