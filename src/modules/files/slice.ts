@@ -21,6 +21,10 @@ type UploadFile = {
     precentage?: number,
     type?: string
 }
+type PercentageList = {
+    status: string,
+    percentage: number
+}
 /**
  * @property {number} maxErrorCount 最大失败次数
  * @property {string} uploadUrl 上传文件url
@@ -38,6 +42,7 @@ const maxChannels = 5;
 const minSliceSize = 1 * 1024 * 1024;
 const sliceTagSize = 2;
 const dataSliceNumber = 3;
+let percentageList: any = null;
 /**
  * @method hashFile 处理文件hash
  * @param {File} file 待处理文件 
@@ -207,8 +212,6 @@ const getFormData = (file: UploadFile): FormData => {
  * @param {UploadFile} file 等待合并的文件 
  */
 const mergeFile = (file: UploadFile) => {
-    console.log(file);
-    
     return new Promise((resolve, reject) => {
         axios({
             method: "post",
@@ -224,7 +227,6 @@ const mergeFile = (file: UploadFile) => {
                 sliceCount: file.sliceFile?.length || 1
             }
         }).then(res => {
-            console.log(res.data);
             resolve(res.data);
         }).catch(error => {
             reject(error)
@@ -243,13 +245,23 @@ const mergeFile = (file: UploadFile) => {
 const requestFile = (sliceFile: { file: File, idx: number }, file: UploadFile, errorQueue: any, options: { sliceCount: number, uploadSuccess: number }): Promise<{ status: boolean, data: any }> => {
     return new Promise((resolve, reject) => {
         const formData = new FormData;
-        formData.append('hash_key', file.hash_key)
+        formData.append('hash_key', file.hash_key);
         formData.append('idx', String(sliceFile.idx));
         formData.append('file', sliceFile.file, sliceFile.file.name);
+        let uploadPrecentage = 0;
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", uploadUrl);
-        xhr.send(formData);
-        xhr.responseType = 'json';
+        if (xhr.upload) {
+            xhr.upload.onprogress = function progress(e: any) {
+                if (e.total > 0) {
+                    e.percent = e.loaded / e.total;
+                }
+                let realP = Number(((1 / (options.sliceCount)) * e.percent * 100));
+                console.log(percentageList);
+                percentageList.get(file.name).percentage = (Number(percentageList.get(file.name).percentage) + (Number(realP - uploadPrecentage))).toFixed(2);
+                uploadPrecentage = realP
+
+            };
+        }
         xhr.onload = (e) => {
             if (xhr.status < 200 && xhr.status >= 300 && xhr.status != 304) {
                 //NOTE: 如果失败了就放入到失败队列并记录失败次数
@@ -262,17 +274,19 @@ const requestFile = (sliceFile: { file: File, idx: number }, file: UploadFile, e
                     data: xhr.statusText
                 });
             }
-            file.precentage = options.uploadSuccess / options.sliceCount * 100;
             options.uploadSuccess++;
-            console.log(options.uploadSuccess);
 
             resolve(xhr.response);
         }
+        xhr.open("POST", uploadUrl);
+        xhr.send(formData);
+        xhr.responseType = 'json';
     })
 }
 /**
  * @method uploadSliceFile 上传文件(分片形式)
  * @param {UploadFile} file 等待上传文件
+ * @param {Map<PercentageList>} percentageList 文件上传进度表
  */
 const uploadSliceFile = async (file: UploadFile) => {
     let options = {
@@ -283,9 +297,9 @@ const uploadSliceFile = async (file: UploadFile) => {
     //NOTE: 失败队列，如果分片上传失败，进入此队列，记录失败次数，一旦超过次数，整个文件上传失败，并删除服务器上文件内容
     const errorQueue = new Map();
     //TODO: 创建同步线程，直接发起多重http请求，暂不优化，可以优化
-    let requestSlice = sliceFile?.map(async (v) => {
-        return await requestFile(v, file, errorQueue, options);
-    });
+    let requestSlice = sliceFile?.map(v => {
+        return requestFile(v, file, errorQueue, options);
+    })
     await Promise.all(requestSlice || []);
 
     //NOTE: 这里依然要判断是否上传失败
@@ -309,6 +323,7 @@ const uploadSliceFile = async (file: UploadFile) => {
     if (uploadError) {
         throw new Error(`文件上传失败，文件名称: ${file.name}!`)
     }
+    percentageList.get(file.name).status = 'merge';
     let mergeData = await mergeFile(file);
     return mergeData;
 }
@@ -316,46 +331,57 @@ const uploadSliceFile = async (file: UploadFile) => {
 /**
  * @method handleAndUpload 处理并上传文件
  * @param {File[]} fileList 文件列表
+ * @param {Map<PercentageList>} percentage 文件上传进度表
  */
-const handleAndUpload = async (fileList: UploadFile[]) => {
-    const fileListSlice = fileList.map(v => {
-        v.sliceFile = sliceFile(v.file);
-        return v;
-    })
-    
-    let verifyData = fileListSlice.map(async v => {
-        v.hash_key = await hashFileList(v);
-        let verifyData = await verifyUpload(v.name, v.hash_key);
-        v.isExist = verifyData.exist;
-        if (!v.isExist) {
-            v.uploadSuccess = false;
-            v.precentage = 0;
-        } else {
-            v.uploadSuccess = true;
-            v.precentage = 100;
+const handleAndUpload = async (fileList: UploadFile[], percentage: Map<string, PercentageList>) => {
+    percentageList = null;
+    try {
+        percentageList = percentage;
+        console.log(percentageList);
+
+        const fileListSlice = fileList.map(v => {
+            v.sliceFile = sliceFile(v.file);
+            return v;
+        })
+        let verifyData = fileListSlice.map(async v => {
+            v.hash_key = await hashFileList(v);
+            let verifyData = await verifyUpload(v.name, v.hash_key);
+            v.isExist = verifyData.exist;
+            if (!v.isExist) {
+                v.uploadSuccess = false;
+                v.precentage = 0;
+            } else {
+                v.uploadSuccess = true;
+                v.precentage = 100;
+            }
+            return v;
+        });
+
+        let uploadData = (await Promise.all(verifyData)).filter(v => {
+            return v.uploadSuccess == false;
+        })
+        for (let v of uploadData) {
+            try {
+                percentageList.get(v.name).status = 'uploading'
+                await uploadSliceFile(v);
+                percentageList.get(v.name).status = 'success';
+                percentageList.get(v.name).percentage = 100;
+            } catch (e) {
+                percentageList.get(v.name).status = 'error';
+                console.log(e);
+            }
         }
-        return v;
-    });
-    let uploadData = (await Promise.all(verifyData)).filter(v => {
-        return v.uploadSuccess == false;
-    })
 
-    await uploadData.forEach(async v => {
-        try {
-            let responseData = await uploadSliceFile(v);
-            // console.log(v);
-            // console.log(responseData);
-        } catch (e) {
-            console.log(e);
-
-        }
-    })
-
-    return true;
+        return true;
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
 }
 
 
 
 export {
-    handleAndUpload
+    handleAndUpload,
+    PercentageList
 }

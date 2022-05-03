@@ -36,7 +36,7 @@
           <div class="image-list-info_item">
             <div class="image-list-info_label">文件路径:</div>
             <div class="image-list-info_member">
-              {{ fileInfo ? fileInfo.path || fileInfo.full_path : '' }}
+              {{ fileInfo ? fileInfo.path || fileInfo.relative_path : '' }}
             </div>
           </div>
           <div class="image-list-info_item">

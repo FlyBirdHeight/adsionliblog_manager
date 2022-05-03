@@ -1,8 +1,8 @@
 import axios from 'axios';
 const findPathList = {
-    select: 'id, full_path as path',
+    select: 'id, relative_path as path',
     where: {
-        full_path: {
+        relative_path: {
             type: 'like',
             data: '%%',
         }
@@ -25,7 +25,7 @@ const getFilePath = async () => {
             }
         }
         return {
-            value: v.path.replace('/file', ''),
+            value: v.path.replace('/file/link', ''),
             id: v.id
         };
     })

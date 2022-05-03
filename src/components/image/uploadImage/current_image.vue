@@ -41,9 +41,10 @@ export default {
 </script>
 <script lang="ts" setup>
 import ImageListInfo from '@/components/dialog/image/upload/info.vue'
-import { ref, onMounted, nextTick, provide } from 'vue'
+import { ref, onMounted, nextTick, provide, defineEmits, inject, watch } from 'vue'
 import { Image, getCurrent, getDownLoadImage, downloadFile } from '@/modules/files/image'
 import Clipboard from 'clipboard'
+const emits = defineEmits(['setUpdateStatus'])
 const imageList = ref<Image[]>([])
 const list = ref<string[]>([])
 const currentImageScroll = ref()
@@ -51,6 +52,7 @@ const show = ref<boolean>(false)
 const checkedImageData = ref<Image>(null)
 provide('showImageInfo', show)
 provide('imageData', checkedImageData)
+const updateCurrent = inject('updateCurrent')
 onMounted(async () => {
   imageList.value = await getCurrent()
   list.value = imageList.value.map((v) => {
@@ -99,6 +101,15 @@ const download = async (id: number | string, name: string) => {
   let file = await getDownLoadImage(id)
   downloadFile(file.data, name)
 }
+watch(updateCurrent, async (newV, oldV) => {
+  if (newV) {
+    imageList.value = await getCurrent()
+    list.value = imageList.value.map((v) => {
+      return v.url
+    })
+    currentImageScroll.value.update()
+  }
+})
 </script>
 <style lang="scss" scoped>
 .current-image-title {

@@ -58,6 +58,7 @@ declare module 'vue' {
     Item_menu: typeof import('./src/components/utils/menu/item_menu.vue')['default']
     Left_menu: typeof import('./src/components/layout/left_menu.vue')['default']
     List: typeof import('./src/components/image/arrangeImage/list.vue')['default']
+    Loading: typeof import('element-plus/es')['ElLoadingDirective']
     Max_image: typeof import('./src/components/image/uploadImage/max_image.vue')['default']
     Menu: typeof import('./src/components/image/arrangeImage/menu.vue')['default']
     Overtime: typeof import('./src/components/dialog/daily/overtime.vue')['default']

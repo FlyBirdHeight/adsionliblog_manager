@@ -36,7 +36,7 @@
           <div class="info-list_item">
             <div class="info-list_label">文件路径:</div>
             <div class="info-list_member">
-              {{ fileInfo ? fileInfo.path || fileInfo.full_path : '' }}
+              {{ fileInfo ? fileInfo.path || fileInfo.relative_path : '' }}
             </div>
           </div>
           <div class="info-list_item" v-if="fileType != 'directory'">
@@ -135,6 +135,8 @@ const getFileType = (fileInfo) => {
 watch(fileInfo, (newV, oldV) => {
   if (newV) {
     fileName.value = newV.name.split('.')[0]
+    console.log(newV);
+    
     if (newV.is_directory) {
       fileType.value = 'directory'
     } else {
