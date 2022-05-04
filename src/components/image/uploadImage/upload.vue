@@ -72,7 +72,6 @@ export default {
 <script lang="ts" setup>
 import { ref, reactive, provide, onMounted, defineEmits } from 'vue'
 import { UploadStatus } from '@/modules/files/uploadImage'
-import { uploadAny } from '@/modules/files/upload.ts'
 import { handleAndUpload, PercentageList } from '@/modules/files/slice.ts'
 import { getUploadStatusColor, format } from '@/plugin/image/upload/utils.ts'
 import ImagePreview from '@/components/utils/image_preview.vue'

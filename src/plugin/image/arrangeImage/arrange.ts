@@ -131,7 +131,7 @@ const changeDirectoryInfoToMenuData = (directory: Directory, isChild: boolean = 
         is_file: false,
         size: directory.directory_size,
         parent_id: directory.parent_id,
-        getChildren: !isChild ? true : false,
+        getChildren: false,
         children: new Map<string, MenuDataList>(),
         level: directory.level,
         index: ''
@@ -146,40 +146,47 @@ const changeDirectoryInfoToMenuData = (directory: Directory, isChild: boolean = 
  * @param {string} pre_index 前置index
  * @param {boolean} isChild 是否是子节点
  */
-const handleMenuList = (fileList: Directory[], preOpt: { index: string, id: number } = { index: '', id: 1 }, isChild: boolean = false): Map<string, MenuDataList> => {
+const handleMenuList = (fileList: Directory[] | any, preOpt: { index: string, id: number } = { index: '', id: 1 }, isChild: boolean = false): Map<string, MenuDataList> => {
     let returnData: Map<string, MenuDataList> = new Map<string, MenuDataList>();
+    let children = new Map<string, MenuDataList>();
     for (let value of fileList) {
-        let index = '';
-        if (value.level == 1) {
-            index = value.id.toString();
-        } else if (preOpt.id !== value.id) {
-            index = `${preOpt.index}-d-${value.id}`
+        //README: 这里的url是否存在只在第一次时会被触发，因为根目录下也会存在文件
+        if (Reflect.has(value, 'url')) {
+            let menuData = changeFileInfoToMenuData(value, value.id);
+            menuData.index = `f-${value.id}`
+            returnData.set(menuData.index, menuData);
         } else {
-            index = preOpt.index
-        }
-        let children = new Map<string, MenuDataList>();
-        if (Reflect.has(value, 'files') && value.files.length != 0) {
-            for (let file of Reflect.get(value, 'files')) {
-                let menuData = changeFileInfoToMenuData(file, value.id);
-                menuData.index = `${index}-f-${file.id}`
-                children.set(menuData.index, menuData);
+            let index = '';
+            if (value.level == 1) {
+                index = 'd-' + value.id.toString();
+            } else if (preOpt.id !== value.id) {
+                index = `${preOpt.index}-d-${value.id}`
+            } else {
+                index = preOpt.index
             }
-        }
-        if (Reflect.has(value, 'directories') && value.directories.length != 0) {
-            let data = handleMenuList(value.directories, { index, id: value.id }, true);
-            if (data.size != 0) {
-                for (let [k, v] of data.entries()) {
-                    Reflect.deleteProperty(v, 'children')
-                    children.set(v.index, v);
+            if (Reflect.has(value, 'files') && value.files.length != 0) {
+                for (let file of Reflect.get(value, 'files')) {
+                    let menuData = changeFileInfoToMenuData(file, value.id);
+                    menuData.index = `${index}-f-${file.id}`
+                    children.set(menuData.index, menuData);
                 }
             }
+            if (Reflect.has(value, 'directories') && value.directories.length != 0) {
+                let data = handleMenuList(value.directories, { index, id: value.id }, true);
+                if (data.size != 0) {
+                    for (let [k, v] of data.entries()) {
+                        Reflect.deleteProperty(v, 'children')
+                        children.set(v.index, v);
+                    }
+                }
 
+            }
+            let data = changeDirectoryInfoToMenuData(value, isChild);
+            data.index = index;
+            data.children = children;
+
+            returnData.set(data.index, data);
         }
-        let data = changeDirectoryInfoToMenuData(value, isChild);
-
-        data.index = index;
-        data.children = children;
-        returnData.set(data.index, data);
     }
 
     return returnData;
@@ -192,7 +199,7 @@ const handleMenuList = (fileList: Directory[], preOpt: { index: string, id: numb
  * @param {Directory[]} fileList 待处理文件列表
  * @param {boolean} first 是否是第一次
  */
-const handleFileData = (parentList: MenuDataList, fileList: Directory[], first: boolean = false) => {
+const handleFileData = (parentList: MenuDataList, fileList: Directory[] | any, first: boolean = false) => {
     if (fileList.length == 0) {
         return;
     }
@@ -248,37 +255,6 @@ const returnMenuData = (menuData: Map<string, MenuDataList>) => {
 
     return returnData;
 }
-
-/**
- * @method getMenuData 获取Menu列表可视化数据
- * @param {MenuDataList} parent 父类数据 
- * @param {boolean} first 第一次请求
- */
-const getMenuData = async (parent: MenuDataList, first: boolean = false) => {
-    try {
-        if (!first && Reflect.has(parent, 'getChildren') && parent.getChildren) {
-            return returnMenuData(parent.children || new Map<string, MenuDataList>());
-        }
-        let fileList: any = await getFileList({
-            parent_id: parent.id,
-            first
-        });
-
-        if (!first) {
-            let data = handleFileData(parent, fileList);
-            parent.children = data?.get(parent.index)?.children;
-            Reflect.set(parent, 'getChildren', true);
-
-            return returnMenuData(parent.children || new Map<string, MenuDataList>());
-        } else {
-            let children = handleFileData(parent, fileList, true);
-            return children;
-        }
-
-    } catch (e) {
-        console.log(e);
-    }
-}
 /**
  * @method getDirectoryList 根据传入的index，找到相关的内容
  * @param {T} index
@@ -287,9 +263,19 @@ const getMenuData = async (parent: MenuDataList, first: boolean = false) => {
  */
 const getDirectoryList = <T>(index: T, list: any, level: number) => {
     if (level == 2) {
-        for (let i = 0; i < list.children.length; i++) {
-            if (list.children[i].index == index) {
-                return list.children[i]
+        if (!list || !Reflect.has(list, 'children')) {
+            return null;
+        }
+        if (Array.isArray(list.children)) {
+            for (let i = 0; i < list.children.length; i++) {
+                if (list.children[i].index == index) {
+                    return list.children[i]
+                }
+            }
+        }
+        for (let [k, v] of list.children) {
+            if (k === index) {
+                return v;
             }
         }
     } else if (level == 1) {
@@ -306,17 +292,50 @@ const getDirectoryList = <T>(index: T, list: any, level: number) => {
 const handleGetDirectoryListData = (list: any, index: string) => {
     let idx = index.substr(0).split('-')
     let value = []
-    for (let i = 0; i < idx.length; i += 2) {
+    for (let i = 1; i < idx.length; i += 2) {
         value.push(idx.slice(0, i + 1).join('-'))
     }
     let findList = list
     for (let v of value) {
-        findList = getDirectoryList(v, findList, (v.split('-').length + 1) / 2)
+        findList = getDirectoryList(v, findList, Math.floor((v.split('-').length + 1) / 2))
     }
 
     return findList;
 }
+/**
+ * @method getMenuData 获取Menu列表可视化数据
+ * @param {MenuDataList} parent 父类数据 
+ * @param {boolean} first 第一次请求
+ */
+const getMenuData = async (parent: MenuDataList, first: boolean = false) => {
+    try {
+        if (!first && Reflect.has(parent, 'getChildren') && parent.getChildren) {
+            return returnMenuData(parent.children || new Map<string, MenuDataList>());
+        }
 
+        let fileList: any = await getFileList({
+            parent_id: parent.id,
+            first
+        });
+        if (!first) {
+            let data = handleFileData(parent, fileList);
+            parent.children = data?.get(parent.index)?.children;
+            Reflect.set(parent, 'getChildren', true);
+
+            return returnMenuData(parent.children || new Map<string, MenuDataList>());
+        } else {
+            let handleData = {
+                directories: fileList[0].directories,
+                files: fileList[0].files
+            }
+            let children = handleFileData(parent, [...fileList[0].directories, ...fileList[0].files], true);
+
+            return children;
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}
 export {
     FileInfo,
     handleFileData,

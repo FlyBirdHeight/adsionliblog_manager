@@ -17,7 +17,7 @@
       </div>
     </template>
   </el-cascader-panel>
-  <right-click-menu @closeRightList="closeRightList"></right-click-menu>
+  <right-click-menu @changeFileName="changeFileName" @closeRightList="closeRightList"></right-click-menu>
 </template>
 <script lang="ts">
 export default {
@@ -42,7 +42,7 @@ const list = ref<Map<string, MenuDataList>>(new Map())
  * @param {MenuDataList} data 右键选中的数据
  */
 const clickRight = (event, data: MenuDataList) => {
-  rightClickData.value = handleGetDirectoryListData(list.value, data.index)
+  rightClickData.value = data
   showRightList.value = true
   showPosition.value = [event.clientX, event.clientY]
 }
@@ -82,8 +82,9 @@ const checkedColumn = (value) => {
   nextTick(() => {
     let emitData = []
     let findList = list.value
+
     for (let v of value) {
-      findList = getDirectoryList(v, findList, (v.split('-').length + 1) / 2)
+      findList = getDirectoryList(v, findList, Math.floor((v.split('-').length + 1) / 2))
       emitData.push({
         name: findList.name,
         value: v,
@@ -93,7 +94,6 @@ const checkedColumn = (value) => {
     if (!refreshCurrent.value) {
       let length = value.length
       let currentIndex = value[length - 1]
-
       currentData.value = handleGetDirectoryListData(list.value, currentIndex)
     }
     refreshCurrent.value = false
@@ -150,6 +150,17 @@ watch(menuCheckedFileData, (newV, oldV) => {
     checkedColumn(menuCheckedFileData.value)
   }
 })
+/**
+ * @method changeFileName 修改名称
+ * @param {*} data
+ */
+const changeFileName = (data: any) => {
+  let menuData = handleGetDirectoryListData(list.value, data.index)
+  if (data.type === 'file') {
+    menuData.url = menuData.url.replace(menuData.name, data.name)
+    menuData.name = data.name
+  }
+}
 </script>
 <style lang="scss">
 .file-list-column {

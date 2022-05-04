@@ -26,7 +26,7 @@
       <span>删除文件</span>
     </li>
   </ul>
-  <file-info @closeDialog="closeDialog"></file-info>
+  <file-info @changeName="changeFileName" @closeDialog="closeDialog"></file-info>
   <arrange-image-upload @closeDialog="closeDialog"></arrange-image-upload>
 </template>
 <script lang="ts">
@@ -40,7 +40,7 @@ import { HandleFile } from '@/plugin/image/arrangeImage/handle'
 import FileInfo from '@/components/dialog/image/arrange/info.vue'
 import ArrangeImageUpload from '@/components/dialog/image/arrange/upload.vue'
 import { getDownLoadImage, downloadFile } from '@/modules/files/image'
-const emit = defineEmits(['closeRightList'])
+const emit = defineEmits(['closeRightList', 'changeFileName'])
 /**
  * @property {boolean} rightShow 控制右键菜单显隐
  * @property {*} rightData 右键菜单的数据
@@ -56,6 +56,7 @@ const rightMenuList = ref()
 const dialogShow = reactive({
   info: false,
   upload: false,
+  createDirectory: false,
 })
 provide('fileDialog', dialogShow)
 const displayRight = () =>
@@ -87,13 +88,19 @@ const handle = async (type: string) => {
       console.log(type)
       break
     case HandleFile.CREATE_DIRECTORY:
-      console.log(type)
+      dialogShow.createDirectory = true
       break
     case HandleFile.SEE_INFO:
       dialogShow.info = true
       break
   }
   emit('closeRightList')
+}
+/**
+ * @method changeFileName 提交名称修改
+ */
+const changeFileName = (data: any) => {
+  emit('changeFileName', data)
 }
 </script>
 <style lang="scss" scoped>
