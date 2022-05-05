@@ -7,6 +7,7 @@
           <div
             :class="index === pathList.length - 1 ? 'file-list-menu_path-active' : 'file-list-menu_path'"
             @click="jumpToPath(index)"
+            style="user-select: none"
           >
             {{ item.name }}
           </div>
@@ -14,7 +15,7 @@
             ><component :is="$icon['ArrowRight']"
           /></el-icon>
         </div>
-        <div class="nothing-menu-item" v-else>暂未选中</div>
+        <div class="nothing-menu-item" v-if="pathList.length == 0">暂未选中</div>
       </div>
     </el-scrollbar>
   </div>
@@ -37,7 +38,7 @@ watchEffect(() => {
     nextTick(() => {
       let children = menuItemList.value.children
       menuItemListScroll.value!.setScrollLeft(children[children.length - 1].getBoundingClientRect().x)
-      menuItemListScroll.value.update();
+      menuItemListScroll.value.update()
     })
   }
 })

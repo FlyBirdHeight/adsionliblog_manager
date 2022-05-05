@@ -12,7 +12,7 @@
             </div>
             <div class="label_size">{{ fileInfo && fileInfo.size ? getShowSize(fileInfo.size) : '0KB' }}</div>
           </div>
-          <div class="label_create_time">上传时间: {{ fileInfo ? fileInfo.created_at : '' }}</div>
+          <div class="label_create_time">创建时间: {{ fileInfo ? fileInfo.created_at : '' }}</div>
         </div>
       </div>
       <div class="file-normal-info">
@@ -108,7 +108,7 @@ import { FileType } from '@/plugin/image/arrangeImage/arrange'
 const emit = defineEmits(['closeDialog', 'changeName'])
 const title = '文件详情'
 const show = inject('fileDialog')
-const fileInfo = inject('rightClickData')
+const fileInfo = inject('rightClickFileInfo')
 const fileType = ref<string>('directory')
 const showIcon = ref<string>('')
 const renameStatus = ref<boolean>(false)
@@ -140,13 +140,14 @@ const renameSubmit = async () => {
     name: fileName.value,
     oldName: fileInfo.value.name,
   })
+  
   if (status) {
     ElMessage({
       type: 'success',
       grouping: true,
       message: '修改名称成功！',
     })
-    if (fileInfo.value.is_file) {
+    if (!fileInfo.value.is_directory) {
       let oldNameList = fileInfo.value.name.split('.')
       let newName = fileName.value + '.' + oldNameList[oldNameList.length - 1]
       emit('changeName', {
@@ -197,7 +198,7 @@ const getFileType = (fileInfo) => {
   if (fileInfo.is_directory) {
     return '文件夹'
   }
-  if (fileInfo.file_type == FileType.IMAGE) {
+  if (fileInfo.type == FileType.IMAGE) {
     return fileInfo.name.split('.')[1] + '图像'
   } else {
     return '文章'
@@ -210,9 +211,9 @@ watch(fileInfo, (newV, oldV) => {
     if (newV.is_directory) {
       fileType.value = 'directory'
     } else {
-      if (newV.file_type == FileType.IMAGE) {
+      if (newV.type == FileType.IMAGE) {
         fileType.value = 'image'
-      } else if (newV.file_type == FileType.PAGE) {
+      } else if (newV.type == FileType.PAGE) {
         fileType.value = 'page'
       }
     }

@@ -10,6 +10,16 @@ const apiList = {
             method: "PUT"
         },
     },
+    getInfo: {
+        file: {
+            url: "/api/file/image/get/info",
+            method: 'GET'
+        },
+        directory: {
+            url: "/api/file/files/get/infoById",
+            method: 'GET'
+        }
+    },
     deleteData: {
         file: {
             url: "/api/file/image/delete",
@@ -33,6 +43,10 @@ const apiList = {
     createDirectory: {
         url: "/api/file/files/create",
         method: "POST"
+    },
+    verifyHasDirectory: {
+        url: "/api/file/files/get/info",
+        method: "POST",
     }
 }
 
@@ -51,7 +65,7 @@ const rename = async (type: string = 'file', options: { id: number, name: string
         })
 
         return true;
-    }catch(e){
+    } catch (e) {
         console.log(e);
         return false;
     }
@@ -79,10 +93,58 @@ const editPath = (type: string, options: { id: number, path: string }) => {
 const createDirectory = (options: { path: string, name: string }) => {
 
 }
+/**
+ * @method getInfo 获取详情
+ * @param {number} id 
+ * @param {string} type
+ */
+const getInfo = async (id: number, type: string) => {
+    try {
+        let apiInfo = Reflect.get(apiList.getInfo, type);
+        let responseData = await axios({
+            method: apiInfo.method,
+            url: apiInfo.url + `?id=${id}`,
+        })
 
+        return responseData.data.data
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
+}
+
+/**
+ * @method verifyHasDirectory 验证当前目录下是否存在同名文件
+ * @param {number} parent_id 父级Id
+ * @param {string} name 文件夹名称
+ */
+const verifyHasDirectory = async (parent_id: number, name: string) => {
+    try {
+        let apiInfo = apiList.verifyHasDirectory;
+        let isExist = await axios({
+            method: 'POST',
+            url: apiInfo.url,
+            data: {
+                where: {
+                    parent_id: parent_id,
+                    name: name
+                }
+            }
+        })
+        if (isExist.data.data.length != 0) {
+            return true;
+        }
+        return false;
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
+}
 export {
     rename,
     deleteData,
     editPath,
-    createDirectory
+    createDirectory,
+    getInfo,
+    verifyHasDirectory
 }

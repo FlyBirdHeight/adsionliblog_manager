@@ -9,6 +9,7 @@ declare module 'vue' {
     Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
     Category_form: typeof import('./src/components/dialog/body/category_form.vue')['default']
     Column: typeof import('./src/components/image/arrangeImage/column.vue')['default']
+    Create_directory: typeof import('./src/components/dialog/image/arrange/create_directory.vue')['default']
     Current_image: typeof import('./src/components/image/uploadImage/current_image.vue')['default']
     Daily: typeof import('./src/components/daily/setting/daily.vue')['default']
     Daily_form: typeof import('./src/components/form/daily/daily_form.vue')['default']

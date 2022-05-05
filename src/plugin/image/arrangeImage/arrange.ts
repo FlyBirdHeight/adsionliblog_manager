@@ -336,6 +336,18 @@ const getMenuData = async (parent: MenuDataList, first: boolean = false) => {
         console.log(e);
     }
 }
+/**
+ * @method getDirectoryList 获取文件目录列表，根据传入的index
+ * @param {string} index
+ */
+const getDirectoryPathList = (index: string) => {
+    let list = [];
+    let t = index.split('-');
+    for (let i = 1; i < t.length; i += 2) {
+        list.push(t.slice(0, i + 1).join('-'))
+    }
+    return list;
+}
 export {
     FileInfo,
     handleFileData,
@@ -346,6 +358,7 @@ export {
     returnMenuData,
     getDirectoryList,
     handleGetDirectoryListData,
-    FileType
+    FileType,
+    getDirectoryPathList
 }
 

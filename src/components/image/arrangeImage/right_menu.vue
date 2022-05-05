@@ -5,11 +5,11 @@
     v-show="rightShow"
     :style="{ left: `${showPosition[0]}px`, top: `${showPosition[1]}px` }"
   >
-    <li class="upload" v-show="rightData && rightData.is_directory" @click.stop="handle('upload')">
+    <li class="upload" v-show="rightData && rightData.type == 'directory'" @click.stop="handle('upload')">
       <el-icon><component :is="$icon['Upload']" /></el-icon>
       <span>上传文件</span>
     </li>
-    <li class="download" v-show="rightData && rightData.is_file" @click.stop="handle('download')">
+    <li class="download" v-show="rightData && rightData.type == 'file'" @click.stop="handle('download')">
       <el-icon><component :is="$icon['Download']" /></el-icon>
       <span>下载文件</span>
     </li>
@@ -17,7 +17,7 @@
       <el-icon><component :is="$icon['More']" /></el-icon>
       <span>查看详情</span>
     </li>
-    <li class="create-directory" v-show="rightData && rightData.is_directory" @click.stop="handle('directory')">
+    <li class="create-directory" v-show="rightData && rightData.type == 'directory'" @click.stop="handle('directory')">
       <el-icon><component :is="$icon['FolderAdd']" /></el-icon>
       <span>创建文件夹</span>
     </li>
@@ -28,6 +28,7 @@
   </ul>
   <file-info @changeName="changeFileName" @closeDialog="closeDialog"></file-info>
   <arrange-image-upload @closeDialog="closeDialog"></arrange-image-upload>
+  <create-directory @closeDialog="closeDialog"></create-directory>
 </template>
 <script lang="ts">
 export default {
@@ -35,11 +36,14 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, defineEmits, inject, onMounted, reactive, provide } from 'vue'
+import { ref, defineEmits, inject, onMounted, reactive, provide, watch } from 'vue'
 import { HandleFile } from '@/plugin/image/arrangeImage/handle'
+import { getDownLoadImage, downloadFile } from '@/modules/files/image'
+import { getInfo } from '@/modules/files/utils'
 import FileInfo from '@/components/dialog/image/arrange/info.vue'
 import ArrangeImageUpload from '@/components/dialog/image/arrange/upload.vue'
-import { getDownLoadImage, downloadFile } from '@/modules/files/image'
+import CreateDirectory from '@/components/dialog/image/arrange/create_directory.vue'
+
 const emit = defineEmits(['closeRightList', 'changeFileName'])
 /**
  * @property {boolean} rightShow 控制右键菜单显隐
@@ -50,8 +54,9 @@ const emit = defineEmits(['closeRightList', 'changeFileName'])
  */
 const rightShow = inject('showRight')
 const rightData = inject('rightClickData')
-
 const showPosition = inject('showPosition')
+const rightClickFileInfo = ref(null)
+provide('rightClickFileInfo', rightClickFileInfo)
 const rightMenuList = ref()
 const dialogShow = reactive({
   info: false,
@@ -82,7 +87,7 @@ const handle = async (type: string) => {
       break
     case HandleFile.DOWNLOAD_FILE:
       let file = await getDownLoadImage(rightData.value.id)
-      downloadFile(file.data, rightData.value.name)
+      downloadFile(file.data, rightClickFileInfo.value.name)
       break
     case HandleFile.DELETE_FILE:
       console.log(type)
@@ -102,6 +107,14 @@ const handle = async (type: string) => {
 const changeFileName = (data: any) => {
   emit('changeFileName', data)
 }
+watch(rightData, async (newV, oldV) => {
+  if (newV) {
+    rightClickFileInfo.value = await getInfo(newV.id, newV.type)
+    rightClickFileInfo.value.is_directory = newV.type == 'directory' ? true : false
+    rightClickFileInfo.value.is_file = newV.type == 'file' ? true : false
+    rightClickFileInfo.value.index = newV.index
+  }
+})
 </script>
 <style lang="scss" scoped>
 ul {

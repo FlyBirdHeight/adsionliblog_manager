@@ -1,7 +1,7 @@
 <template>
   <file-list-header @changeShow="changeShow"></file-list-header>
   <file-list-path @setShowFileList="setShowFileList"></file-list-path>
-  <file-column v-if="showType === 1" @setFilePath="setFilePath"></file-column>
+  <file-column @setShowFileList="setShowFileList" v-if="showType === 1" @setFilePath="setFilePath"></file-column>
   <file-list v-if="showType === 2" @setFilePath="setFilePath"></file-list>
 </template>
 <script lang="ts">
@@ -27,7 +27,7 @@ const changeShow = (val: number) => {
   showType.value = val
 }
 const setShowFileList = (val: string[]) => {
-  menuFileChecked.value = val;
+  menuFileChecked.value = val
 }
 const setFilePath = (val: { value: string; name: string }[]) => {
   filePath.value = val
