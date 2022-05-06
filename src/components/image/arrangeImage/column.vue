@@ -18,7 +18,11 @@
       </div>
     </template>
   </el-cascader-panel>
-  <right-click-menu @changeFileName="changeFileName" @closeRightList="closeRightList"></right-click-menu>
+  <right-click-menu
+    @refreshColumn="refreshColumn"
+    @changeFileName="changeFileName"
+    @closeRightList="closeRightList"
+  ></right-click-menu>
   <image-preview
     :previewList="previewList"
     :previewIndex="previewIndex"
@@ -46,44 +50,6 @@ import ImagePreview from '@/components/utils/image_preview.vue'
 const emit = defineEmits(['setFilePath', 'setShowFileList'])
 const list = ref<Map<string, MenuDataList>>(new Map())
 /**
- * @method clickRight 右键点击事件
- * @param {any} event 节点Event返回
- * @param {MenuDataList} data 右键选中的数据
- */
-const clickRight = (event, data: MenuDataList) => {
-  rightClickData.value = {
-    id: data.id,
-    type: data.is_directory ? 'directory' : 'file',
-    index: data.index,
-  }
-  showRightList.value = true
-  showPosition.value = [event.clientX, event.clientY]
-}
-/**
- * @method closeRightList 关闭右键菜单
- */
-const closeRightList = () => {
-  showRightList.value = false
-}
-/**
- * @method showPreview 点击图片时，双击显示预览图
- */
-const showPreview = (data) => {
-  if (data.is_directory) {
-    return
-  }
-  previewList.value = [data.url]
-  previewIndex.value = 0
-  showPreviewImage.value = true
-}
-/**
- * @method handleExtraWindow 关闭额外的窗口显示
- * @param {boolean} val 显隐控制
- */
-const handleExtraWindow = (val: boolean) => {
-  showPreviewImage.value = false
-}
-/**
  * @property {MenuDataList} rightClickData 右键点击时的数据
  * @property {boolean} showRightList 是否显示右键列表
  * @property {number[]} showPosition 右键菜单显示的位置
@@ -95,6 +61,7 @@ const handleExtraWindow = (val: boolean) => {
  * @property {string[]} previewList 预览显示列表
  * @property {number} previewIndex 预览显示起始位置
  * @property {boolean} showPreviewImage 显示图片预览
+ * @property {boolean} refreshColumnShow 刷新分栏显示的数据
  */
 const rightClickData = ref<MenuDataList>({})
 const showRightList = ref<boolean>(false)
@@ -111,6 +78,7 @@ const emitPathList = ref<string[]>([])
 const previewList = ref<string[]>([])
 const previewIndex = ref<number>(0)
 const showPreviewImage = ref<boolean>(false)
+const refreshColumnShow = ref<boolean>(false)
 let resolveFunc = new Map()
 /**
  * @method checkedColumn 展开节点发生改变时候的回调
@@ -121,7 +89,6 @@ const checkedColumn = (value) => {
   nextTick(() => {
     let emitData = []
     let findList = list.value
-
     for (let v of value) {
       findList = getDirectoryList(v, findList, Math.floor((v.split('-').length + 1) / 2))
       emitData.push({
@@ -159,7 +126,6 @@ const scrollToRight = () => {
  */
 const lazyLoad = async function (node, resolve, rename: boolean = false) {
   resolveFunc.set(node.level, resolve)
-
   let data = []
   refreshCurrent.value = true
   if (node.level == 0) {
@@ -172,9 +138,7 @@ const lazyLoad = async function (node, resolve, rename: boolean = false) {
   } else if (node.data.is_file) {
     data = undefined
   }
-
   resolve(data)
-
   nextTick(() => {
     scrollToRight()
   })
@@ -192,16 +156,64 @@ const columnSetting = {
   multiple: false,
   leaf: 'is_file',
 }
-watch(menuCheckedFileData, (newV, oldV) => {
-  if (newV.length != 0) {
-    fileListColumn.value.menus.splice(newV.length + 1, fileListColumn.value.menus.length - newV.length)
-    console.log(newV)
+watch([menuCheckedFileData, refreshColumnShow], (newV, oldV) => {
+  if (newV[0].length != 0) {
+    fileListColumn.value.menus.splice(newV[0].length + 1, fileListColumn.value.menus.length - newV[0].length)
+    fileListColumn.value.menuList.splice(newV[0].length + 1, fileListColumn.value.menuList.length - newV[0].length)
 
     checkedColumn(menuCheckedFileData.value)
   }
 })
 /**
- * @method changeFileName 修改名称
+ * @method getPathNode 获取对应path的节点
+ * @param {string[]} pathList
+ * @param {*} data
+ */
+const getPathNode = (pathList: string[], data: any) => {
+  let pathNode = null
+  for (let v of fileListColumn.value.menus[pathList.length - 1]) {
+    if (v.value === data.index) {
+      pathNode = v
+      break
+    }
+  }
+
+  return pathNode
+}
+/**
+ * @method judgeIsExistEmitPath 判断是否是选中列表中的path
+ * @param {*} data
+ * @return {boolean}
+ */
+const judgeIsExistEmitPath = (data: any): boolean => {
+  let updateLoad = false
+  for (let v of emitPathList.value) {
+    if (v.value === data.index) {
+      updateLoad = true
+      break
+    }
+  }
+
+  return updateLoad
+}
+/**
+ * @method updateColumnShowData 更新分栏显示内容
+ * @param {*} data 修改的数据
+ * @param {*} pathList list中当前节点的数据
+ * @param {*} pathNode 当前cascaderPanel的节点数据
+ */
+const updateColumnShowData = async (data, pathList, pathNode) => {
+  if (checkedValue.value.indexOf(data.index) == checkedValue.value.length - 1) {
+    await columnSetting.lazyLoad(pathNode, resolveFunc.get(pathList.length))
+  } else {
+    fileListColumn.value.menuList.splice(pathList.length, fileListColumn.value.menuList.length - pathList.length)
+    await columnSetting.lazyLoad(pathNode, resolveFunc.get(pathList.length))
+  }
+  emit('setShowFileList', pathList)
+  fileListColumn.value.menus[pathList.length] = pathNode.children
+}
+/**
+ * @method changeFileName 修改名称触发列表重载的回调
  * @param {*} data
  */
 const changeFileName = async (data: any) => {
@@ -210,22 +222,10 @@ const changeFileName = async (data: any) => {
     menuData.url = menuData.url.replace(menuData.name, data.name)
     menuData.name = data.name
   } else {
-    let updateLoad = false
-    for (let v of emitPathList.value) {
-      if (v.value === data.index) {
-        updateLoad = true
-        break
-      }
-    }
-
+    let updateLoad = judgeIsExistEmitPath(data)
     let pathList = getDirectoryPathList(data.index)
-    let pathNode = null
-    for (let v of fileListColumn.value.menus[pathList.length - 1]) {
-      if (v.value === data.index) {
-        pathNode = v
-        break
-      }
-    }
+    let pathNode = getPathNode(pathList, data)
+    //NOTE: 这里是为了重新加载当前目录下内容，因为不重新加载，数据还是旧的
     let listValue = handleGetDirectoryListData(list.value, data.index)
     listValue.relative_path = listValue.relative_path.replace(listValue.name, data.name)
     listValue.name = data.name
@@ -238,17 +238,85 @@ const changeFileName = async (data: any) => {
     pathNode.pathLabels.pop()
     pathNode.pathLabels.push(data.name)
     if (updateLoad) {
-      if (checkedValue.value.indexOf(data.index) == checkedValue.value.length - 1) {
-        await columnSetting.lazyLoad(pathNode, resolveFunc)
-        return
-      } else {
-        fileListColumn.value.menuList.splice(pathList.length, fileListColumn.value.menuList.length - pathList.length)
-        await columnSetting.lazyLoad(pathNode, resolveFunc.get(pathList.length))
-      }
-
-      emit('setShowFileList', pathList)
+      await updateColumnShowData(data, pathList, pathNode)
     }
   }
+}
+/**
+ * @method refreshColumn 刷新指定分栏数据，再删除或者新建时，触发
+ * @param {boolean} val
+ * @param {boolean} isDelete 是否是删除时触发
+ */
+const refreshColumn = async (val: boolean, isDelete: boolean = false) => {
+  let refreshList = rightClickData.value
+  let pathList = getDirectoryPathList(refreshList.index)
+  let pathNode = getPathNode(pathList, refreshList)
+  let updateLoad = judgeIsExistEmitPath(refreshList)
+  let listValue = handleGetDirectoryListData(list.value, refreshList.index)
+  if (!updateLoad && isDelete) {
+    let level = pathList.length
+    let deleteIdx = 0
+    fileListColumn.value.menus[level - 1].forEach((v, idx) => {
+      if (v.value == refreshList.index) {
+        deleteIdx = idx
+      }
+    })
+    fileListColumn.value.menus[level - 1].splice(deleteIdx, 1)
+    return
+  } else if (updateLoad && isDelete) {
+    emit('setShowFileList', pathList)
+    return
+  }
+  //NOTE: 这里是为了重新加载当前目录下内容，因为不重新加载，数据还是旧的
+  listValue.children = []
+  listValue.getChildren = false
+  pathNode.loaded = false
+  pathNode.children = []
+  pathNode.childrenData = []
+
+  if (updateLoad) {
+    await updateColumnShowData(refreshList, pathList, pathNode)
+  }
+}
+/**
+ * @method clickRight 右键点击事件
+ * @param {any} event 节点Event返回
+ * @param {MenuDataList} data 右键选中的数据
+ */
+const clickRight = (event, data: MenuDataList) => {
+  rightClickData.value = {
+    id: data.id,
+    type: data.is_directory ? 'directory' : 'file',
+    name: data.name,
+    index: data.index,
+  }
+  showRightList.value = true
+  showPosition.value = [event.clientX, event.clientY]
+}
+/**
+ * @method closeRightList 关闭右键菜单
+ */
+const closeRightList = () => {
+  showRightList.value = false
+}
+
+/**
+ * @method showPreview 点击图片时，双击显示预览图
+ */
+const showPreview = (data) => {
+  if (data.is_directory) {
+    return
+  }
+  previewList.value = [data.url]
+  previewIndex.value = 0
+  showPreviewImage.value = true
+}
+/**
+ * @method handleExtraWindow 关闭额外的窗口显示
+ * @param {boolean} val 显隐控制
+ */
+const handleExtraWindow = (val: boolean) => {
+  showPreviewImage.value = false
 }
 </script>
 <style lang="scss">

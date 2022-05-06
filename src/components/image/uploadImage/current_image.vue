@@ -108,6 +108,7 @@ watch(updateCurrent, async (newV, oldV) => {
       return v.url
     })
     currentImageScroll.value.update()
+    emits('setUpdateStatus', false)
   }
 })
 </script>

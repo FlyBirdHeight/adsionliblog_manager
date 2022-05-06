@@ -75,8 +75,21 @@ const rename = async (type: string = 'file', options: { id: number, name: string
  * @param {string} type 文件类型
  * @param {number} id 删除内容的id
  */
-const deleteData = (type: string, id: number) => {
-
+const deleteData = async (type: string, id: number) => {
+    try {
+        let apiInfo = type === 'file' ? apiList.deleteData.file : apiList.deleteData.directory;
+        let responseData = await axios({
+            method: Reflect.get(apiInfo, 'method'),
+            url: apiInfo.url,
+            data: {
+                id
+            }
+        })
+        return responseData.data
+    } catch (e) {
+        console.log(e)
+        throw e
+    }
 }
 /**
  * @method deleteData 修改文件/目录位置
@@ -88,10 +101,22 @@ const editPath = (type: string, options: { id: number, path: string }) => {
 }
 /**
  * @method createDirectory 创建文件目录
- * @param {{path: string, name: string}} options 目录内容
+ * @param {{parent_id: number, name: string}} options 目录内容
  */
-const createDirectory = (options: { path: string, name: string }) => {
+const createDirectory = async (options: { parent_id: number, name: string }) => {
+    try {
+        let apiInfo = apiList.createDirectory;
+        let responseData = await axios({
+            method: Reflect.get(apiInfo, 'method'),
+            url: apiInfo.url,
+            data: options
+        })
 
+        return responseData.data.data
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
 }
 /**
  * @method getInfo 获取详情

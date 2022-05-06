@@ -337,7 +337,6 @@ const handleAndUpload = async (fileList: UploadFile[], percentage: Map<string, P
     percentageList = null;
     try {
         percentageList = percentage;
-        console.log(percentageList);
 
         const fileListSlice = fileList.map(v => {
             v.sliceFile = sliceFile(v.file);

@@ -21,10 +21,10 @@ const emit = defineEmits(['currentImageUpdate'])
 const updateCurrent = ref<boolean>(false)
 provide('updateCurrent', updateCurrent)
 const currentImageUpdate = (val: boolean = true) => {
-  updateCurrent.value = true
+  updateCurrent.value = val
 }
 const setUpdateStatus = (val: boolean = false) => {
-  updateCurrent.value = false
+  updateCurrent.value = val
 }
 </script>
 <style lang="scss" scoped>

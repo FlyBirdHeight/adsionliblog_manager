@@ -28,7 +28,7 @@
   </ul>
   <file-info @changeName="changeFileName" @closeDialog="closeDialog"></file-info>
   <arrange-image-upload @closeDialog="closeDialog"></arrange-image-upload>
-  <create-directory @closeDialog="closeDialog"></create-directory>
+  <create-directory @refreshColumn="refreshColumn" @closeDialog="closeDialog"></create-directory>
 </template>
 <script lang="ts">
 export default {
@@ -39,12 +39,12 @@ export default {
 import { ref, defineEmits, inject, onMounted, reactive, provide, watch } from 'vue'
 import { HandleFile } from '@/plugin/image/arrangeImage/handle'
 import { getDownLoadImage, downloadFile } from '@/modules/files/image'
-import { getInfo } from '@/modules/files/utils'
+import { getInfo, deleteData } from '@/modules/files/utils'
 import FileInfo from '@/components/dialog/image/arrange/info.vue'
 import ArrangeImageUpload from '@/components/dialog/image/arrange/upload.vue'
 import CreateDirectory from '@/components/dialog/image/arrange/create_directory.vue'
 
-const emit = defineEmits(['closeRightList', 'changeFileName'])
+const emit = defineEmits(['closeRightList', 'changeFileName', 'refreshColumn'])
 /**
  * @property {boolean} rightShow 控制右键菜单显隐
  * @property {*} rightData 右键菜单的数据
@@ -90,7 +90,7 @@ const handle = async (type: string) => {
       downloadFile(file.data, rightClickFileInfo.value.name)
       break
     case HandleFile.DELETE_FILE:
-      console.log(type)
+      deleteColumnData()
       break
     case HandleFile.CREATE_DIRECTORY:
       dialogShow.createDirectory = true
@@ -106,6 +106,37 @@ const handle = async (type: string) => {
  */
 const changeFileName = (data: any) => {
   emit('changeFileName', data)
+}
+/**
+ * @method refreshColumn 刷新分栏数据，新建目录/删除文件或目录触发
+ * @param {boolean} val
+ */
+const refreshColumn = (val: boolean) => {
+  emit('refreshColumn', val)
+}
+/**
+ * @method deleteColumnData 删除分栏内的数据
+ */
+const deleteColumnData = async () => {
+  if (rightData.value.type == 'directory') {
+    ElMessageBox.confirm('删除当前选中目录的话，会导致其下的所有图片与目录均被删除！', '警告', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }).then(() => {
+      console.log('删除')
+    })
+  } else {
+    let responseData = await deleteData(rightData.value.type, rightData.value.id)
+    if (responseData.status) {
+      ElMessage({
+        type: 'success',
+        message: '文件删除成功！',
+        grouping: true,
+      })
+      emit('refreshColumn', true, true)
+    }
+  }
 }
 watch(rightData, async (newV, oldV) => {
   if (newV) {

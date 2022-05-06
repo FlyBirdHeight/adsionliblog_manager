@@ -8,7 +8,9 @@
     :width="props.width"
     :draggable="props.draggable"
   >
-    <slot name="mainBody"></slot>
+    <div v-load="dialogLoading" :element-loading-text="loadingText">
+      <slot name="mainBody"></slot>
+    </div>
     <template #footer v-if="showFooter">
       <slot name="foot"></slot>
     </template>
@@ -45,8 +47,16 @@ const props = defineProps({
   },
   showFooter: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
+  dialogLoading: {
+    type: Boolean,
+    default: false,
+  },
+  loadingText: {
+    type: String,
+    default: '正在请求',
+  },
 })
 const showDialog = ref<boolean>(false)
 watch(

@@ -4,6 +4,8 @@
     :title="title"
     :width="'300px'"
     :show="show.createDirectory"
+    :dialogLoading="submitDirectory"
+    :loadingText="'正在创建'"
     @closeDialog="closeDialog"
   >
     <template #mainBody>
@@ -18,8 +20,8 @@
       </div>
     </template>
     <template #foot>
-      <el-button size="small" type="primary" @click="submitForm">创建</el-button>
-      <el-button size="small" type="danger" @click="closeDialog">关闭</el-button>
+      <el-button :loading="submitDirectory" size="small" type="primary" @click="submitForm">创建</el-button>
+      <el-button :loading="submitDirectory" size="small" type="danger" @click="closeDialog">关闭</el-button>
     </template>
   </dialog-show>
 </template>
@@ -31,13 +33,15 @@ export default {
 <script lang="ts" setup>
 import { ref, defineEmits, watch, reactive, inject } from 'vue'
 import DialogShow from '@/components/dialog/dialog.vue'
-import { verifyHasDirectory } from '../../../../modules/files/utils'
-const emit = defineEmits(['closeDialog'])
+import { verifyHasDirectory, createDirectory } from '@/modules/files/utils'
+const emit = defineEmits(['closeDialog', 'refreshColumn'])
 const show = inject('fileDialog')
 const title = '新建文件夹'
 const parentData = inject('rightClickData')
 const fileName = ref<string>('新建文件夹')
+const submitDirectory = ref<boolean>(false)
 const submitForm = async () => {
+  submitDirectory.value = true
   fileName.value = fileName.value.replace(/\s*/g, '')
   if (fileName.value == '') {
     ElMessage({
@@ -45,6 +49,7 @@ const submitForm = async () => {
       grouping: true,
       message: '文件夹名称不可为空',
     })
+    submitDirectory.value = false
     return
   }
   let isExist = await verifyHasDirectory(parentData.value.id, fileName.value)
@@ -55,8 +60,28 @@ const submitForm = async () => {
       message: '当前目录下存在同名文件夹，请修改名称',
     })
     fileName.value = ''
+    submitDirectory.value = false
     return
   }
+  let createStatus = await createDirectory({
+    parent_id: parentData.value.id,
+    name: fileName.value,
+  })
+  if (createStatus) {
+    ElMessage({
+      type: 'success',
+      message: '目录创建成功!',
+    })
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '目录创建失败!',
+    })
+  }
+  submitDirectory.value = false
+  emit('refreshColumn', true);
+  emit('closeDialog', false, 'createDirectory')
+  
 }
 const closeDialog = (val: boolean = false) => {
   emit('closeDialog', false, 'createDirectory')

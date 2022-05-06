@@ -99,7 +99,7 @@ const extraWindow = reactive({
   info_set: false,
 })
 const checkedImage = ref<UploadFile>(null)
-const maxUploadCount = 3
+const maxUploadCount = 9
 provide('extraWindow', extraWindow)
 provide('checkedImage', checkedImage)
 /**
