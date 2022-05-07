@@ -253,7 +253,7 @@ const refreshColumn = async (val: boolean, isDelete: boolean = false) => {
   let pathNode = getPathNode(pathList, refreshList)
   let updateLoad = judgeIsExistEmitPath(refreshList)
   let listValue = handleGetDirectoryListData(list.value, refreshList.index)
-  if (!updateLoad && isDelete) {
+  if (isDelete) {
     let level = pathList.length
     let deleteIdx = 0
     fileListColumn.value.menus[level - 1].forEach((v, idx) => {
@@ -262,9 +262,10 @@ const refreshColumn = async (val: boolean, isDelete: boolean = false) => {
       }
     })
     fileListColumn.value.menus[level - 1].splice(deleteIdx, 1)
-    return
-  } else if (updateLoad && isDelete) {
-    emit('setShowFileList', pathList)
+    if (updateLoad) {
+      pathList.pop()
+      emit('setShowFileList', pathList)
+    }
     return
   }
   //NOTE: 这里是为了重新加载当前目录下内容，因为不重新加载，数据还是旧的
@@ -273,7 +274,6 @@ const refreshColumn = async (val: boolean, isDelete: boolean = false) => {
   pathNode.loaded = false
   pathNode.children = []
   pathNode.childrenData = []
-
   if (updateLoad) {
     await updateColumnShowData(refreshList, pathList, pathNode)
   }

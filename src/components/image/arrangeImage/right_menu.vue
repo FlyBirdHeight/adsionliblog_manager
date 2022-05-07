@@ -123,8 +123,16 @@ const deleteColumnData = async () => {
       confirmButtonText: '确认',
       cancelButtonText: '取消',
       type: 'warning',
-    }).then(() => {
-      console.log('删除')
+    }).then(async () => {
+      let responseData = await deleteData(rightData.value.type, rightData.value.id)
+      if (responseData.status) {
+        ElMessage({
+          type: 'success',
+          message: '文件目录删除成功！',
+          grouping: true,
+        })
+        emit('refreshColumn', true, true)
+      }
     })
   } else {
     let responseData = await deleteData(rightData.value.type, rightData.value.id)
