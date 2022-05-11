@@ -121,6 +121,7 @@ const handleExtraWindow = (val: boolean, type: string) => {
  * @method remindSetting 提醒设置图片路径
  */
 const remindSetting = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+      console.log(uploadList.value.$el.children);
   if (uploadFile.status === 'ready') {
     previewList.value.push(uploadFile.url)
     uploadFile.path = '/'
@@ -195,7 +196,7 @@ const submitImage = async () => {
   try {
     submitStatus.value = true
     const uploadFileList = []
-
+    
     uploadList.value.uploadFiles.forEach((v) => {
       let uploadFile = {
         file: v.raw,
