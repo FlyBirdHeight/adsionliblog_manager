@@ -19,6 +19,7 @@ declare module 'vue' {
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
+    ElCalendar: typeof import('element-plus/es')['ElCalendar']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCascaderPanel: typeof import('element-plus/es')['ElCascaderPanel']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']

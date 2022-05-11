@@ -1,6 +1,6 @@
 <template>
   <file-list-header @changeShow="changeShow"></file-list-header>
-  <file-list-path @setShowFileList="setShowFileList"></file-list-path>
+  <file-list-path v-if="showType === 1" @setShowFileList="setShowFileList"></file-list-path>
   <file-column @setShowFileList="setShowFileList" v-if="showType === 1" @setFilePath="setFilePath"></file-column>
   <file-list v-if="showType === 2" @setFilePath="setFilePath"></file-list>
 </template>
@@ -16,7 +16,7 @@ import FileList from '@/components/image/arrangeImage/list'
 import FileColumn from '@/components/image/arrangeImage/column'
 import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
 
-const showType = ref<number>(1)
+const showType = ref<number>(2)
 const filePath = ref<{ value: string; name: string }[]>([])
 const menuFileChecked = ref<string[]>([])
 provide('showType', showType)

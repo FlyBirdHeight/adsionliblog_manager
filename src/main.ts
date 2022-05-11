@@ -7,6 +7,7 @@ import installIcon from '@/utils/ImportIcon'
 import 'element-plus/theme-chalk/el-scrollbar.css'
 import 'element-plus/theme-chalk/el-loading.css'
 import { vLoading } from 'element-plus/es/components/loading/src/directive'
+import "default-passive-events"
 
 const app = createApp(App)
 app.directive("load", vLoading)
