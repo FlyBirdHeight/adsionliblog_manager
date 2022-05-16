@@ -1,15 +1,26 @@
 <template>
-  <public-table
+  <table-kit
     @changePageConfig="changePaginationConfig"
     :tableConfig="tableConfig"
     :pageConfig="paginationInfo"
     :tableData="tableData"
     :usePagination="true"
   >
-    <el-table-column fixed="left" type="selection" width="55" />
-    <el-table-column width="200" label="外链地址" prop="url" />
-    <el-table-column fixed="right" width="150" label="操作"></el-table-column>
-  </public-table>
+    <template #tableBody>
+      <el-table-column fixed="left" type="selection" width="55" />
+      <el-table-column width="200" label="外链地址" prop="url" />
+      <el-table-column width="200" label="文件路径" prop="path" />
+      <el-table-column width="200" label="创建时间" prop="created_at" />
+      <el-table-column width="200" label="修改时间" prop="updated_at" />
+      <el-table-column fixed="right" width="250" label="操作">
+        <template #default="props">
+          <el-button type="primary" @click="handleData('info', props.row)" size="small">查看详情</el-button>
+          <el-button type="success" @click="handleData('copyLink', props.row)" size="small">复制外链</el-button>
+          <el-button type="danger" @click="handleData('delete', props.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </template>
+  </table-kit>
 </template>
 <script lang="ts">
 export default {
@@ -17,7 +28,7 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import PublicTable from '@/components/utils/table/table.vue'
+import TableKit from '@/components/utils/table/table_kit.vue'
 import { ref, computed, watch, reactive, watchEffect, onMounted } from 'vue'
 import { PaginationReturn } from '@/utils/pagination'
 import { PaginationConfig, TableConfig } from '@/modules/utils/table'
@@ -56,6 +67,13 @@ const changePaginationConfig = (val: PaginationReturn) => {
   } else {
     paginationInfo.page = val.size
   }
+}
+/**
+ * @method handleData 处理数据操作
+ */
+const handleData = (type, options) => {
+  console.log(options)
+  console.log(type)
 }
 </script>
 <style lang="scss" scoped></style>

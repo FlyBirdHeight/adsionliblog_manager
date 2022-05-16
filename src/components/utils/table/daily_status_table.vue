@@ -290,9 +290,11 @@ watchEffect(() => {
 <style lang="scss">
 .daily_status-table {
   td.el-table__cell div {
-    white-space: nowrap;
-    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     text-overflow: ellipsis;
+    max-height: 70px !important;
   }
 }
 </style>

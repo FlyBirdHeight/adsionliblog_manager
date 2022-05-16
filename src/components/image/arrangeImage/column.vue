@@ -8,6 +8,7 @@
   >
     <template #default="{ node, data }">
       <div
+        draggable="true"
         @dblclick="showPreview(data)"
         @contextmenu.prevent="clickRight($event, data)"
         class="file-list-column_item"
