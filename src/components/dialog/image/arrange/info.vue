@@ -85,9 +85,9 @@
           <el-image
             style="width: 270px; height: 200px"
             :preview-src-list="[fileInfo.url]"
+            :preview-teleported="true"
             :src="fileInfo.url"
             fit="cover"
-            :preview-teleported="true"
           />
         </div>
       </div>
@@ -140,7 +140,7 @@ const renameSubmit = async () => {
     name: fileName.value,
     oldName: fileInfo.value.name,
   })
-  
+
   if (status) {
     ElMessage({
       type: 'success',

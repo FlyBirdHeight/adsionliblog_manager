@@ -1,29 +1,39 @@
 <template>
   <div class="table-toolbar">
-    <el-dropdown trigger="click" :hide-on-click="false" placement="top">
-      <el-button type="primary">设置列表展示</el-button>
+    <el-button v-show="showDisplay" type="primary" style="margin-right: 5px"> 隐藏列表 </el-button>
+    <el-dropdown trigger="click" :hide-on-click="false" placement="right">
+      <el-button type="success">设置列表展示</el-button>
       <template #dropdown>
-        <el-dropdown-menu v-if="columnList.length != 0">
-          <el-dropdown-item v-for="(column, index) of columnList">
-            <div
-              class="column-info"
-              draggable="true"
-              @dragstart="dragStart($event, column)"
-              @dragend="dragEnd($event, column)"
-              @dragenter="dragEnter($event, column)"
-            >
+        <!-- dropdown-menu是最后的存放区域 -->
+        <el-dropdown-menu v-if="columnList.length != 0" @drop="dragDrop($event)">
+          <!-- dropdown-item是可拖拽区域 -->
+          <el-dropdown-item
+            v-for="(column, index) of columnList"
+            draggable="true"
+            @dragstart.native="dragStart($event, column)"
+            @dragenter="dragEnter($event, column)"
+            @dragover.prevent="dragOver($event, column)"
+          >
+            <div class="column-info">
               <div class="column-info_item">
-                <el-checkbox v-model="column.visiable" size="small" />
+                <el-checkbox v-model="column.visiable" @change="changeVisible(column)" size="small" />
               </div>
-              <div class="column-info_item">{{ column.prop }}</div>
-              <div class="column-info_item"><el-button size="small">左固定</el-button></div>
-              <div class="column-info_item"><el-button size="small">右固定</el-button></div>
+              <div class="column-info_item">{{ column.label }}</div>
+              <div class="column-info_item">
+                <el-checkbox-button @change="changeFixed(column, 'left')" v-model="column.left" size="small"
+                  >左固定</el-checkbox-button
+                >
+              </div>
+              <div class="column-info_item">
+                <el-checkbox-button @change="changeFixed(column, 'right')" v-model="column.right" size="small"
+                  >右固定</el-checkbox-button
+                >
+              </div>
             </div>
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
-    <el-button type="primary" style="margin-left: 5px"> 隐藏列表 </el-button>
   </div>
 </template>
 <script lang="ts">
@@ -33,7 +43,9 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref, inject, defineEmits, defineProps, watch, nextTick } from 'vue'
-const props = defineProps()
+const props = defineProps<{
+  showDisplay: boolean
+}>()
 const emit = defineEmits(['changeColumn'])
 const table = inject('table')
 const columnList = ref([])
@@ -43,11 +55,35 @@ nextTick(() => {
     for (let key of Reflect.ownKeys(v)) {
       columnList.value[i][key] = v[key]
     }
+    columnList.value[i].left = false
+    columnList.value[i].right = false
   })
 })
+/**
+ * @method changeVisible 修改列表显示状态
+ * @param {*} column 修改的列
+ */
+const changeVisible = (column) => {
+  emit('changeColumn', 'updateVisiable', columnList.value)
+}
+/**
+ * @method changeFixed 列数据fixed属性改变
+ */
+const changeFixed = (column, type) => {
+  if (type === 'right' && column.right) {
+    column.left = false
+    column.fixed = 'right'
+  } else if (type === 'left' && column.left) {
+    column.right = false
+    column.fixed = 'left'
+  } else if (!column.left && !column.right) {
+    column.fixed = undefined
+  }
+  emit('changeColumn', 'updateFixed', columnList.value)
+}
+//NOTE:下面的这些代码是拖拽的实现代码
 const dragInfo = ref(null)
 const dragEnterData = ref(null)
-const dragEndData = ref(null)
 /**
  * @method dragStart 开始拖拽，我们需要在这个时候记录一下拖拽的内容是哪一个，好对之后进行处理
  */
@@ -55,35 +91,34 @@ const dragStart = (event, column) => {
   dragInfo.value = column
 }
 /**
- * @method dragEnd 拖拽结束，确定一下最终的位置在什么地方，然后就可以返回回调，调整数组位置或者其他动作
- */
-const dragEnd = (event, column) => {
-//   console.log('end:', column)
-  dragEndData.value = column
-}
-/**
  * @method dragEnter 拖拽时进入了哪一个元素中，通过dragEnter完成相关设置的回调信息
  */
 const dragEnter = (event, column) => {
-//   console.log('enter:', column)
   dragEnterData.value = column
 }
+const dragOver = (event, column) => {
+  event.preventDefault()
+}
+const dragDrop = (event) => {
+  event.preventDefault()
+  dragEnterData.value = null
+  dragInfo.value = null
+}
 watch(dragEnterData, (newV, oldV) => {
-    if(newV.prop === dragInfo.value.prop){
-        return;
-    }else {
-        let index = columnList.value.findIndex((v) => {
-            return v.prop == newV.prop
-        })
-        let oldIndex = columnList.value.findIndex((v) => {
-            return v.prop == dragInfo.value.prop
-        })
-        let t = columnList.value[oldIndex];
-        columnList.value[oldIndex] = columnList.value[index];
-        columnList.value[index] = t;
-        emit('changeColumn', 'changePath', columnList.value)
-        console.log(index);
-    }
+  if (!newV || newV.prop === dragInfo.value.prop) {
+    return
+  } else {
+    let index = columnList.value.findIndex((v) => {
+      return v.prop == newV.prop
+    })
+    let oldIndex = columnList.value.findIndex((v) => {
+      return v.prop == dragInfo.value.prop
+    })
+    let t = columnList.value[oldIndex]
+    columnList.value[oldIndex] = columnList.value[index]
+    columnList.value[index] = t
+    emit('changeColumn', 'changePath', columnList.value)
+  }
 })
 </script>
 <style lang="scss" scoped>
@@ -97,6 +132,9 @@ watch(dragEnterData, (newV, oldV) => {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  .column-info_checkbox-group {
+    display: flex;
+  }
   .column-info_item {
     margin: 0 5px;
   }

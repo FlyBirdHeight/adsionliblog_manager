@@ -71,14 +71,38 @@
           </div>
         </div>
       </div>
-      <div class="image-list-info_name">
+      <div class="image-list-info_name" v-load.fullscreen.lock="renameStatus" element-loading-text="正在提交">
         <div class="file-name_header" @click="showData.name = !showData.name">文件名称:</div>
-        <el-input size="small" @change="setFileName" v-show="showData.name" v-model="fileName" placeholder="文件名称" />
+        <el-popconfirm
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+          title="是否对名称进行修改？"
+          @confirm="renameSubmit"
+          @cancel="cancelRename"
+          :hide-icon="true"
+        >
+          <template #reference>
+            <el-input
+              size="small"
+              @change="setFileName"
+              v-show="showData.name"
+              v-model="fileName"
+              placeholder="文件名称"
+            />
+          </template>
+        </el-popconfirm>
       </div>
       <div class="file-preview" v-if="fileType == 'image'">
         <div class="file-preview_header" @click="showData.preview = !showData.preview">预览:</div>
         <div v-show="showData.preview">
-          <el-image style="width: 270px; height: 200px" :src="fileInfo.url" fit="cover" />
+          <el-image
+            :preview-src-list="[fileInfo.url]"
+            :hide-on-click-modal="true"
+            :preview-teleported="true"
+            style="width: 270px; height: 200px"
+            :src="fileInfo.url"
+            fit="cover"
+          />
         </div>
       </div>
     </template>
@@ -94,28 +118,23 @@ import { ref, defineProps, defineEmits, watch, watchEffect, inject, reactive } f
 import DialogShow from '@/components/dialog/dialog.vue'
 import { getCutSize, getImageIcon, getShowSize } from '@/plugin/image/arrangeImage/info.ts'
 import { FileType } from '@/plugin/image/arrangeImage/arrange'
-const emit = defineEmits(['closeDialog'])
+import { rename } from '@/modules/files/utils.ts'
+
+const emit = defineEmits(['closeDialog', 'changeName'])
 const title = ref<string>('文件详情')
 const show = inject('showImageInfo')
 const fileInfo = inject('imageData')
 const fileType = ref<string>('image')
 const showIcon = ref<string>('')
+const renameStatus = ref<boolean>(false)
 const showData = reactive({
   normal: true,
   name: true,
   preview: true,
 })
 const fileName = ref<string>('')
-
 const closeDialog = (val: boolean = false) => {
   emit('closeDialog', false, 'info')
-}
-/**
- * @method setFileName 设置文件名称的监听函数，判断是否修改
- * @param {string|number} value
- */
-const setFileName = (value: string | number) => {
-  console.log(fileName.value)
 }
 /**
  * @method getImage 获取描述文件图片
@@ -133,6 +152,52 @@ const getFileType = (fileInfo) => {
   } else {
     return '文章'
   }
+}
+
+/**
+ * @method renameSubmit 提交修改文件/目录名称
+ */
+const renameSubmit = async () => {
+  if (fileName.value === fileInfo.value.name.split('.')[0]) {
+    ElMessage({
+      type: 'success',
+      grouping: true,
+      message: '修改名称成功！',
+    })
+    return
+  }
+  renameStatus.value = true
+
+  let status = await rename('file', {
+    id: fileInfo.value.id,
+    name: fileName.value,
+    oldName: fileInfo.value.name,
+  })
+
+  if (status) {
+    ElMessage({
+      type: 'success',
+      grouping: true,
+      message: '修改名称成功！',
+    })
+    let oldNameList = fileInfo.value.name.split('.')
+    let newName = fileName.value + '.' + oldNameList[oldNameList.length - 1]
+    title.value = fileName.value
+    emit('changeName', newName)
+  } else {
+    ElMessage({
+      type: 'error',
+      grouping: true,
+      message: '修改名称失败！',
+    })
+  }
+  renameStatus.value = false
+}
+/**
+ * @method cancelRename 取消文件/目录名称修改
+ */
+const cancelRename = () => {
+  fileName.value = fileInfo.value.name.split('.')[0]
 }
 
 watch(fileInfo, (newV, oldV) => {

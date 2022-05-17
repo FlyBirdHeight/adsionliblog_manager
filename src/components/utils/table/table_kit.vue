@@ -13,7 +13,7 @@
       <el-table-column fixed="left" width="60" label="编号" type="index" :index="indexMethod" />
       <slot name="tableBody"> </slot>
     </base-table>
-    <table-toolbar @changeColumn="changeColumn" class="table-toolbar"></table-toolbar>
+    <table-toolbar :showDisplay="false" @changeColumn="changeColumn" class="table-toolbar"></table-toolbar>
     <pagination
       style="margin-top: 20px"
       v-if="usePagination"
@@ -82,7 +82,7 @@ provide('table', table)
  * @param {any} options 修改参数
  */
 const changeColumn = (type: string, options: any) => {
-  table.value.updateColumns(options)
+  table.value.updateColumns(new Array(...options))
 }
 </script>
 <style lang="scss" scoped>
@@ -91,8 +91,7 @@ const changeColumn = (type: string, options: any) => {
   position: relative;
   .table-toolbar {
     position: absolute;
-    bottom: 0px;
-    right: 0;
+    top: -40px;
   }
 }
 </style>

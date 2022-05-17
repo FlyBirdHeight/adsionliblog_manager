@@ -82,6 +82,9 @@ const columns = reactive({
     storage.forEach((props) => {
       const index = slot.findIndex(({ prop }) => prop === props.prop)
       if (~index) {
+        if (Array.isArray(props.fixed)) {
+          props.fixed = props.fixed[0]
+        }
         const propsFromSlot = slot[index]
         res.push({
           ...propsFromSlot, // 可能新增属性 所以用 slot 的数据打个底

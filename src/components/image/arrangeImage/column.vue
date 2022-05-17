@@ -5,10 +5,14 @@
     ref="fileListColumn"
     class="file-list-column"
     :props="columnSetting"
+    @drop="dragDrop($event)"
+    @dragover="dragOver($event)"
+    @dragenter="dragEnter($event)"
   >
     <template #default="{ node, data }">
       <div
         draggable="true"
+        @dragstart="dragStart($event, node, data)"
         @dblclick="showPreview(data)"
         @contextmenu.prevent="clickRight($event, data)"
         class="file-list-column_item"
@@ -81,6 +85,22 @@ const previewIndex = ref<number>(0)
 const showPreviewImage = ref<boolean>(false)
 const refreshColumnShow = ref<boolean>(false)
 let resolveFunc = new Map()
+const dragDrop = (event) => {
+  console.log(event.path[2])
+  console.log(fileListColumn.value.menuList[2].$el);
+  console.log(event.path[2] === fileListColumn.value.menuList[2].$el)
+}
+const dragStart = (event, node, data) => {
+  console.log(event)
+  console.log(node)
+  console.log(data)
+}
+const dragOver = (event) => {
+  event.preventDefault()
+}
+const dragEnter = (event, content) => {
+  // console.log(content)
+}
 /**
  * @method checkedColumn 展开节点发生改变时候的回调
  */

@@ -16,8 +16,9 @@ type FindList = {
 /**
  * @method getList 获取文件列表
  * @param {FindList} options 
+ * @param {boolean} total 是否返回total
  */
-const getList = async (options: FindList) => {
+const getList = async (options: FindList, total: boolean = false) => {
     try {
         const apiInfo = apiList.getList;
         let responseData = await axios({
@@ -28,6 +29,12 @@ const getList = async (options: FindList) => {
         let returnData = responseData.data;
         if (returnData.data.length == 0 || !returnData.data) {
             return []
+        }
+        if (total) {
+            return {
+                data: returnData.data,
+                total: returnData.total[0].count
+            }
         }
         return returnData.data;
     } catch (e) {

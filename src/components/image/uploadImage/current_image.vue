@@ -32,7 +32,7 @@
       </el-card>
     </div>
   </el-scrollbar>
-  <image-list-info @closeDialog="closeDialog"></image-list-info>
+  <image-list-info @changeName="changeName" @closeDialog="closeDialog"></image-list-info>
 </template>
 <script lang="ts">
 export default {
@@ -72,6 +72,9 @@ const seeInfo = (file: Image) => {
 }
 const closeDialog = () => {
   show.value = false
+}
+const changeName = (val: string) => {
+  checkedImageData.value.name = val
 }
 /**
  * @method copy 复制外链
