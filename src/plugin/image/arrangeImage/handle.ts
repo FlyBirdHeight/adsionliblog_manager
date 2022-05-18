@@ -207,8 +207,7 @@ const dragHandle = {
         //NOTE: 更新完成之后，放入到当前目标的列表中去
         let menuData = fileListColumn.value.menus[level];
         menuData.push(node);
-        console.log(list);
-        
+
         return true;
     }
 }
