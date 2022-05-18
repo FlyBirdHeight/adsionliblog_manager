@@ -1,6 +1,6 @@
 import { getDirectoryList, MenuDataList, changeFileInfoToMenuData } from './arrange'
 import axios from 'axios';
-const preFilePath: string = "/file/link/";
+const preFilePath: string = "/file/link";
 enum HandleFile {
     "UPLOAD_FILE" = "upload",
     "DOWNLOAD_FILE" = "download",
@@ -85,7 +85,8 @@ const dragHandle = {
     async editFilePath(list: any, parentPath: string[], dragData: MenuDataList, oldPath: string) {
         let directory_id = null;
         let relative_path = null;
-        oldPath = preFilePath + oldPath;
+        
+        oldPath = preFilePath + (oldPath.length == 0 ? '' : `/${oldPath}`);
         if (parentPath.length == 0) {
             directory_id = 1;
             relative_path = '/file/link';
@@ -175,9 +176,14 @@ const dragHandle = {
     async changeMenuList(fileListColumn: any, list: any, node: any, dropPath: string[], idx: number) {
         let dropInfo = getListInfo(list, dropPath);
         let oldPath = node.pathValues.slice(0);
-        oldPath.pop();
-        let oldParentIndex = getListInfo(list, oldPath);
-        oldParentIndex.children.delete(node.value);
+        oldPath.length != 0 && oldPath.pop();
+        if (oldPath.length == 0) {
+            list.delete(node.value);
+        } else {
+            let oldParentIndex = getListInfo(list, oldPath);
+            oldParentIndex.children.delete(node.value);
+        }
+
         // debugger
         let level = 0;
         if (dropPath.length == 0) {
