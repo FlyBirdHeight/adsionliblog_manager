@@ -5,18 +5,20 @@
     ref="fileListColumn"
     class="file-list-column"
     :props="columnSetting"
-    @drop="dragDrop($event)"
-    @dragover="dragOver($event)"
+    @dragover.prevent
     @dragenter="dragEnter($event)"
+    @drop="dragDrop($event)"
   >
     <template #default="{ node, data }">
       <div
         draggable="true"
         @dragstart="dragStart($event, node, data)"
+        @dragend="dragEnd($event)"
         @dblclick="showPreview(data)"
         @contextmenu.prevent="clickRight($event, data)"
         class="file-list-column_item"
         :class="checkedValue.indexOf(data.index) !== -1 ? 'file-list-column_item-active' : ''"
+        v-show="data.show"
       >
         <el-icon><component :is="$icon[data.icon]" /></el-icon>
         <span style="user-select: none">{{ data.name }}</span>
@@ -41,7 +43,19 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import { ref, shallowRef, provide, watchEffect, nextTick, inject, defineEmits, watch, onMounted, isReactive } from 'vue'
+import {
+  ref,
+  shallowRef,
+  provide,
+  watchEffect,
+  nextTick,
+  inject,
+  defineEmits,
+  watch,
+  onMounted,
+  isReactive,
+  reactive,
+} from 'vue'
 import {
   MenuDataList,
   getMenuData,
@@ -50,6 +64,7 @@ import {
   handleGetDirectoryListData,
   getDirectoryPathList,
 } from '@/plugin/image/arrangeImage/arrange'
+import { dragHandle } from '@/plugin/image/arrangeImage/handle'
 import RightClickMenu from '@/components/image/arrangeImage/right_menu'
 import ImagePreview from '@/components/utils/image_preview.vue'
 const emit = defineEmits(['setFilePath', 'setShowFileList'])
@@ -67,6 +82,7 @@ const list = ref<Map<string, MenuDataList>>(new Map())
  * @property {number} previewIndex 预览显示起始位置
  * @property {boolean} showPreviewImage 显示图片预览
  * @property {boolean} refreshColumnShow 刷新分栏显示的数据
+ * @property {*} dragInfo 拖拽移动时记录的响应式数据
  */
 const rightClickData = ref<MenuDataList>({})
 const showRightList = ref<boolean>(false)
@@ -85,21 +101,89 @@ const previewIndex = ref<number>(0)
 const showPreviewImage = ref<boolean>(false)
 const refreshColumnShow = ref<boolean>(false)
 let resolveFunc = new Map()
-const dragDrop = (event) => {
-  console.log(event.path[2])
-  console.log(fileListColumn.value.menuList[2].$el);
-  console.log(event.path[2] === fileListColumn.value.menuList[2].$el)
-}
+const dragInfo = reactive<{
+  dragData: MenuDataList | null
+  dragNode: any
+  dragMenuIdx: number
+  parent: string[]
+}>({
+  dragData: null,
+  dragNode: null,
+  dragMenuIdx: 0,
+  parent: [],
+})
+/**
+ * @method dragStart 被拖拽对象开始被拖拽
+ * @param {Event} event
+ * @param {*} node 节点数据(vnode)
+ * @param {*} data 原始数据(fileData/directoryData)
+ */
 const dragStart = (event, node, data) => {
-  console.log(event)
-  console.log(node)
-  console.log(data)
+  dragInfo.dragNode = node
+  dragInfo.dragData = data
+  dragInfo.dragMenuIdx = dragHandle.temporarySliceMenuData(fileListColumn, node)
 }
-const dragOver = (event) => {
+/**
+ * @method dragStart 被拖拽对象结束被拖拽,这里触发文件移动事件
+ * @param {Event} event
+ * @param {*} node 节点数据(vnode)
+ * @param {*} data 原始数据(fileData/directoryData)
+ */
+const dragEnd = async (event) => {
+  if (!dragInfo.parent) {
+    ElMessage({
+      type: 'error',
+      message: '请移动到有效的文件目录下！',
+      grouping: true,
+    })
+    return
+  }
+  let pathLabel = dragInfo.dragNode.pathLabels.slice(0)
+  pathLabel.pop()
+  let status = await dragHandle.editFilePath(list.value, dragInfo.parent, dragInfo.dragData, pathLabel.join('/'))
+  if (!status) {
+    ElMessage({
+      type: 'error',
+      message: '文件移动失败',
+    })
+    return
+  }
+  //NOTE: 更新panel中的MenuList以及Node数据
+  let updateStatus = await dragHandle.changeMenuList(
+    fileListColumn,
+    list.value,
+    dragInfo.dragNode,
+    dragInfo.parent,
+    dragInfo.dragMenuIdx
+  )
+  if (updateStatus) {
+    ElMessage({
+      type: 'success',
+      message: '文件移动成功',
+    })
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '文件移动失败',
+    })
+  }
+}
+const dragEnter = (event) => {
+  // console.log(event);
+}
+/**
+ * @method dragEnter 进入放置对象
+ * @param {Event} event
+ */
+const dragDrop = (event) => {
   event.preventDefault()
-}
-const dragEnter = (event, content) => {
-  // console.log(content)
+  if (event.stopPropagation) {
+    event.stopPropagation()
+  }
+  //NOTE: 获取到menuList的下标，从而获取到移动文件/文件夹落到的父路径
+  let menuListIdx = dragHandle.foundDropMenu(fileListColumn, event.path[2])
+  //NOTE: 获取到父路径
+  dragInfo.parent = dragHandle.getParentIndex(fileListColumn, menuListIdx)
 }
 /**
  * @method checkedColumn 展开节点发生改变时候的回调

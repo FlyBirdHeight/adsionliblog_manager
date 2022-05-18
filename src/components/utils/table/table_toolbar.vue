@@ -97,10 +97,14 @@ const dragEnter = (event, column) => {
   dragEnterData.value = column
 }
 const dragOver = (event, column) => {
+  //NOTE: 在拖拽事件时，over代表拖拽还在进行还未结束，所以还应该继续处理，让事件继续传播
   event.preventDefault()
 }
 const dragDrop = (event) => {
-  event.preventDefault()
+  //NOTE: 停止传播，因为这个时候已经drop了，代表已经放好位置了，就不需要继续了，直接中断拖拽事件就可以了
+  if (event.stopPropagation) {
+    event.stopPropagation()
+  }
   dragEnterData.value = null
   dragInfo.value = null
 }

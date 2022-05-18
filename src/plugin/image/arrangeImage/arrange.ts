@@ -67,7 +67,8 @@ interface MenuDataList {
     file_type?: number,
     children?: Map<string, MenuDataList>,
     getChildren?: boolean,
-    level?: number
+    level?: number,
+    show?: boolean
 }
 
 enum FileType {
@@ -95,7 +96,7 @@ const getFileIcon = (type: number): string => {
  * @param {FileInfo} file 文件数据 
  * @param {number} parent_id 父文件夹id
  */
-const changeFileInfoToMenuData = (file: FileInfo, parent_id: number): MenuDataList => {
+const changeFileInfoToMenuData = (file: FileInfo, parent_id: number = 0): MenuDataList => {
     let data: MenuDataList = {
         id: file.id,
         name: file.name,
@@ -109,7 +110,8 @@ const changeFileInfoToMenuData = (file: FileInfo, parent_id: number): MenuDataLi
         file_type: file.type,
         parent_id: file.directory_id,
         updated_at!: file?.updated_at,
-        index: ''
+        index: '',
+        show: true
     };
 
     return data;
@@ -134,7 +136,8 @@ const changeDirectoryInfoToMenuData = (directory: Directory, isChild: boolean = 
         getChildren: false,
         children: new Map<string, MenuDataList>(),
         level: directory.level,
-        index: ''
+        index: '',
+        show: true
     }
 
     return data;
@@ -359,6 +362,7 @@ export {
     getDirectoryList,
     handleGetDirectoryListData,
     FileType,
-    getDirectoryPathList
+    getDirectoryPathList,
+    changeFileInfoToMenuData
 }
 
