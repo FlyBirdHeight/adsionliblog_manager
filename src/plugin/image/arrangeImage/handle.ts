@@ -85,7 +85,7 @@ const dragHandle = {
     async editFilePath(list: any, parentPath: string[], dragData: MenuDataList, oldPath: string) {
         let directory_id = null;
         let relative_path = null;
-        
+
         oldPath = preFilePath + (oldPath.length == 0 ? '' : `/${oldPath}`);
         if (parentPath.length == 0) {
             directory_id = 1;
@@ -150,6 +150,7 @@ const dragHandle = {
         let newFileInfo = data.data.data;
         node.data = changeFileInfoToMenuData(newFileInfo);
         if (root) {
+            node.data.index = newV.join('-');
             node.level = 1;
             node.value = newV.join('-');
             node.parent = undefined;
@@ -158,6 +159,7 @@ const dragHandle = {
             node.pathValues = [node.value];
             return;
         }
+        node.data.index = prenode.value + '-' + newV.join('-');
         node.level = prenode.level + 1;
         node.value = prenode.value + '-' + newV.join('-');
         node.pathLabels = [...prenode.pathLabels, node.label];

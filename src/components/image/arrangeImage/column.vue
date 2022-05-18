@@ -389,6 +389,8 @@ const refreshColumn = async (val: boolean, isDelete: boolean = false) => {
  * @param {MenuDataList} data 右键选中的数据
  */
 const clickRight = (event, data: MenuDataList) => {
+  console.log(data);
+  
   rightClickData.value = {
     id: data.id,
     type: data.is_directory ? 'directory' : 'file',
