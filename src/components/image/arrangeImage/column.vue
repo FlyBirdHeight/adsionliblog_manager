@@ -101,6 +101,7 @@ const previewIndex = ref<number>(0)
 const showPreviewImage = ref<boolean>(false)
 const refreshColumnShow = ref<boolean>(false)
 let resolveFunc = new Map()
+//README: 文件、文件目录拖拽移动的实现
 const dragInfo = reactive<{
   dragData: MenuDataList | null
   dragNode: any
@@ -215,6 +216,7 @@ const resetDragInfo = () => {
   dragInfo.parent = []
   dragInfo.sameName = false
 }
+
 /**
  * @method checkedColumn 展开节点发生改变时候的回调
  */
@@ -242,7 +244,6 @@ const checkedColumn = (value) => {
     scrollToRight()
   })
 }
-
 /**
  * @method scrollToRight 设置滚动条移动到最右侧
  */
@@ -256,7 +257,6 @@ const scrollToRight = () => {
     })
   })()
 }
-
 /**
  * @method lazyLoad 懒加载column数据列表
  */
@@ -377,6 +377,7 @@ const changeFileName = async (data: any) => {
       await updateColumnShowData(data, pathList, pathNode)
     }
   }
+  rightClickData.value.name = data.name
 }
 /**
  * @method refreshColumn 刷新指定分栏数据，再删除或者新建时，触发
@@ -414,6 +415,7 @@ const refreshColumn = async (val: boolean, isDelete: boolean = false) => {
     await updateColumnShowData(refreshList, pathList, pathNode)
   }
 }
+//README: 右键点击事件的处理
 /**
  * @method clickRight 右键点击事件
  * @param {any} event 节点Event返回
@@ -435,7 +437,7 @@ const clickRight = (event, data: MenuDataList) => {
 const closeRightList = () => {
   showRightList.value = false
 }
-
+//README: 双击处理图片显示
 /**
  * @method showPreview 点击图片时，双击显示预览图
  */

@@ -146,14 +146,20 @@ const deleteColumnData = async () => {
     }
   }
 }
-watch(rightData, async (newV, oldV) => {
-  if (newV) {
-    rightClickFileInfo.value = await getInfo(newV.id, newV.type)
-    rightClickFileInfo.value.is_directory = newV.type == 'directory' ? true : false
-    rightClickFileInfo.value.is_file = newV.type == 'file' ? true : false
-    rightClickFileInfo.value.index = newV.index
+watch(
+  rightData,
+  async (newV, oldV) => {
+    if (newV) {
+      rightClickFileInfo.value = await getInfo(newV.id, newV.type)
+      rightClickFileInfo.value.is_directory = newV.type == 'directory' ? true : false
+      rightClickFileInfo.value.is_file = newV.type == 'file' ? true : false
+      rightClickFileInfo.value.index = newV.index
+    }
+  },
+  {
+    deep: true,
   }
-})
+)
 </script>
 <style lang="scss" scoped>
 ul {
