@@ -363,6 +363,7 @@ export {
     handleGetDirectoryListData,
     FileType,
     getDirectoryPathList,
-    changeFileInfoToMenuData
+    changeFileInfoToMenuData,
+    changeDirectoryInfoToMenuData
 }
 

@@ -84,7 +84,6 @@
           <template #reference>
             <el-input
               size="small"
-              @change="setFileName"
               v-show="showData.name"
               v-model="fileName"
               placeholder="文件名称"

@@ -111,6 +111,7 @@ const dragInfo = reactive<{
   dragNode: null,
   dragMenuIdx: 0,
   parent: [],
+  sameName: false,
 })
 /**
  * @method dragStart 被拖拽对象开始被拖拽
@@ -130,12 +131,14 @@ const dragStart = (event, node, data) => {
  * @param {*} data 原始数据(fileData/directoryData)
  */
 const dragEnd = async (event) => {
-  if (!dragInfo.parent) {
+  let canSubmit = dragHandle.canSubmitChange(dragInfo)
+  if (!canSubmit.status) {
     ElMessage({
       type: 'error',
-      message: '请移动到有效的文件目录下！',
+      message: canSubmit.message,
       grouping: true,
     })
+    resetDragInfo()
     return
   }
   let pathLabel = dragInfo.dragNode.pathLabels.slice(0)
@@ -146,27 +149,36 @@ const dragEnd = async (event) => {
       type: 'error',
       message: '文件移动失败',
     })
+    resetDragInfo()
     return
   }
   //NOTE: 更新panel中的MenuList以及Node数据
-  let updateStatus = await dragHandle.changeMenuList(
-    fileListColumn,
-    list.value,
-    dragInfo.dragNode,
-    dragInfo.parent,
-    dragInfo.dragMenuIdx
-  )
+  let updateStatus = false
+  if (dragInfo.dragData.is_directory) {
+    updateStatus = await dragHandle.changeDirectoryMenuList(fileListColumn, list.value, dragInfo, checkedValue)
+  } else {
+    updateStatus = await dragHandle.changeFileMenuList(
+      fileListColumn,
+      list.value,
+      dragInfo.dragNode,
+      dragInfo.parent,
+      dragInfo.dragMenuIdx
+    )
+  }
   if (updateStatus) {
     ElMessage({
       type: 'success',
       message: '文件移动成功',
+      grouping: true,
     })
   } else {
     ElMessage({
       type: 'error',
       message: '文件移动失败',
+      grouping: true,
     })
   }
+  resetDragInfo()
 }
 const dragEnter = (event) => {
   // console.log(event);
@@ -184,6 +196,24 @@ const dragDrop = (event) => {
   let menuListIdx = dragHandle.foundDropMenu(fileListColumn, event.path[2])
   //NOTE: 获取到父路径
   dragInfo.parent = dragHandle.getParentIndex(fileListColumn, menuListIdx)
+  //NOTE: 判断是否在父路径下存在同名文件
+  let hasSameName = dragHandle.hasSameName(
+    fileListColumn,
+    menuListIdx,
+    dragInfo.dragData.is_file ? 'file' : 'directory',
+    dragInfo.dragData.name
+  )
+  dragInfo.sameName = hasSameName
+}
+/**
+ * @method resetDragInfo 拖拽结束后，重置一下dragInfo
+ */
+const resetDragInfo = () => {
+  dragInfo.dragData = null
+  dragInfo.dragNode = null
+  dragInfo.dragMenuIdx = 0
+  dragInfo.parent = []
+  dragInfo.sameName = false
 }
 /**
  * @method checkedColumn 展开节点发生改变时候的回调
@@ -212,6 +242,7 @@ const checkedColumn = (value) => {
     scrollToRight()
   })
 }
+
 /**
  * @method scrollToRight 设置滚动条移动到最右侧
  */
@@ -389,8 +420,6 @@ const refreshColumn = async (val: boolean, isDelete: boolean = false) => {
  * @param {MenuDataList} data 右键选中的数据
  */
 const clickRight = (event, data: MenuDataList) => {
-  console.log(data);
-  
   rightClickData.value = {
     id: data.id,
     type: data.is_directory ? 'directory' : 'file',
@@ -425,6 +454,9 @@ const showPreview = (data) => {
 const handleExtraWindow = (val: boolean) => {
   showPreviewImage.value = false
 }
+watch(checkedValue, (newV, oldV) => {
+  checkedColumn(newV)
+})
 </script>
 <style lang="scss">
 .file-list-column {

@@ -71,7 +71,6 @@
           <template #reference>
             <el-input
               size="small"
-              @change="setFileName"
               v-show="showData.name"
               v-model="fileName"
               placeholder="文件名称"
@@ -176,13 +175,6 @@ const renameSubmit = async () => {
  */
 const cancelRename = () => {
   fileName.value = fileInfo.value.name.split('.')[0]
-}
-/**
- * @method setFileName 设置文件名称的监听函数，判断是否修改
- * @param {string|number} value
- */
-const setFileName = (value: string | number) => {
-  console.log(fileName.value)
 }
 /**
  * @method getImage 获取描述文件图片
