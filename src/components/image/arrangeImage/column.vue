@@ -197,6 +197,8 @@ const dragDrop = (event) => {
   let menuListIdx = dragHandle.foundDropMenu(fileListColumn, event.path[2])
   //NOTE: 获取到父路径
   dragInfo.parent = dragHandle.getParentIndex(fileListColumn, menuListIdx)
+  console.log(dragInfo.parent);
+  
   //NOTE: 判断是否在父路径下存在同名文件
   let hasSameName = dragHandle.hasSameName(
     fileListColumn,

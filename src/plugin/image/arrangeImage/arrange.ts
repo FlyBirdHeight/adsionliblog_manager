@@ -160,7 +160,7 @@ const handleMenuList = (fileList: Directory[] | any, preOpt: { index: string, id
             returnData.set(menuData.index, menuData);
         } else {
             let index = '';
-            if (value.level == 1) {
+            if (value.level == 1 || value.parent_id == 1) {
                 index = 'd-' + value.id.toString();
             } else if (preOpt.id !== value.id) {
                 index = `${preOpt.index}-d-${value.id}`

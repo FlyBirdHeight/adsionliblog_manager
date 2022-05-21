@@ -120,7 +120,6 @@ const add = function () {
       is_recommend: 1,
       sort: 0,
     }
-    console.log(submitCategoryFormData.value)
     commit('dialog/setCategoryAddShow', true)
   } else {
     commit('dialog/setTagAddShow', true)

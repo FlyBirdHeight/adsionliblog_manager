@@ -3,17 +3,9 @@
     <router-view></router-view>
   </el-config-provider>
 </template>
-<script lang="ts">
-import { defineComponent, h } from 'vue'
+<script lang="ts" setup>
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { setup } from 'vue-class-component'
-export default defineComponent({
-  setup() {
-    return {
-      local: zhCn,
-    }
-  },
-})
+const local = zhCn
 </script>
 
 <style lang="scss"></style>

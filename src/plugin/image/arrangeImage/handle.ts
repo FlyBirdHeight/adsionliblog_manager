@@ -223,9 +223,11 @@ const dragHandle = {
         node.data.index = prenode.value + '-' + newV.join('-');
         node.level = prenode.level + 1;
         node.value = prenode.value + '-' + newV.join('-');
+        console.log(prenode);
+        // debugger
         node.pathLabels = [...prenode.pathLabels, node.label];
         node.pathValues = [...prenode.pathValues, node.value];
-        node.pathNodes = [...prenode.pathNodes, node];
+        node.pathNodes = Array.isArray(prenode.pathNodes) ? [...prenode.pathNodes, node] : [prenode.pathNodes, node];
         node.parent = prenode;
     },
     /**
