@@ -15,6 +15,8 @@ const useMapper = (mapper: any, mapperFn: Function, type: string) => {
         const fn = storeStateFns[fnKey].bind({ $store: store });
         if (type === 'state') {
             storeState[fnKey] = computed(fn)
+        } else {
+            storeState[fnKey] = fn
         }
     })
 

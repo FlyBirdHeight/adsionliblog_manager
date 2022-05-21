@@ -34,9 +34,9 @@ const setUpdateStatus = (val: boolean = false) => {
   justify-content: space-between;
   align-items: center;
   .header-title {
-    font-size: 1.65rem;
+    font-size: 1.5rem;
     line-height: 2rem;
-    font-weight: 600;
+    font-weight: inherit;
     color: #606266;
   }
 }

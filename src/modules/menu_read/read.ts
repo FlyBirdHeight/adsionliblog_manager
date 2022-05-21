@@ -1,4 +1,8 @@
 import { RouteRecordRaw } from 'vue-router';
+type RouterInfo = {
+    name: string,
+    router: string,
+}
 interface Menu {
     name: string;
     path?: string;
@@ -19,9 +23,11 @@ class GenerateMenuData {
     menuData: Array<Menu> = require("@/data/menu.json").menu;
     routerData: Array<RouteRecordRaw>;
     showMenu: Array<MenuData>;
+    routerInfo: RouterInfo[];
     constructor() {
         this.routerData = [];
         this.showMenu = [];
+        this.routerInfo = [];
     }
     /**
      * @method handleRouteData 处理路由数据
@@ -51,13 +57,18 @@ class GenerateMenuData {
                     path: path,
                     component: component,
                     children: children,
-                    redirect: children.length != 0 ? `${parent}/${value.path}/${children[0].path}` : ''
+                    redirect: children.length != 0 ? `${parent}/${value.path}/${children[0].path}` : '',
                 };
+                Reflect.set(router, 'label', value.name);
                 if (children.length == 0) {
                     Reflect.deleteProperty(router, 'children')
                     Reflect.deleteProperty(router, 'redirect')
                 }
                 res.push(router);
+                this.routerInfo.push({
+                    name: value.name,
+                    router: path
+                })
             } else {
                 if (Reflect.has(value, 'children')) {
                     res = res.concat(this.handleRouteData(value.children, parent))

@@ -1,7 +1,7 @@
 .left-menu {
-    background-image: linear-gradient(180deg, rgba(139, 144, 255, .87), rgba(152, 94, 238, .83), #b765d9, #de8ac4);
-    color: #ffffff;
-    font-weight: bolder;
+    // background-image: linear-gradient(180deg, rgba(139, 144, 255, .87), rgba(152, 94, 238, .83), #b765d9, #de8ac4);
+    // color: #ffffff;
+    font-weight: inherit;
 }
 
 .left-aside {
@@ -16,37 +16,34 @@
 
 .el-menu-item:hover {
     background-color: #fff;
-    color: #000;
+    // color: #000;
 }
 .el-menu-item.is-active {
-    padding-left: -15px;
+    // padding-left: -15px;
     background-color: #ffffff;
-    color: #000;
+    // color: #000;
 }
 
 .el-sub-menu:hover {
     // background-color: #fff;
-    border-radius: -15px;
-    color: #000;
+    // border-radius: -15px;
+    // color: #000;
 }
 .el-sub-menu.is-active {
     // background-color: #ffffff;
-    color: #000;
+    // color: #000;
 }
 
-
-
-
 .el-menu-item-group__title {
-    color: #dcdde0;
+    color: #00b894;
 }
 
 .el-menu-item {
     margin: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .el-sub-menu {
     margin: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 }

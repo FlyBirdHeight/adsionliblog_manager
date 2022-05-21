@@ -3,17 +3,13 @@ import Index from '../views/index.vue'
 import GenerateMenuData from "@/modules/menu_read/read"
 let routerData = new GenerateMenuData();
 const generateRoute: Array<RouteRecordRaw> = routerData.handleRouteData(routerData.menuData, '');
+
 let routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Index',
     component: Index,
     redirect: '/adsionli-home'
-  },
-  {
-    path: '/arrangeImage',
-    name: 'arrangeImage',
-    component: () => import("../views/image/arrangeImage.vue"),
   }
 ]
 routes = routes.concat(generateRoute);
@@ -22,4 +18,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+
+
 export default router

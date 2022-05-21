@@ -2,12 +2,12 @@
   <el-menu
     class="left-menu left-aside left-menu-vertical"
     :default-active="activeMenu"
-    :text-color="collapse ? '#000' : '#fff'"
-    :background-color="collapse ? '' : 'var(--background-color)'"
     :router="true"
-    :active-text-color="collapse ? 'fff' : '#000'"
     :collapse="collapse"
     :unique-opened="true"
+    background-color="#c7ecee"
+    text-color="#130f40"
+    active-text-color="#00b894"
   >
     <item-menu :menu-data="menuData"></item-menu>
   </el-menu>
@@ -26,7 +26,7 @@ export default defineComponent({
     let generateMenuData = new GenerateMenuData()
     const route = useRoute()
     const firstJoin = ref<boolean>(true)
-    const collapse = ref<boolean>(true)
+    const collapse = ref<boolean>(false)
     const menuData = reactive(generateMenuData.handleMenuData(generateMenuData.menuData))
     const activeMenu = ref<string>('adsionli-home')
     watch(
@@ -48,9 +48,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-:root {
-  --text-color: #fff;
-  --background-color: transparent;
-  --el-menu-hover-bg-color: #fff;
-}
+// :root {
+//   --text-color: #fff;
+//   --background-color: transparent;
+//   --el-menu-hover-bg-color: #fff;
+// }
 </style>

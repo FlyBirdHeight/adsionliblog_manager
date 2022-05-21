@@ -56,8 +56,8 @@ const showList = (type: number) => {
   justify-content: space-between;
   align-items: center;
   .title {
-    font-size: 1.65rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: inherit;
     color: #606266;
   }
 }

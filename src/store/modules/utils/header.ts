@@ -5,7 +5,7 @@ type RouterInfo = {
 //暴露给外部进行类型效验
 export interface HeaderList {
     activeRouter: RouterInfo | null,
-    routerList: RouterInfo[]
+    routerList: RouterInfo[],
 }
 
 export default {
@@ -14,8 +14,12 @@ export default {
      * @property {RouterInfo[]} routerList 未关闭的router列表
      */
     state: {
-        activeRouter: null,
-        routerList: []
+        activeRouter: {
+            name: '',
+            router: ''
+        },
+        routerList: [],
+        fullList: [],
     },
     mutations: {
         /**
@@ -32,7 +36,7 @@ export default {
          * @param {RouterInfo} code 设置内容
          */
         pushInRouterList(state, code: RouterInfo) {
-            if (state.routerList.findIndex(v => v.router == code.router)) {
+            if (state.routerList.findIndex(v => v.router == code.router) !== -1) {
                 return;
             }
             state.routerList.push(code);
