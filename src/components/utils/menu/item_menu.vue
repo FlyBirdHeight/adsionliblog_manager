@@ -10,7 +10,7 @@
           <item-menu :menu-data="item.children" />
         </template>
       </el-sub-menu>
-      <el-menu-item :index="item.path" v-else>
+      <el-menu-item @click="clickMenuItem(item)" :index="item.path" v-else>
         <el-icon v-if="item.icon"><component :is="$icon[item.icon]" /></el-icon>
         <span>{{ item.name }}</span>
       </el-menu-item>
@@ -35,8 +35,12 @@ export default defineComponent({
   },
   setup(props, context) {
     const menuInfo = isReactive(props.menuData) ? props.menuData : reactive(props.menuData)
+    const clickMenuItem = (item: any) => {
+      // console.log(item);
+    }
     return {
       menuInfo,
+      clickMenuItem
     }
   },
 })

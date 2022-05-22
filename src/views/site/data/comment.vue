@@ -2,12 +2,14 @@
 <h1>评论数据统计</h1>
 </template>
 <script lang="ts">
-import { ref, defineComponent, reactive } from 'vue'
-import { Options, Vue } from 'vue-class-component'
-export default defineComponent({
-    setup(props, context){
-    }
-})
+export default {
+    name: "SiteComment"
+}
 </script>
-<style lang="scss">
+<script lang="ts" setup>
+import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
+const props = defineProps()
+const emit = defineEmits([])
+</script>
+<style lang="scss" scoped>
 </style>

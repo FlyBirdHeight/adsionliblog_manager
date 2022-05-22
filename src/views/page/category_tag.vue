@@ -38,6 +38,11 @@
   </el-tabs>
   <category-form-dialog @submitSuccess="changeCategoryInsertStatus" />
 </template>
+<script lang="ts">
+export default {
+  name: 'CategoryTag',
+}
+</script>
 <script lang="ts" setup>
 import { ref, reactive, provide, watchEffect } from 'vue'
 import { State } from '@/store/index'

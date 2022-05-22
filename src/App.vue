@@ -20,7 +20,7 @@ import RouterHeader from '@/components/layout/header.vue'
 @Options({
   components: {
     leftMenu,
-    RouterHeader
+    RouterHeader,
   },
 })
 export default class App extends Vue {

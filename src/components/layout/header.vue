@@ -43,6 +43,7 @@ export default {
 type RouterInfo = {
   name: string
   router: string
+  componentName: string
 }
 const headerList = ref([])
 const activeRouter = reactive<RouetrInfo>({})
@@ -164,13 +165,16 @@ const closeRightList = () => {
 }
 
 watch(route, (newV, oldV) => {
+  newV.meta.keepAlive = true
   storeMutation.setActiveRouter({
-    name: newV.name,
+    name: newV.meta.name,
     router: newV.fullPath,
+    componentName: newV.name,
   })
   storeMutation.pushInRouterList({
-    name: newV.name,
+    name: newV.meta.name,
     router: newV.fullPath,
+    componentName: newV.name,
   })
 })
 watchEffect(() => {

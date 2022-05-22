@@ -7,7 +7,11 @@
     </div>
   </div>
 </template>
-
+<script lang="ts">
+export default {
+  name: "AdsionliHome"
+}
+</script>
 <script lang="ts" setup>
 
 </script>

@@ -13,17 +13,19 @@
   </el-menu>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, onMounted, watch, ref, unref } from 'vue'
+import { defineComponent, reactive, onMounted, watch, ref, unref, watchEffect } from 'vue'
 import GenerateMenuData from '@/modules/menu_read/read'
 import { setup, Options } from 'vue-class-component'
 import ItemMenu from '@/components/utils/menu/item_menu.vue'
 import { useRoute } from 'vue-router'
+import { useState } from '@/utils/store/map'
 export default defineComponent({
   components: {
     ItemMenu,
   },
   setup() {
     let generateMenuData = new GenerateMenuData()
+    const storeState = useState('header', ['activeRouter'])
     const route = useRoute()
     const firstJoin = ref<boolean>(true)
     const collapse = ref<boolean>(false)
@@ -38,6 +40,9 @@ export default defineComponent({
         }
       }
     )
+    watchEffect(() => {
+      activeMenu.value = storeState.activeRouter.value.router
+    })
     return {
       menuData,
       activeMenu,
@@ -47,10 +52,4 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
-// :root {
-//   --text-color: #fff;
-//   --background-color: transparent;
-//   --el-menu-hover-bg-color: #fff;
-// }
-</style>
+<style lang="scss" scoped></style>

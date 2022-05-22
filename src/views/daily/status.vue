@@ -17,6 +17,11 @@
     </el-tab-pane>
   </el-tabs>
 </template>
+<script lang="ts">
+export default {
+  name: 'DailyStatusSetting',
+}
+</script>
 <script lang="ts" setup>
 import DailyStatus from '@/components/daily/status/status.vue'
 import { ref, reactive, provide } from 'vue'

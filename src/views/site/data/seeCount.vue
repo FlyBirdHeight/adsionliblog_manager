@@ -1,11 +1,15 @@
 <template>
-  <h1>点击人数</h1>
+<h1>点击人数</h1>
 </template>
 <script lang="ts">
-import { ref, defineComponent, reactive } from 'vue'
-import { Options, Vue } from 'vue-class-component'
-export default defineComponent({
-  setup(props, context) {},
-})
+export default {
+  name: "SiteSeeCount"
+}
 </script>
-<style lang="scss"></style>
+<script lang="ts" setup>
+import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
+const props = defineProps()
+const emit = defineEmits([])
+</script>
+<style lang="scss" scoped>
+</style>

@@ -1,6 +1,6 @@
 import { Module } from 'vuex';
 type RouterInfo = {
-    name: string, router: string
+    name: string, router: string, componentName: string
 }
 //暴露给外部进行类型效验
 export interface HeaderList {
@@ -16,7 +16,8 @@ export default {
     state: {
         activeRouter: {
             name: '',
-            router: ''
+            router: '',
+            componentName: ''
         },
         routerList: [],
         fullList: [],
