@@ -36,6 +36,13 @@
                             "path": "category_tag",
                             "component": "views/page/category_tag",
                             "icon": "Connection"
+                        },
+                        {
+                            "name": "学习闪卡",
+                            "routeName": "LearningCard",
+                            "path": "learning-card",
+                            "component": "views/page/learning_card",
+                            "icon": "Notebook"
                         }
                     ]
                 }

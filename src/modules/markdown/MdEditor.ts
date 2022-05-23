@@ -1,6 +1,4 @@
 import MdEditor from 'md-editor-v3';
-console.log(MdEditor);
-console.log(MdEditor.config);
 MdEditor.config({
     editorExtensions: {
         highlight: {

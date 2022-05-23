@@ -6,6 +6,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     Arrange_upload: typeof import('./src/components/form/image/arrange_upload.vue')['default']
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
+    Card: typeof import('./src/components/pages/learning_card/card.vue')['default']
+    Card_fold: typeof import('./src/components/pages/learning_card/card_fold.vue')['default']
     Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
     Category_form: typeof import('./src/components/dialog/body/category_form.vue')['default']
     Column: typeof import('./src/components/image/arrangeImage/column.vue')['default']
@@ -47,6 +49,7 @@ declare module 'vue' {
     ElPopconfirm: typeof import('element-plus/es')['ElPopconfirm']
     ElProgress: typeof import('element-plus/es')['ElProgress']
     ElRadio: typeof import('element-plus/es')['ElRadio']
+    ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']

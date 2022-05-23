@@ -26,7 +26,6 @@ watch(
         }
       }
     }
-    console.log(includeList.value);
   },
   {
     deep: true,
