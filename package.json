@@ -14,7 +14,7 @@
     "default-passive-events": "^2.0.0",
     "diff-match-patch": "^1.0.5",
     "element-plus": "^2.0.2",
-    "md-editor-v3": "^1.10.2",
+    "md-editor-v3": "^2.0.0",
     "spark-md5": "^3.0.2",
     "typeit": "^8.4.0",
     "vue": "^3.0.0",

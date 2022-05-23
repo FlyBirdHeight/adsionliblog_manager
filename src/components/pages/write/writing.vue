@@ -22,8 +22,9 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, defineEmits, defineProps } from 'vue'
-import MdEditor from 'md-editor-v3'
+import MdEditor from '@/modules/markdown/MdEditor'
 import 'md-editor-v3/lib/style.css'
+
 import axios from 'axios'
 import { UploadImage, UploadImageResponse, WritingForm } from '@/modules/files/uploadImage'
 const emit = defineEmits(['dataGet'])
@@ -50,6 +51,7 @@ watch(
     }
   }
 )
+
 const uploadImage = async (files: FileList, callback: (urls: string[]) => void) => {
   try {
     const res: any = await upload.uploadImage(files)
