@@ -9,17 +9,13 @@
     @closeDialog="closeDialog"
   >
     <template #mainBody>
-      <learning-card-form
-        style="max-height: 700px; overflow-y: auto"
-        @closeDialog="closeDialog"
-        @submitForm="submitForm"
-      />
+      <learning-card-form @closeDialog="closeDialog" @submitForm="submitForm" />
     </template>
   </dialog-show>
 </template>
 <script lang="ts">
 import { ref, defineEmits, defineProps, computed, reactive } from 'vue'
-import { CardFold, InsertCardFold } from '@/modules/type/cardFold'
+import { CardFold, EditCardFold } from '@/modules/type/cardFold'
 export default {
   name: 'LearningCardEdit',
 }

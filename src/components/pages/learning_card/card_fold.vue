@@ -121,6 +121,7 @@ watch(firstShow, (newV, oldV) => {
       }
       .solution-not-show {
         text-align: center;
+        overflow-y: hidden;
         span {
           font-size: 18px;
           font-weight: 600;

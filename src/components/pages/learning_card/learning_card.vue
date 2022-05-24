@@ -20,56 +20,20 @@ export default {
 const Masonery = require('masonry-layout')
 import CardAbbreviation from '@/components/pages/learning_card/card.vue'
 import LearningCardInfo from '@/components/dialog/page/learning_card/info.vue'
+import { getData } from '../../../plugin/page/learning_card/handle'
 /**
  * @property {CardFold[]} cardFoldList 学习闪卡展示数据
  */
-const cardFoldList = ref<CardFold[]>([
-  {
-    id: 1,
-    title: 'cookie知识点内容复习',
-    questions: [
-      {
-        id: 1,
-        title: 'cookie的缺点是什么?',
-        solution: '每一次请求都需要携带设定的cookie，导致性能开销',
-        difficulty: 'easy',
-      },
-      {
-        id: 2,
-        title: '简述一下什么是cookie?',
-        solution: '',
-        difficulty: 'easy',
-      },
-      {
-        id: 3,
-        title: 'cookie的属性有哪一些，分别作用是什么?cookie的属性有哪一些，分别作用是什么?',
-        solution: '',
-        difficulty: 'normal',
-      },
-      {
-        id: 4,
-        title: 'cookie的使用场景。',
-        solution: '',
-        difficulty: 'easy',
-      },
-      {
-        id: 5,
-        title: 'cookie与localStorage/sessionStorage的区别?',
-        solution: '',
-        difficulty: 'normal',
-      },
-    ],
-    creator: 'adsionli',
-    created_at: '2022-05-22',
-    updated_at: '2022-05-22',
-    sort: 0,
-    importance: true,
-  },
-])
+const cardFoldList = ref<CardFold[]>([])
 const show = reactive({
   cardFold: false,
   editCard: false,
   addCard: false,
+})
+const pagination = reactive({
+  page: 1,
+  size: 20,
+  sort: { name: 'sort', type: 'desc' },
 })
 const cardInfo = ref<CardFold | null>(null)
 const questionIndex = ref<number>(0)
@@ -109,7 +73,9 @@ const buildGridLayout = () => {
     })
   })
 }
-onMounted(() => {
+onMounted(async () => {
+  cardFoldList.value = await getData('list', pagination)
+  console.log(cardFoldList.value)
   buildGridLayout()
 })
 </script>

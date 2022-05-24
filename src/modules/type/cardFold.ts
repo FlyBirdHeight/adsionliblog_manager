@@ -2,7 +2,9 @@ type CardFoldQuestion = {
     id?: number,
     title: string,
     solution: string,
-    difficulty: string,
+    difficulty: number,
+    created_at?: string,
+    updated_at?: string,
 }
 type CardFold = {
     id: number,
@@ -21,7 +23,9 @@ type EditCardFold = {
     questions: CardFoldQuestion[],
     creator: string,
     sort: number,
-    importance: boolean
+    importance: number,
+    created_at?: string,
+    updated_at?: string,
 }
 
 export {
