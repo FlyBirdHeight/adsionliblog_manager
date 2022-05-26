@@ -9,7 +9,13 @@
     @closeDialog="closeDialog"
   >
     <template #mainBody>
-      <learning-card-form @closeDialog="closeDialog" @submitForm="submitForm" />
+      <learning-card-form
+        :type="type"
+        :cardInfo="cardInfo"
+        @closeDialog="closeDialog"
+        @updateList="updateList"
+        @updateShowData="updateShowData"
+      />
     </template>
   </dialog-show>
 </template>
@@ -27,7 +33,7 @@ const props = defineProps<{
   show: boolean
   cardInfo?: CardFold
 }>()
-const emit = defineEmits(['closeDialog'])
+const emit = defineEmits(['closeDialog', 'updateList', 'updateShowData'])
 const title = '添加闪卡'
 const type = computed(() => {
   if (props.cardInfo) {
@@ -36,15 +42,20 @@ const type = computed(() => {
   return 'add'
 })
 /**
- * @method submitForm 提交表单数据
- * @param {EditCardFold} val 提交数据
- * @param {string} type 提交类型
+ * @method updateList 创建成功后，刷新闪卡内容
  */
-const submitForm = (val: EditCardFold, type: string) => {
-  console.log(val, type)
+const updateList = () => {
+  emit('updateList')
 }
 const closeDialog = () => {
   emit('closeDialog')
+}
+/**
+ * @method updateShowData 如果是更改已有数据内容，就需要返回数据id
+ * @param {number} id
+ */
+const updateShowData = (id: number) => {
+  emit('updateShowData', id)
 }
 </script>
 <style lang="scss" scoped>

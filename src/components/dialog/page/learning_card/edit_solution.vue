@@ -13,6 +13,7 @@
         :preview="editor.preview"
         :toolbar="editor.toolbar"
         :submit="editor.submit"
+        :page="props.page"
         @submitData="submitData"
       ></base-md-editor>
     </template>
@@ -37,6 +38,7 @@ const props = defineProps<{
   show: boolean
   title: string
   index: number
+  page: string
 }>()
 const editor = reactive({
   preview: false,

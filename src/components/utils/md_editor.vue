@@ -1,5 +1,12 @@
 <template>
-  <md-editor :preview="props.preview" :toolbars="props.toolbar" :onUploadImg="uploadImage" v-model="page.text" />
+  <md-editor
+    :previewOnly="props.previewOnly"
+    :preview="props.preview"
+    previewTheme="github"
+    :toolbars="props.toolbar"
+    :onUploadImg="uploadImage"
+    v-model="page.text"
+  />
 </template>
 <script lang="ts">
 import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
@@ -23,6 +30,18 @@ const props = defineProps({
   submit: {
     type: Boolean,
     default: false,
+  },
+  previewOnly: {
+    type: Boolean,
+    default: false,
+  },
+  previewOnlyData: {
+    type: String,
+    default: '',
+  },
+  page: {
+    type: String,
+    default: '',
   },
 })
 const page = reactive({
@@ -55,11 +74,30 @@ const uploadImage = async (files: FileList, callback: (urls: string[]) => void) 
     console.log(e)
   }
 }
+watch(
+  () => props.submit,
+  (newV, oldV) => {
+    if (newV) {
+      console.log(newV)
+
+      emit('submitData', page.text)
+      page.text = ''
+    }
+  }
+)
 watchEffect(() => {
-  if (props.submit) {
-    emit('submitData', page.text)
-    page.text = ''
+  if (props.previewOnly) {
+    page.text = props.previewOnlyData
+  }
+})
+watchEffect(() => {
+  if (props.page !== '') {
+    page.text = props.page
   }
 })
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.md {
+  --md-bk-color: transparent;
+}
+</style>

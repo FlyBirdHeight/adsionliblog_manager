@@ -33,7 +33,18 @@ const apiList = {
  * @param {EditCardFold} newData 
  */
 const handleUpdateData = (oldData: EditCardFold, newData: EditCardFold) => {
-    console.log(oldData, newData);
+    let oldQuestion = oldData.questions;
+    let newQuestion = oldData.questions;
+    let editQuestion = [];
+    let addQuestion = [];
+    let deleteQuestion = [];
+    for(let i = 0; i < newQuestion.length; i++){
+        if(!Reflect.has(newQuestion[i], 'id')){
+            addQuestion.push(newQuestion[i]);
+            continue;
+        }
+        
+    }
 }
 /**
  * @method submitData 提交创建或修改给后端
@@ -74,7 +85,10 @@ const getData = async (type: string, options: any) => {
         let requestData = await axios(apiInfo);
         let cardList = requestData.data.data;
 
-        return cardList;
+        return {
+            data: cardList,
+            total: requestData.data.total
+        };
     } catch (e) {
         console.log(e);
         return [];
@@ -87,10 +101,13 @@ const getData = async (type: string, options: any) => {
 const deleteCard = async (id: number) => {
     try {
         let apiInfo = apiList.delete;
-        apiInfo.url = apiInfo.url + `?id=${id}`;
+        apiInfo.url = apiInfo.url;
         let requestData = await axios({
             method: Reflect.get(apiInfo, 'method'),
-            url: apiInfo.url
+            url: apiInfo.url,
+            data: {
+                id
+            }
         });
         let status = requestData.data.status;
 
@@ -100,8 +117,12 @@ const deleteCard = async (id: number) => {
         return false;
     }
 }
+
+
+
 export {
     submitData,
     getData,
-    deleteCard
+    deleteCard,
+    handleUpdateData
 }

@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <el-tag
+      effect="dark"
+      :type="difficultyTag[cardInfo.questions[showIndex].difficulty]"
+      style="position: absolute; top: -20px; right: 20px; z-index: 999"
+      >难度:{{ difficultyLevel[cardInfo.questions[showIndex].difficulty] }}</el-tag
+    >
     <div class="arrow" v-if="cardInfo.questions.length != 0" @click="changeQuestion('pre')">
       <el-icon><component :is="$icon['ArrowLeftBold']" /></el-icon>
     </div>
@@ -14,7 +20,10 @@
       <div class="solution-container">
         <transition name="solution-active">
           <div class="solution" v-if="showSolution">
-            {{ cardInfo.questions[showIndex].solution }}
+            <base-md-editor
+              :previewOnly="true"
+              :previewOnlyData="cardInfo.questions[showIndex].solution"
+            ></base-md-editor>
           </div>
           <div class="solution solution-not-show" v-else>
             <span>思考一下</span>
@@ -37,10 +46,14 @@ export default {
 }
 </script>
 <script lang="ts" setup>
+import BaseMdEditor from '@/components/utils/md_editor.vue'
 const cardInfo = inject('cardInfo')
 const firstShow = inject('questionIndex')
 const showIndex = ref<number>(0)
 const showSolution = ref<boolean>(false)
+const difficultyLevel = ['简单', '普通', '较难']
+const difficultyTag = ['success', 'warning', 'danger']
+// 难度：{{ difficultyLevel[cardInfo.questions[showIndex].difficulty] }}
 const changeQuestion = (type: string) => {
   if (type === 'pre') {
     showIndex.value = showIndex.value == 0 ? cardInfo.value.questions.length - 1 : showIndex.value - 1
@@ -49,9 +62,16 @@ const changeQuestion = (type: string) => {
   }
   showSolution.value = false
 }
-watch(firstShow, (newV, oldV) => {
-  showIndex.value = firstShow.value
-})
+watch(
+  firstShow,
+  (newV, oldV) => {
+    showIndex.value = firstShow.value
+    showSolution.value = false
+  },
+  {
+    deep: true,
+  }
+)
 </script>
 <style lang="scss" scoped>
 .container {

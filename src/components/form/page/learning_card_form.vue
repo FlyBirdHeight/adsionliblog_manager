@@ -62,7 +62,9 @@
             </el-form-item>
           </el-form>
           <div class="question-form_delete">
-            <el-button @click="writeSolution(index, question.title)" plain type="primary">编辑答案</el-button>
+            <el-button @click="writeSolution(index, question.title, question.solution)" plain type="primary"
+              >编辑答案</el-button
+            >
             <el-button type="danger" plain @click="editQuestion('delete', index)">删除</el-button>
           </div>
         </div>
@@ -82,6 +84,7 @@
     :show="editSolution.show"
     :title="editSolution.title"
     :index="editSolution.index"
+    :page="editSolution.page"
     @setSolution="setSolution"
   ></edit-solution-data>
 </template>
@@ -101,7 +104,42 @@ const formData = reactive<EditCardFold>({
   sort: 0,
   importance: 0,
 })
-const emit = defineEmits(['submitForm', 'closeDialog'])
+const oldData = ref(null)
+const emit = defineEmits(['closeDialog', 'updateList', 'updateShowData'])
+const props = defineProps({
+  type: {
+    type: String,
+    default: 'add',
+  },
+  cardInfo: {
+    type: Object,
+    default: null,
+  },
+})
+watch(
+  () => props.type,
+  (newV, oldV) => {
+    if (newV === 'update') {
+      oldData.value = props.cardInfo
+      for (let key of Reflect.ownKeys(formData)) {
+        if (key === 'questions' && props.cardInfo[key].length != 0) {
+          formData[key] = props.cardInfo[key].map((v) => {
+            Reflect.deleteProperty(v, 'created_at')
+            Reflect.deleteProperty(v, 'updated_at')
+            return v
+          })
+          continue
+        }
+        formData[key] = props.cardInfo[key]
+      }
+      console.log(formData)
+    }
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+)
 /**
  * @property {string} editType 提交数据的形式
  * @property {FormInstance} formRef form表单实例
@@ -123,15 +161,17 @@ const editSolution = reactive({
   show: false,
   index: 0,
   title: '',
+  page: '',
 })
 /**
  * @method writeSolution 编写答案
  * @param {number} index
  */
-const writeSolution = (index: number, title: string) => {
+const writeSolution = (index: number, title: string, page: string) => {
   editSolution.show = true
   editSolution.title = title || '答案编辑'
   editSolution.index = index
+  editSolution.page = page
 }
 const setSolution = (val: string, index: number) => {
   formData.questions[index].solution = val
@@ -140,6 +180,7 @@ const closeDialog = () => {
   editSolution.show = false
   editSolution.index = 0
   editSolution.title = ''
+  editSolution.page = ''
 }
 /**
  * @method editQuestion 修改问题内容
@@ -183,9 +224,6 @@ const resetFormData = () => {
  * @method submit 提交数据
  */
 const submit = async () => {
-  if (editType === 'update') {
-    return
-  }
   submitDataLoading.value = true
   //NOTE: 首先效验不是动态添加的数据,这里要使用两个状态来记录是否都符合提交需求
   let cardStatus = false
@@ -214,7 +252,10 @@ const submit = async () => {
     submitDataLoading.value = false
     return
   }
-
+  if (props.type === 'update') {
+    handleUpdateData(oldData.value, formData)
+    return
+  }
   let status = await submitData('add', formData)
   if (status) {
     ElMessage({
@@ -223,6 +264,7 @@ const submit = async () => {
     })
     submitDataLoading.value = false
     resetFormData()
+    emit('updateList')
     emit('closeDialog')
     return
   } else {
@@ -235,10 +277,10 @@ const submit = async () => {
 }
 </script>
 <script lang="ts">
-import { ref, toRef, defineProps, defineEmits, computed, watch, reactive, watchEffect, nextTick } from 'vue'
+import { ref, toRef, defineProps, defineEmits, computed, watch, reactive, watchEffect, nextTick, inject } from 'vue'
 import { EditCardFold } from '@/modules/type/cardFold'
 import { LearningCardRule, QuestionRule } from '@/plugin/page/learning_card/rule'
-import { submitData } from '@/plugin/page/learning_card/handle'
+import { submitData, handleUpdateData } from '@/plugin/page/learning_card/handle'
 export default {
   name: 'LearningCardForm',
 }

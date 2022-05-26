@@ -1,5 +1,8 @@
 <template>
   <div class="cardAbbreviation">
+    <div class="cardAbbreviation-tag" :style="{ backgroundColor: cardInfo.importance == 0 ? '#409eff' : '#f56c6c' }">
+      <sup>{{ importance[cardInfo.importance] }}</sup>
+    </div>
     <div class="cardAbbreviation-header">
       <el-tooltip effect="dark" :content="cardInfo.title" placement="top-start">
         <div class="cardAbbreviation-header_title">
@@ -10,9 +13,11 @@
         <el-button-group size="small">
           <el-button type="info" @click="see(cardInfo, 0)">查看</el-button>
           <el-button type="primary" @click="edit(cardInfo)">修改</el-button>
+          <el-button type="danger" @click="destory(cardInfo)">删除</el-button>
         </el-button-group>
       </div>
     </div>
+
     <div class="container-divide" />
     <div class="cardAbbreviation-body">
       <div v-if="cardInfo.questions.length != 0">
@@ -41,6 +46,7 @@
 <script lang="ts">
 import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
 import { CardFold } from '@/modules/type/cardFold'
+import { deleteCard } from '../../../plugin/page/learning_card/handle'
 export default {
   name: 'CardAbbreviation',
 }
@@ -49,8 +55,9 @@ export default {
 const props = defineProps<{
   cardInfo: CardFold
 }>()
-const emit = defineEmits(['clickCardInfo'])
+const emit = defineEmits(['clickCardInfo', 'deleteData'])
 const maxShowLength = ref<number>(4)
+const importance = ['普通', '重要']
 /**
  * @method see 查看学习闪卡具体内容
  */
@@ -60,6 +67,21 @@ const see = (cardInfo: CardFold, index: number, type: string) => {
 const edit = (cardInfo: CardFold) => {
   emit('clickCardInfo', cardInfo, { type: 'edit' })
 }
+const destory = async (cardInfo: CardFold) => {
+  let status = await deleteCard(cardInfo.id)
+  if (status) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功',
+    })
+    emit('deleteData', cardInfo.id)
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败!',
+    })
+  }
+}
 </script>
 <style lang="scss" scoped>
 .cardAbbreviation {
@@ -68,7 +90,22 @@ const edit = (cardInfo: CardFold) => {
   border-radius: 4px;
   margin: 15px 20px;
   width: 350px;
+  position: relative;
   box-shadow: 0px 20px 32px 4px rgba(0, 0, 0, 0.04), 0px 8px 15px rgba(0, 0, 0, 0.08);
+  .cardAbbreviation-tag {
+    position: absolute;
+    top: -8px;
+    right: -15px;
+    text-align: center;
+    height: 18px;
+    border-radius: 10px;
+    sup {
+      font-size: 12px;
+      color: #fff;
+      padding: 0 5px;
+      transform: translateY(-50%) translate(100%);
+    }
+  }
   .cardAbbreviation-header {
     height: 50px;
     display: flex;
