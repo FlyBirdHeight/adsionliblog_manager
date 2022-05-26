@@ -36,14 +36,21 @@
             size="small"
           >
             <el-form-item label="问题:" prop="title">
-              <el-input v-model="question.title" placeholder="请输入问题" maxlength="50" show-word-limit />
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 3 }"
+                v-model="question.title"
+                placeholder="请输入问题"
+                maxlength="50"
+                show-word-limit
+              />
             </el-form-item>
             <el-form-item label="答案:" prop="solution" class="question-form_item">
               <el-input
                 v-model="question.solution"
                 placeholder="请输入问题答案，支持markdown"
                 type="textarea"
-                :autosize="{ minRows: 3, maxRows: 8 }"
+                :autosize="{ minRows: 3, maxRows: 5 }"
               />
             </el-form-item>
             <el-form-item label="难度" class="question-form_item">
@@ -55,6 +62,7 @@
             </el-form-item>
           </el-form>
           <div class="question-form_delete">
+            <el-button @click="writeSolution(index, question.title)" plain type="primary">编辑答案</el-button>
             <el-button type="danger" plain @click="editQuestion('delete', index)">删除</el-button>
           </div>
         </div>
@@ -63,14 +71,23 @@
         <el-button size="small" type="primary" :loading="submitDataLoading" @click="editQuestion('add')"
           >添加问题</el-button
         >
+        <el-button size="small" type="warning" :loading="submitDataLoading" @click="resetFormData">重置</el-button>
         <el-button size="small" type="success" :loading="submitDataLoading" @click="submit">提交</el-button>
         <el-button size="small" type="info" :loading="submitDataLoading" @click="emit('closeDialog')">关闭</el-button>
       </div>
     </el-form>
   </el-scrollbar>
+  <edit-solution-data
+    @closeDialog="closeDialog"
+    :show="editSolution.show"
+    :title="editSolution.title"
+    :index="editSolution.index"
+    @setSolution="setSolution"
+  ></edit-solution-data>
 </template>
 
 <script lang="ts" setup>
+import EditSolutionData from '@/components/dialog/page/learning_card/edit_solution.vue'
 const formData = reactive<EditCardFold>({
   title: '',
   questions: [
@@ -102,6 +119,28 @@ const cardRule = reactive<FormRules>(LearningCardRule)
 const questionRule = reactive<FormRules>(QuestionRule)
 const questionRefList = ref([])
 const submitDataLoading = ref<boolean>(false)
+const editSolution = reactive({
+  show: false,
+  index: 0,
+  title: '',
+})
+/**
+ * @method writeSolution 编写答案
+ * @param {number} index
+ */
+const writeSolution = (index: number, title: string) => {
+  editSolution.show = true
+  editSolution.title = title || '答案编辑'
+  editSolution.index = index
+}
+const setSolution = (val: string, index: number) => {
+  formData.questions[index].solution = val
+}
+const closeDialog = () => {
+  editSolution.show = false
+  editSolution.index = 0
+  editSolution.title = ''
+}
 /**
  * @method editQuestion 修改问题内容
  * @param {string} type 处理类型

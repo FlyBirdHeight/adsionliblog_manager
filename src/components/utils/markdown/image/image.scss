@@ -1,0 +1,111 @@
+.image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin: 10px auto;
+    padding: auto;
+    width: 60%;
+
+    .image-error {
+        display: flex;
+        justify-content: center;
+        vertical-align: middle;
+        align-items: center;
+        color: #c0c4cc;
+        font-size: 16px;
+        font-weight: 700;
+        background-color: #f5f7fa;
+        width: 100%;
+        height: 100%;
+    }
+
+    .image-preview {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+
+        .image-preview-board {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background: rgb(0, 0, 0);
+            opacity: .5;
+        }
+
+        .image-preview-btn {
+            color: #fff;
+            background: #606266;
+            font-size: 25px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            display: flex;
+            opacity: .7;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 800;
+            padding: 0px;
+        }
+
+        .image-preview-close {
+            position: absolute;
+            top: 40px;
+            right: 30px;
+        }
+
+        .image-preview-pre {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 40px;
+        }
+
+        .image-preview-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 40px;
+        }
+
+        .image-preview-btn-group {
+            position: absolute;
+            border-radius: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 30px;
+            padding: 0 20px;
+            width: 300px;
+            height: 40px;
+        }
+
+        .image-preview-bottom-btn {
+            display: flex;
+            text-align: justify;
+            justify-content: space-around;
+            cursor: default;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-preview-main-body {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .image-data {
+        max-width: 100%;
+        max-height: 100%;
+        vertical-align: top;
+    }
+}

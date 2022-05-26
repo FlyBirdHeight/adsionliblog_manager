@@ -1,0 +1,78 @@
+@mixin marginSet($value...) {
+    margin: $value;
+}
+
+//top right bottom left
+@mixin paddingSet($value...) {
+    padding: $value;
+}
+
+@mixin overflow($overflowType: '') {
+    @if $overflowType==x {
+        overflow-x: scroll;
+
+        &::-webkit-scrollbar {
+            /*滚动条整体样式*/
+            width: 5px;
+            /*高宽分别对应横竖滚动条的尺寸*/
+            height: 5px;
+            display: none;
+        }
+    }
+
+    @else if $overflowType==y {
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+            /*滚动条整体样式*/
+            width: 5px;
+            /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+    }
+
+    @else {
+        overflow: scroll;
+
+        &::-webkit-scrollbar {
+            /*滚动条整体样式*/
+            width: 5px;
+            /*高宽分别对应横竖滚动条的尺寸*/
+            height: 5px;
+        }
+    }
+
+    &::-webkit-scrollbar-thumb {
+        /*滚动条里面小方块*/
+        border-radius: 3px;
+        background-color: rgb(97, 93, 93);
+    }
+
+    &::-webkit-scrollbar-track {
+        /*滚动条里面轨道*/
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 3px;
+    }
+}
+
+@mixin pageTitle() {
+    text-align: left;
+    vertical-align: inherit;
+    padding: 5px;
+    white-space: pre-line;
+    outline: none;
+}
+
+@mixin subTitle($fontSize, $fontColor: null) {
+    font-family: -apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei',
+        'Microsoft JhengHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Source Han Sans CN', 'Noto Sans SC',
+        'Source Han Sans TC', 'Noto Sans CJK TC', 'WenQuanYi Micro Hei', SimSun, sans-serif;
+    line-height: 1.7;
+    font-size: $fontSize;
+    line-height: 1.1;
+    display: block;
+    font-weight: 300;
+    margin: 10px 0 0;
+    color: $fontColor;
+}

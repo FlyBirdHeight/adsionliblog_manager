@@ -24,8 +24,6 @@ export default {
 import { ref, reactive, computed, watch, defineEmits, defineProps } from 'vue'
 import MdEditor from '@/modules/markdown/MdEditor'
 import 'md-editor-v3/lib/style.css'
-
-import axios from 'axios'
 import { UploadImage, UploadImageResponse, WritingForm } from '@/modules/files/uploadImage'
 const emit = defineEmits(['dataGet'])
 const props = defineProps({

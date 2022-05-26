@@ -50,9 +50,9 @@ module.exports = {
                 // 全局sass变量	
                 //sass-loader 新版本
                 prependData: `
-                    @import "./public/scss/index.scss";
                     @import "./public/scss/variable.scss";
                     @import "./public/scss/mixin.scss";
+                    @import "./public/scss/index.scss";
                 `
             }
         }
