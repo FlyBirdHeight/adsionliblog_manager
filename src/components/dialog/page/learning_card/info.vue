@@ -9,7 +9,7 @@
     @closeDialog="closeDialog"
   >
     <template #mainBody>
-      <card-fold-info></card-fold-info>
+      <card-fold-info v-if="show.cardFold"></card-fold-info>
     </template>
   </dialog-show>
 </template>

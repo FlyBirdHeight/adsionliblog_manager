@@ -40,7 +40,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, inject, watch } from 'vue'
+import { ref, inject, watch, onMounted } from 'vue'
 export default {
   name: 'CardFoldInfo',
 }
@@ -48,14 +48,23 @@ export default {
 <script lang="ts" setup>
 import BaseMdEditor from '@/components/utils/md_editor.vue'
 const cardInfo = inject('cardInfo')
-const firstShow = inject('questionIndex')
+const questionIndex = inject('questionIndex')
 const showIndex = ref<number>(0)
 const showSolution = ref<boolean>(false)
 const difficultyLevel = ['简单', '普通', '较难']
 const difficultyTag = ['success', 'warning', 'danger']
-watch(cardInfo, (newV, oldV) => {
-  console.log(newV);
-  
+watch(
+  cardInfo,
+  (newV, oldV) => {
+    showSolution.value = false
+  },
+  {
+    immediate: true,
+  }
+)
+onMounted(() => {
+  showIndex.value = questionIndex.value
+  showSolution.value = false
 })
 // 难度：{{ difficultyLevel[cardInfo.questions[showIndex].difficulty] }}
 const changeQuestion = (type: string) => {
@@ -66,16 +75,6 @@ const changeQuestion = (type: string) => {
   }
   showSolution.value = false
 }
-watch(
-  firstShow,
-  (newV, oldV) => {
-    showIndex.value = firstShow.value
-    showSolution.value = false
-  },
-  {
-    deep: true,
-  }
-)
 </script>
 <style lang="scss" scoped>
 .container {
