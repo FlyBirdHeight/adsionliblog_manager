@@ -126,7 +126,10 @@ const deleteData = (id: number) => {
   buildGridLayout()
 }
 const updateShowData = async (id: number) => {
-  console.log(id)
+  let index = cardFoldList.value.findIndex((v) => v.id === id)
+  let newData = await getData('info', { id: id })
+  cardFoldList.value[index] = newData
+  buildGridLayout()
 }
 </script>
 <style lang="scss" scoped>

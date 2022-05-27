@@ -53,6 +53,10 @@ const showIndex = ref<number>(0)
 const showSolution = ref<boolean>(false)
 const difficultyLevel = ['简单', '普通', '较难']
 const difficultyTag = ['success', 'warning', 'danger']
+watch(cardInfo, (newV, oldV) => {
+  console.log(newV);
+  
+})
 // 难度：{{ difficultyLevel[cardInfo.questions[showIndex].difficulty] }}
 const changeQuestion = (type: string) => {
   if (type === 'pre') {

@@ -5,7 +5,6 @@
       ref="formRef"
       :model="formData"
       :rules="cardRule"
-      label-width="auto"
       label-position="left"
       size="small"
     >
@@ -31,7 +30,6 @@
             :ref="(el) => questionRefList.push(el)"
             :model="formData.questions[index]"
             :rules="questionRule"
-            label-width="auto"
             label-position="left"
             size="small"
           >
@@ -104,7 +102,7 @@ const formData = reactive<EditCardFold>({
   sort: 0,
   importance: 0,
 })
-const oldData = ref(null)
+let oldData = []
 const emit = defineEmits(['closeDialog', 'updateList', 'updateShowData'])
 const props = defineProps({
   type: {
@@ -117,10 +115,11 @@ const props = defineProps({
   },
 })
 watch(
-  () => props.type,
+  () => props.cardInfo,
   (newV, oldV) => {
-    if (newV === 'update') {
-      oldData.value = props.cardInfo
+    if (newV && props.type === 'update') {
+      oldData = []
+      oldData.push(...props.cardInfo.questions.map((v) => Object.assign({}, toRaw(v))))
       for (let key of Reflect.ownKeys(formData)) {
         if (key === 'questions' && props.cardInfo[key].length != 0) {
           formData[key] = props.cardInfo[key].map((v) => {
@@ -132,11 +131,10 @@ watch(
         }
         formData[key] = props.cardInfo[key]
       }
-      console.log(formData)
+      formData['id'] = props.cardInfo.id
     }
   },
   {
-    deep: true,
     immediate: true,
   }
 )
@@ -253,7 +251,20 @@ const submit = async () => {
     return
   }
   if (props.type === 'update') {
-    handleUpdateData(oldData.value, formData)
+    let status = await handleUpdateData(oldData, formData)
+    if (status) {
+      ElMessage({
+        message: '闪卡修改成功',
+        type: 'success',
+      })
+    } else {
+      ElMessage({
+        message: '闪卡修改失败',
+        type: 'error',
+      })
+    }
+    submitDataLoading.value = false
+    emit('updateShowData', formData.id)
     return
   }
   let status = await submitData('add', formData)
@@ -277,7 +288,19 @@ const submit = async () => {
 }
 </script>
 <script lang="ts">
-import { ref, toRef, defineProps, defineEmits, computed, watch, reactive, watchEffect, nextTick, inject } from 'vue'
+import {
+  ref,
+  toRef,
+  defineProps,
+  defineEmits,
+  computed,
+  watch,
+  reactive,
+  watchEffect,
+  nextTick,
+  inject,
+  toRaw,
+} from 'vue'
 import { EditCardFold } from '@/modules/type/cardFold'
 import { LearningCardRule, QuestionRule } from '@/plugin/page/learning_card/rule'
 import { submitData, handleUpdateData } from '@/plugin/page/learning_card/handle'

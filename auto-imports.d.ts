@@ -2,7 +2,6 @@
 // We suggest you to commit this file into source control
 declare global {
   const ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
-  const ElBadge: typeof import('element-plus/es')['ElBadge']
   const ElButton: typeof import('element-plus/es')['ElButton']
   const ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
   const ElCalendar: typeof import('element-plus/es')['ElCalendar']
@@ -37,7 +36,6 @@ declare global {
   const ElProgress: typeof import('element-plus/es')['ElProgress']
   const ElRadio: typeof import('element-plus/es')['ElRadio']
   const ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
-  const ElScroll: typeof import('element-plus/es')['ElScroll']
   const ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
   const ElSelect: typeof import('element-plus/es')['ElSelect']
   const ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
