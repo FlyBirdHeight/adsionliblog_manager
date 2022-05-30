@@ -25,11 +25,6 @@ onMounted(() => {
   console.log(drawData)
 
   nextTick(() => {
-    // new TypeIt('#writingPerson', {
-    //   strings: ['This is a great string.', 'But here is a better one.'],
-    //   speed: 50,
-    //   waitUntilVisible: true,
-    // }).go()
     let typeIt = new TypeIt('#writingPerson', {
       speed: 50,
       waitUntilVisible: true,
