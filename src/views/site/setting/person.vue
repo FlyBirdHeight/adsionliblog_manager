@@ -10,10 +10,8 @@
       >
     </el-button-group>
   </div>
-  <keep-alive>
-    <person-presentation v-if="showType === 1"></person-presentation>
-    <person-type-writer v-else></person-type-writer>
-  </keep-alive>
+  <person-presentation v-if="showType === 1"></person-presentation>
+  <person-type-writer v-else></person-type-writer>
 </template>
 <script lang="ts">
 import { ref } from 'vue'

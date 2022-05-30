@@ -77,6 +77,7 @@ declare module 'vue' {
     Overtime: typeof import('./src/components/dialog/daily/overtime.vue')['default']
     Page_info: typeof import('./src/components/pages/write/page_info.vue')['default']
     Pagination: typeof import('./src/components/utils/pagination.vue')['default']
+    Presentation: typeof import('./src/components/site/person/presentation.vue')['default']
     Right_click: typeof import('./src/components/utils/mouse_click/right_click.vue')['default']
     Right_menu: typeof import('./src/components/image/arrangeImage/right_menu.vue')['default']
     Set_info: typeof import('./src/components/dialog/image/upload/set_info.vue')['default']
@@ -88,6 +89,7 @@ declare module 'vue' {
     Table_toolbar: typeof import('./src/components/utils/table/table_toolbar.vue')['default']
     Tag: typeof import('./src/components/pages/category_tag/tag.vue')['default']
     Toolbar: typeof import('./src/components/layout/toolbar.vue')['default']
+    Typewriter: typeof import('./src/components/site/person/typewriter.vue')['default']
     Upload: typeof import('./src/components/image/uploadImage/upload.vue')['default']
     Writing: typeof import('./src/components/pages/write/writing.vue')['default']
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="type_writer">
     <div class="writing">
-      <h1>writing</h1>
+      <p class="multipleStrings"></p>
     </div>
     <div class="showing">
       <h1>markdownShow</h1>
@@ -9,12 +9,23 @@
   </div>
 </template>
 <script lang="ts">
+import { ref, nextTick, onMounted } from 'vue'
+
 export default {
   name: 'PersonTypeWriter',
 }
 </script>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { calculateDiff } from '@/modules/person/typewriter/diff.ts'
+// @ts-ignore
+import TypeIt from 'typeit'
+onMounted(() => {
+  new TypeIt('.multipleStrings', {
+    strings: ['This is a great string.', 'But here is a better one.'],
+    speed: 50,
+    waitUntilVisible: true,
+  }).go()
+})
 </script>
 <style lang="scss" scoped>
 .type_writer {
