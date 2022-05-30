@@ -21,15 +21,26 @@ import { calculateDiff } from '@/modules/person/typewriter/diff.ts'
 import TypeIt from 'typeit'
 const writingPerson = ref()
 onMounted(() => {
+  let drawData = calculateDiff()
+  console.log(drawData)
+
   nextTick(() => {
-    new TypeIt('#writingPerson', {
-      strings: ['This is a great string.', 'But here is a better one.'],
+    // new TypeIt('#writingPerson', {
+    //   strings: ['This is a great string.', 'But here is a better one.'],
+    //   speed: 50,
+    //   waitUntilVisible: true,
+    // }).go()
+    let typeIt = new TypeIt('#writingPerson', {
       speed: 50,
       waitUntilVisible: true,
-    }).go()
+    })
+    for (let handle of drawData) {
+      let fn = Reflect.get(typeIt, handle.fn)
+      typeIt = fn.call(typeIt, handle.props.data, handle.props.options)
+    }
+    typeIt.go()
   })
 })
-calculateDiff();
 </script>
 <style lang="scss" scoped>
 .type_writer {

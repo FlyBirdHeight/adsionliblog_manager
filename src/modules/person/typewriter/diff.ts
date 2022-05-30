@@ -87,7 +87,6 @@ const calculateDiff = () => {
                     from: index,
                     text: diff[i][1]
                 })
-                index += diff[i][1].length
             } else if (diff[i][0] == -1) {
                 handleData.push({
                     type: 2,
@@ -100,14 +99,12 @@ const calculateDiff = () => {
                     from: index,
                     length: diff[i][1].length
                 })
-                index += diff[i][1].length;
             }
+            index += diff[i][1].length
         }
     }
-    console.log(handleData);
 
-    getTypeData(handleData)
-    return handleData;
+    return getTypeData(handleData);
 }
 /**
  * @method getTypeData 获取Typeit需要显示的数据
@@ -115,32 +112,23 @@ const calculateDiff = () => {
  */
 const getTypeData = (handleData: (AddText | RemovalText | NormalText)[]) => {
     let editList = [];
-    let index = 0;
     for (let i = 0; i < handleData.length; i++) {
-        if (handleData[i].type === 0 || handleData[i].type === 1) {
-            if (length > ShowConfig.MAX_LENGTH) {
-                editList.push({
-                    fn: 'type',
-                    props: {
-                        instant: true,
-                        data: input.slice(handleData[i].from, handleData[i].from + handleData[i].length)
-                    }
-                })
-            } else {
-                editList.push({
-                    fn: 'type',
-                    props: {
-                        delay: ShowConfig.INSERT_STOP_TIME,
-                        data: input.slice(handleData[i].from, handleData[i].from + handleData[i].length)
-                    }
-                })
-            }
-        } else {
-
+        let from = handleData[i].type == 2 ? handleData[i].from - handleData[i].length : handleData[i].from
+        let insertProps = handleData[i].length > ShowConfig.MAX_LENGTH ? { instant: true } : { delay: ShowConfig.INSERT_STOP_TIME };
+        editList.push({
+            fn: 'type',
+            props: Object.assign({ data: handleData[i].type === 1 ? handleData[i].text?.replace(/\n/g, "<br>").replace(/\s/g, '&nbsp;') : input.slice(from, from + handleData[i].length).replace(/\n/g, "<br>").replace(/\s/g, '&nbsp;') }, { options: insertProps })
+        })
+        if (handleData[i].type === 2) {
+            let props = handleData[i].length > ShowConfig.MAX_LENGTH ? { instant: true } : { delay: ShowConfig.DELETE_STOP_TIME };
+            editList.push({
+                fn: "delete",
+                props: Object.assign({ data: handleData[i].length }, { options: props })
+            })
         }
     }
-    console.log(editList);
-    
+
+    return editList;
 }
 
 export {
