@@ -1,7 +1,7 @@
 <template>
   <div class="type_writer">
     <div class="writing">
-      <p class="multipleStrings"></p>
+      <p id="writingPerson"></p>
     </div>
     <div class="showing">
       <h1>markdownShow</h1>
@@ -19,13 +19,17 @@ export default {
 import { calculateDiff } from '@/modules/person/typewriter/diff.ts'
 // @ts-ignore
 import TypeIt from 'typeit'
+const writingPerson = ref()
 onMounted(() => {
-  new TypeIt('.multipleStrings', {
-    strings: ['This is a great string.', 'But here is a better one.'],
-    speed: 50,
-    waitUntilVisible: true,
-  }).go()
+  nextTick(() => {
+    new TypeIt('#writingPerson', {
+      strings: ['This is a great string.', 'But here is a better one.'],
+      speed: 50,
+      waitUntilVisible: true,
+    }).go()
+  })
 })
+calculateDiff();
 </script>
 <style lang="scss" scoped>
 .type_writer {

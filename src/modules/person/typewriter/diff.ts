@@ -63,6 +63,12 @@ type NormalText = {
     length: number,
     text?: string
 }
+
+enum ShowConfig {
+    "MAX_LENGTH" = 50,
+    "DELETE_STOP_TIME" = 40,
+    "INSERT_STOP_TIME" = 80
+}
 /**
  * @method calculateDiff 计算差异
  */
@@ -98,6 +104,8 @@ const calculateDiff = () => {
             }
         }
     }
+    console.log(handleData);
+
     getTypeData(handleData)
     return handleData;
 }
@@ -106,14 +114,33 @@ const calculateDiff = () => {
  * @param handleData 
  */
 const getTypeData = (handleData: (AddText | RemovalText | NormalText)[]) => {
-    let text = input;
+    let editList = [];
+    let index = 0;
     for (let i = 0; i < handleData.length; i++) {
-        if (handleData[i].type == 1) {
-            text = text.slice(0, handleData[i].from) + handleData[i].text + text.slice(handleData[i].from);
-        } else if (handleData[i].type == 2) {
-            text = text.slice(0, handleData[i].from - handleData[i].length) + text.slice(handleData[i].from);
+        if (handleData[i].type === 0 || handleData[i].type === 1) {
+            if (length > ShowConfig.MAX_LENGTH) {
+                editList.push({
+                    fn: 'type',
+                    props: {
+                        instant: true,
+                        data: input.slice(handleData[i].from, handleData[i].from + handleData[i].length)
+                    }
+                })
+            } else {
+                editList.push({
+                    fn: 'type',
+                    props: {
+                        delay: ShowConfig.INSERT_STOP_TIME,
+                        data: input.slice(handleData[i].from, handleData[i].from + handleData[i].length)
+                    }
+                })
+            }
+        } else {
+
         }
     }
+    console.log(editList);
+    
 }
 
 export {
