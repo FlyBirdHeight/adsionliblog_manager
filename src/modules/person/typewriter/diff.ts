@@ -1,50 +1,5 @@
 import * as DiffMatchPatch from "diff-match-patch";
-const input = `
-    type Deadline = {
-        timeRemaining: () => number,
-        didTimtout: boolean
-    }
-    type UploadFile = {
-        file: File,
-        sliceFile?: { file: File, idx: number }[],
-        name: string,
-        is_create: boolean,
-        directory_id: number | null,
-        status: string,
-        path: string,
-        hash_key?: any,
-        isExist: boolean,
-        uploadSuccess?: boolean,
-        precentage?: number,
-        type?: string
-    }
-    type PercentageList = {
-        status: string,
-        percentage: number
-    }
-`
-const output = `
-    type Deadline = {
-        timeRemaining: () => number,
-        didTimtout: boolean
-    }
-    type UploadFile = {
-        file: File,
-        sliceFile?: { file: File, idx: number }[],
-        name: string,
-        is_create: boolean,
-        directory_id: number | null,
-        status: string,
-        path: string,
-        hash_key: any,
-        isExist: boolean,
-    }
-
-    type PercentageList = {
-        status: string,
-        percentage: number
-    }
-`
+import axios from 'axios';
 type RemovalText = {
     type: number,
     from: number,
@@ -72,7 +27,12 @@ enum ShowConfig {
 /**
  * @method calculateDiff 计算差异
  */
-const calculateDiff = () => {
+const calculateDiff = async () => {
+    const inputFile = await axios.get('/data/input.md');
+    let input = inputFile.data;
+    const outputFile = await axios.get("/data/output.md");
+    let output = outputFile.data
+
     const dmp = new DiffMatchPatch.diff_match_patch();
     const diff = dmp.diff_main(input, output);
     dmp.diff_cleanupSemantic(diff);
@@ -97,27 +57,55 @@ const calculateDiff = () => {
                 handleData.push({
                     type: 0,
                     from: index,
-                    length: diff[i][1].length
+                    length: diff[i][1].length,
+                    text: diff[i][1]
                 })
             }
             index += diff[i][1].length
         }
     }
 
-    return getTypeData(handleData);
+    return getTypeData(handleData, input, output);
 }
 /**
  * @method getTypeData 获取Typeit需要显示的数据
  * @param handleData 
  */
-const getTypeData = (handleData: (AddText | RemovalText | NormalText)[]) => {
-    let editList = [];
+const getTypeData = (handleData: (AddText | RemovalText | NormalText)[], input: string, output: string) => {
+    let editList: any[] = [];
     for (let i = 0; i < handleData.length; i++) {
         let from = handleData[i].type == 2 ? handleData[i].from - handleData[i].length : handleData[i].from
         let insertProps = handleData[i].length > ShowConfig.MAX_LENGTH ? { instant: true } : { delay: ShowConfig.INSERT_STOP_TIME };
-        editList.push({
-            fn: 'type',
-            props: Object.assign({ data: handleData[i].type === 1 ? handleData[i].text?.replace(/\n/g, "<br>").replace(/\s/g, '&nbsp;') : input.slice(from, from + handleData[i].length).replace(/\n/g, "<br>").replace(/\s/g, '&nbsp;') }, { options: insertProps })
+        let breakData = false;
+        let breakLength = 0;
+        let typeDataList = handleData[i].type !== 2 ? handleData[i].text : output.slice(from, from + handleData[i].length)
+
+        if (typeDataList?.includes('\n')) {
+            breakData = true
+            breakLength = typeDataList?.match(/\n/mg)?.length || 0
+        }
+
+
+        typeDataList?.split('\n').forEach((v, i) => {
+            editList.push({
+                fn: 'type',
+                props: Object.assign({ data: v.replace(/\s/g, '&nbsp;') }, { options: insertProps })
+            })
+            if (i + 1 > breakLength && breakLength != 0) {
+                return;
+            }
+
+            if (breakData) {
+                editList.push({
+                    fn: "break",
+                    props: {
+                        options: {
+                            delay: 150
+                        }
+                    }
+                })
+            }
+
         })
         if (handleData[i].type === 2) {
             let props = handleData[i].length > ShowConfig.MAX_LENGTH ? { instant: true } : { delay: ShowConfig.DELETE_STOP_TIME };
@@ -127,8 +115,7 @@ const getTypeData = (handleData: (AddText | RemovalText | NormalText)[]) => {
             })
         }
     }
-
-    return editList;
+    return { editList, input, output };
 }
 
 export {
