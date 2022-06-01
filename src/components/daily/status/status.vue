@@ -42,6 +42,10 @@
   </div>
 </template>
 <script lang="ts">
+import { ref, provide, inject } from 'vue'
+import { getStatus } from '@/plugin/daily/setting'
+import { formatDate } from '@/utils/date'
+import { DateForm } from '@/plugin/daily/form'
 export default {
   name: 'DailyStatus',
 }
@@ -50,11 +54,6 @@ export default {
 import Pagination from '@/components/utils/pagination.vue'
 import DailyStatusTable from '@/components/utils/table/daily_status_table.vue'
 import DailySettingFormDialog from '@/components/dialog/daily/setting_form.vue'
-import { ref, provide, inject } from 'vue'
-import { getStatus } from '@/plugin/daily/setting'
-import { formatDate } from '@/utils/date'
-import { DateForm } from '@/plugin/daily/form'
-
 const status = inject('dailyStatus')
 /**
  * @property {boolean} refreshStatus 刷新列表
@@ -144,7 +143,7 @@ const setStatus = (val: boolean, type: string) => {
  * @param {DateForm} val 待修改数据
  */
 const getUpdateData = (val: DateForm) => {
-  formType.value = 'update';
+  formType.value = 'update'
   dailyUpdateForm.value = val
   showDailyFormDialog.value = true
 }

@@ -294,7 +294,6 @@ watchEffect(() => {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
-    max-height: 70px !important;
   }
 }
 </style>
