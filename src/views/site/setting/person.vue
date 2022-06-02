@@ -22,7 +22,7 @@ export default {
 <script lang="ts" setup>
 import PersonPresentation from '@/components/site/person/presentation'
 import PersonTypeWriter from '@/components/site/person/typewriter'
-const showType = ref<number>(2)
+const showType = ref<number>(1)
 /**
  * @method showList 设置显示列表类型
  */

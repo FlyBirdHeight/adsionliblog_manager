@@ -4,7 +4,7 @@
     :draggable="false"
     :showFooter="false"
     :title="title"
-    :width="'450px'"
+    :width="'60%'"
     :show="show.cardFold"
     @closeDialog="closeDialog"
   >

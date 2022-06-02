@@ -4,7 +4,7 @@
     :draggable="false"
     :showFooter="false"
     :title="title"
-    :width="'400px'"
+    :width="'60%'"
     :show="props.show"
     @closeDialog="closeDialog"
   >

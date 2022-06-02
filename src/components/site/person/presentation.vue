@@ -1,17 +1,20 @@
 <template>
   <div class="person-presentation">
-    <div class="setting">setting</div>
+    <div class="setting">
+      <presentation-container></presentation-container>
+    </div>
     <div class="divider"></div>
     <div class="show">show</div>
   </div>
 </template>
 <script lang="ts">
+import { ref } from 'vue'
 export default {
   name: 'PersonPresentation',
 }
 </script>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import PresentationContainer from '@/components/site/person/presentation/container'
 </script>
 <style lang="scss" scoped>
 .person-presentation {
@@ -26,11 +29,11 @@ import { ref } from 'vue'
     height: 400px;
     box-shadow: 0px -15px 15px 3px rgba(0, 0, 0, 0.08);
     margin-bottom: 5px;
-    background-color: #F5F7FA;
-    padding: 10px;
+    padding: 5px;
+    overflow: hidden;
   }
   .divider {
-    border: 1px solid #F2F3F5;
+    border: 1px solid #f2f3f5;
     width: 100%;
   }
   .show {
@@ -39,7 +42,9 @@ import { ref } from 'vue'
     width: 100%;
     height: 400px;
     box-shadow: 0px 15px 15px 3px rgba(0, 0, 0, 0.08);
-    padding: 10px;
+    background-color: #f5f7fa;
+    padding: 5px;
+    overflow: hidden;
   }
 }
 </style>

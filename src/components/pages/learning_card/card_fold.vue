@@ -34,7 +34,7 @@
         <el-button @click="showSolution = !showSolution">查看答案</el-button>
       </div>
     </div>
-    <div class="arrow" v-if="cardInfo.questions.length != 0" @click="changeQuestion('pre')">
+    <div class="arrow" v-if="cardInfo.questions.length != 0" @click="changeQuestion('next')">
       <el-icon><component :is="$icon['ArrowRightBold']" /></el-icon>
     </div>
   </div>
