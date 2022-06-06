@@ -69,6 +69,7 @@ watch(
 )
 onMounted(() => {
   showIndex.value = questionIndex.value
+  emit('checkShowQuestion', showIndex.value)
   showSolution.value = false
 })
 // 难度：{{ difficultyLevel[cardInfo.questions[showIndex].difficulty] }}
