@@ -39,7 +39,7 @@
                 :autosize="{ minRows: 2, maxRows: 3 }"
                 v-model="question.title"
                 placeholder="请输入问题"
-                maxlength="50"
+                maxlength="200"
                 show-word-limit
               />
             </el-form-item>

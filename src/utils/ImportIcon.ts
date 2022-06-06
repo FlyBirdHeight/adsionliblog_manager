@@ -1,5 +1,4 @@
 import * as Icons from "@element-plus/icons-vue";
-console.log(Icons);
 
 import { reactive } from 'vue';
 const dictIcon = reactive(Icons);

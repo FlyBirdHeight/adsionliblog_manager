@@ -1,11 +1,13 @@
 <template>
-  <div class="container">
-    <el-tag
-      effect="dark"
-      :type="difficultyTag[cardInfo.questions[showIndex].difficulty]"
-      style="position: absolute; top: -20px; right: 20px; z-index: 999"
+  <div class="card-fold-header">
+    <el-tag effect="dark" :type="difficultyTag[cardInfo.questions[showIndex].difficulty]"
       >难度:{{ difficultyLevel[cardInfo.questions[showIndex].difficulty] }}</el-tag
     >
+    <el-button @click="emit('changeShowQuestionList', !showQuestionList)" type="primary" size="small"
+      >{{ showQuestionList ? '关闭' : '展开' }}问题列表</el-button
+    >
+  </div>
+  <div class="container">
     <div class="arrow" v-if="cardInfo.questions.length != 0" @click="changeQuestion('pre')">
       <el-icon><component :is="$icon['ArrowLeftBold']" /></el-icon>
     </div>
@@ -40,17 +42,20 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, inject, watch, onMounted } from 'vue'
+import { ref, inject, watch, onMounted, provide, defineEmits } from 'vue'
 export default {
   name: 'CardFoldInfo',
 }
 </script>
 <script lang="ts" setup>
 import BaseMdEditor from '@/components/utils/md_editor.vue'
+const emit = defineEmits(['changeShowQuestionList', 'checkShowQuestion'])
 const cardInfo = inject('cardInfo')
 const questionIndex = inject('questionIndex')
 const showIndex = ref<number>(0)
 const showSolution = ref<boolean>(false)
+const showQuestionList = inject('showQuestionList')
+const checkIndex = inject('checkIndex')
 const difficultyLevel = ['简单', '普通', '较难']
 const difficultyTag = ['success', 'warning', 'danger']
 watch(
@@ -74,9 +79,23 @@ const changeQuestion = (type: string) => {
     showIndex.value = showIndex.value == cardInfo.value.questions.length - 1 ? 0 : showIndex.value + 1
   }
   showSolution.value = false
+  emit('checkShowQuestion', showIndex.value)
 }
+watch(checkIndex, (newV, oldV) => {
+  if (newV !== -1) {
+    showIndex.value = newV
+    showSolution.value = false
+  }
+})
 </script>
 <style lang="scss" scoped>
+.card-fold-header {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 10%;
+}
 .container {
   position: relative;
   display: flex;
