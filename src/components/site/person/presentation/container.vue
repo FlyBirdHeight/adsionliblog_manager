@@ -16,12 +16,15 @@
 import { ref, computed, watch, reactive, watchEffect } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
+import HandlePresentation from '@/modules/person/presentation/handle'
 export default {
   name: 'PresentationContainer',
 }
 </script>
 <script lang="ts" setup>
 const toolbar = reactive<PresentationToolbar>(toolbarList)
+const handleObj = reactive(new HandlePresentation());
+console.log(handleObj);
 </script>
 <style lang="scss" scoped>
 .presentation-container {
