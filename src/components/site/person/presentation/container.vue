@@ -3,7 +3,7 @@
     <div class="presentation-toolbar">
       <div class="toolbal_list" v-for="item of toolbar">
         <el-tooltip effect="light" :content="item.label" v-if="item.icon !== 'divide'" placement="top-start">
-          <span>
+          <span @click="handleAction(item.handle)">
             <icon-font class="edit-icon" :icon="item.icon" />
           </span>
         </el-tooltip>
@@ -25,6 +25,10 @@ export default {
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation());
 console.log(handleObj);
+const handleAction = (action: string) => {
+  console.log(action);
+  
+}
 </script>
 <style lang="scss" scoped>
 .presentation-container {

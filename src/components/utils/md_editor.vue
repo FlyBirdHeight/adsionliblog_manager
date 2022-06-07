@@ -6,18 +6,27 @@
     :toolbars="props.toolbar"
     :onUploadImg="uploadImage"
     v-model="page.text"
+    v-load.fullscreen.lock="submitImage"
+    element-loading-text="正在上传图片，请稍后"
+  />
+  <editor-image-setting
+    :show="showImageSetting"
+    :imageList="imageSettingList"
+    @submitSetting="submitImageSetting"
+    @closeDialog="closeDialog"
   />
 </template>
 <script lang="ts">
 import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
+import { handleAndUpload, UploadFile } from '@/modules/files/slice.ts'
 import 'md-editor-v3/lib/style.css'
-import { UploadImage } from '@/modules/files/uploadImage'
 export default {
   name: 'BaseMdEditor',
 }
 </script>
 <script lang="ts" setup>
 import MdEditor from '@/modules/markdown/MdEditor'
+import EditorImageSetting from '@/components/dialog/utils/editor_image_setting'
 const props = defineProps({
   preview: {
     type: Boolean,
@@ -43,36 +52,65 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  imageUrl: {
+    type: String,
+    default: '/images/editor',
+  },
 })
 const page = reactive({
   text: '',
 })
 const emit = defineEmits(['submitData'])
-const upload = new UploadImage()
+const showImageSetting = ref<boolean>(false)
+const imageSettingList = ref<UploadFile[]>([])
+const submitImage = ref<boolean>(false)
+const submitImageCb = ref(null)
 const uploadImage = async (files: FileList, callback: (urls: string[]) => void) => {
   try {
-    const res: any = await upload.uploadImage(files)
-    if (res.length != 0) {
-      let callbackImageList: Array<string> = new Array<string>(res.length)
-      let statusFalseImage = new Array()
-      for (let i = 0; i < res.length; i++) {
-        if (!res[i].status) {
-          statusFalseImage.push(res[i].id)
-        } else {
-          callbackImageList.push(res[i].url)
-        }
+    //NOTE: 先把数据处理一下，然后弹出设置框，让其设置好路径，然后再上传
+    imageSettingList.value = []
+    files.forEach((v, index) => {
+      let uploadFile = {
+        index,
+        file: v,
+        name: v.name,
+        sliceFile: [],
+        path: props.imageUrl,
+        isExist: false,
+        is_create: false,
+        directory_id: null,
+        status: 'ready',
       }
-      callbackImageList.length != 0 && callback(callbackImageList.map((item: any) => item))
-      if (statusFalseImage.length != 0) {
-        ElNotification.warning({
-          title: '图片存在重名',
-          message: '请确认是否需要重新上传图片，重名图片需重命名后才可使用！',
-        })
-      }
-    }
+      imageSettingList.value.push(uploadFile)
+    })
+    showImageSetting.value = true
+    submitImageCb.value = callback
   } catch (e) {
     console.log(e)
   }
+}
+const closeDialog = () => {
+  showImageSetting.value = false
+}
+const submitImageSetting = async (val) => {
+  for (let v of val) {
+    imageSettingList.value[v.index] = Object.assign(imageSettingList.value[v.index], v)
+  }
+  submitImage.value = true
+  try {
+    let data = await handleAndUpload(imageSettingList.value, null)
+    submitImage.value = false
+    ElMessage({
+      type: 'success',
+      message: '图片上传成功',
+      grouping: true,
+    })
+    submitImageCb.value(data)
+  } catch (e) {
+    submitImage.value = false
+    console.log(e)
+  }
+  showImageSetting.value = false
 }
 watch(
   () => props.submit,

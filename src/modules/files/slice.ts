@@ -8,6 +8,7 @@ type Deadline = {
     didTimtout: boolean
 }
 type UploadFile = {
+    idx?: number,
     file: File,
     sliceFile?: { file: File, idx: number }[],
     name: string,
@@ -322,7 +323,9 @@ const uploadSliceFile = async (file: UploadFile) => {
     if (uploadError) {
         throw new Error(`文件上传失败，文件名称: ${file.name}!`)
     }
-    percentageList.get(file.name).status = 'merge';
+    if (percentageList) {
+        percentageList.get(file.name).status = 'merge';
+    }
     let mergeData = await mergeFile(file);
     return mergeData;
 }
@@ -332,11 +335,10 @@ const uploadSliceFile = async (file: UploadFile) => {
  * @param {File[]} fileList 文件列表
  * @param {Map<PercentageList>} percentage 文件上传进度表
  */
-const handleAndUpload = async (fileList: UploadFile[], percentage: Map<string, PercentageList>) => {
+const handleAndUpload = async (fileList: UploadFile[], percentage: Map<string, PercentageList> | null) => {
     percentageList = null;
+    let returnData: any[] = [];
     try {
-        percentageList = percentage;
-
         const fileListSlice = fileList.map(v => {
             v.sliceFile = sliceFile(v.file);
             return v;
@@ -351,26 +353,39 @@ const handleAndUpload = async (fileList: UploadFile[], percentage: Map<string, P
             } else {
                 v.uploadSuccess = true;
                 v.precentage = 100;
+                returnData.push(verifyData.url)
             }
             return v;
         });
-
         let uploadData = (await Promise.all(verifyData)).filter(v => {
             return v.uploadSuccess == false;
         })
+        percentageList = percentage;
+        if (percentage) {
+            for (let v of uploadData) {
+                try {
+                    percentageList.get(v.name).status = 'uploading'
+                    await uploadSliceFile(v);
+                    percentageList.get(v.name).status = 'success';
+                    percentageList.get(v.name).percentage = 100;
+                } catch (e) {
+                    percentageList.get(v.name).status = 'error';
+                    console.log(e);
+                }
+            }
+
+            return true;
+        }
+
         for (let v of uploadData) {
             try {
-                percentageList.get(v.name).status = 'uploading'
-                await uploadSliceFile(v);
-                percentageList.get(v.name).status = 'success';
-                percentageList.get(v.name).percentage = 100;
+                let responseData: any = await uploadSliceFile(v);
+                returnData.push(responseData.url);
             } catch (e) {
-                percentageList.get(v.name).status = 'error';
                 console.log(e);
             }
         }
-
-        return true;
+        return returnData
     } catch (e) {
         console.log(e);
         throw e;
@@ -381,5 +396,6 @@ const handleAndUpload = async (fileList: UploadFile[], percentage: Map<string, P
 
 export {
     handleAndUpload,
-    PercentageList
+    PercentageList,
+    UploadFile
 }

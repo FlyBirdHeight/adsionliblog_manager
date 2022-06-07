@@ -14,6 +14,7 @@
         :toolbar="editor.toolbar"
         :submit="editor.submit"
         :page="props.page"
+        imageUrl="/images/learning_card"
         @submitData="submitData"
       ></base-md-editor>
     </template>

@@ -196,7 +196,6 @@ const submitImage = async () => {
   try {
     submitStatus.value = true
     const uploadFileList = []
-    
     uploadList.value.uploadFiles.forEach((v) => {
       let uploadFile = {
         file: v.raw,

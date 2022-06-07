@@ -14,23 +14,23 @@ const toolbarList: PresentationToolbar[] = [{
     label: ""
 }, {
     icon: "font-color",
-    handle: "",
+    handle: "addTextArea",
     label: "添加文字框"
 }, {
     icon: "image",
-    handle: "",
+    handle: "addImage",
     label: "添加图片"
 }, {
     icon: "code",
-    handle: "",
+    handle: "addCode",
     label: "添加代码段"
 }, {
     icon: "bg-color",
-    handle: "",
+    handle: "settingBackground",
     label: "设置背景"
 }, {
     icon: "link",
-    handle: "",
+    handle: "addLink",
     label: "添加链接"
 }, {
     icon: "divide",
@@ -38,15 +38,15 @@ const toolbarList: PresentationToolbar[] = [{
     label: ""
 }, {
     icon: "bringtobottom",
-    handle: "",
+    handle: "setBottom",
     label: "置于底层"
 }, {
     icon: "bringtotop",
-    handle: "",
+    handle: "setTop",
     label: "置于顶层"
 }, {
     icon: "fullscreen",
-    handle: "",
+    handle: "fullScreen",
     label: "全屏设置"
 }, {
     icon: "divide",
@@ -54,11 +54,11 @@ const toolbarList: PresentationToolbar[] = [{
     label: ""
 }, {
     icon: "shunxubofang",
-    handle: "",
+    handle: "settingAnimationShow",
     label: "播放顺序"
 }, {
     icon: "tianjiadonghua",
-    handle: "",
+    handle: "settingAnimation",
     label: "设置动画"
 }, {
     icon: "divide",
@@ -75,19 +75,19 @@ const toolbarList: PresentationToolbar[] = [{
     label: "删除页面"
 },{
     icon: "jiantou_shangyiye",
-    handle: "",
+    handle: "goFirst",
     label: "第一页"
 },{
     icon: "shangyiye",
-    handle: "",
+    handle: "goPre",
     label: "上一页"
 },{
     icon: "xiayiye",
-    handle: "",
+    handle: "goNext",
     label: "下一页"
 },{
     icon: "jiantou_xiayiye",
-    handle: "",
+    handle: "goEnd",
     label: "最后一页"
 },{
     icon: "divide",
@@ -95,7 +95,7 @@ const toolbarList: PresentationToolbar[] = [{
     label: ""
 }, {
     icon: "configure",
-    handle: "",
+    handle: "setting",
     label: "设置"
 }]
 
