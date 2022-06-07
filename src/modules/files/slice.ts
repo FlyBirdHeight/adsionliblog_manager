@@ -257,7 +257,9 @@ const requestFile = (sliceFile: { file: File, idx: number }, file: UploadFile, e
                     e.percent = e.loaded / e.total;
                 }
                 let realP = Number(((1 / (options.sliceCount)) * e.percent * 100));
-                percentageList.get(file.name).percentage = (Number(percentageList.get(file.name).percentage) + (Number(realP - uploadPrecentage))).toFixed(2);
+                if (percentageList) {
+                    percentageList.get(file.name).percentage = (Number(percentageList.get(file.name).percentage) + (Number(realP - uploadPrecentage))).toFixed(2);
+                }
                 uploadPrecentage = realP
 
             };
