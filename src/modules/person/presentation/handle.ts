@@ -1,4 +1,3 @@
-import TextArea from './text/text';
 type Animation = {
     join: {
         type: string,
@@ -47,6 +46,8 @@ type Page = {
     },
     item: PageItem[]
 }
+import * as text from "@/modules/person/presentation/text/text";
+const initFn = [text];
 class HandlePresentation {
     pageList: Map<number, Page>;
     currentPage: number;
@@ -54,10 +55,8 @@ class HandlePresentation {
     actionStack: Action[];
     undoStack: Action[];
     recoveryStack: Action[];
-    textArea: TextArea;
     constructor() {
         this.pageList = new Map();
-        this.textArea = new TextArea();
         this.currentPage = 0;
         this.pickMember = null;
         this.actionStack = [];
@@ -72,7 +71,23 @@ class HandlePresentation {
             },
             item: []
         });
+        this.registerFn();
+        console.log(this);
+
     }
+
+    /**
+     * @method registerFn 注册外部方法
+     */
+    registerFn() {
+        for (let v of initFn) {
+            for (let key in v) {
+                Reflect.set(this, key, Reflect.get(v, key))
+            }
+        }
+    }
+
+
     /**
      * @method addPage 添加页面
      */

@@ -1,31 +1,52 @@
 <template>
-  <div class="presentation-text">
-    <textarea ref="presentationTextarea" rows="1" class="presentation-text_textarea" v-model="text"></textarea>
-  </div>
+  <resize-element>
+    <!-- <textarea
+      ref="presentationTextarea"
+      :style="textAreaCss"
+      rows="1"
+      class="presentation-text_textarea"
+      v-model="text"
+    ></textarea> -->
+  </resize-element>
 </template>
 <script lang="ts">
+import { ref, defineProps, watch, computed } from 'vue'
+import { analysisCss } from '@/modules/person/presentation/text/text'
 export default {
   name: 'PresentationText',
 }
 </script>
 <script lang="ts" setup>
-import { ref } from 'vue'
-const text = ref<string>('')
+import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
+const props = defineProps<{
+  textInfo: any
+}>()
+const text = ref<string>('hello')
 const presentationTextarea = ref()
+const textAreaCss = computed(() => {
+  if (props.textInfo) {
+    return analysisCss(props.textInfo)
+  }
+  return {
+    width: '100px',
+    height: '50px',
+    left: '50%',
+    top: '50%',
+  }
+})
 watch(text, (newV, oldV) => {
-  presentationTextarea.value.$el.style.height = presentationTextarea.value.$el.scrollHeight + 'px'
+  if (presentationTextarea.value.getBoundingClientRect().height < presentationTextarea.value.scrollHeight) {
+    textAreaCss.value.height = presentationTextarea.value.scrollHeight + 'px'
+    console.log(presentationTextarea.value.style.height)
+  }
 })
 </script>
 <style lang="scss" scoped>
-.presentation-text {
+.presentation-text_textarea {
   position: absolute;
-  top: 20%;
-  left: 50%;
-  background-color: rgba(255, 255, 255, 0.08);
-  .text_textarea {
-    line-height: 40px;
-    font-size: 14px;
-    margin: left;
-  }
+  outline: none;
+  overflow-y: visible;
+  resize: none;
+  padding: 0;
 }
 </style>

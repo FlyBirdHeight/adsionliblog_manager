@@ -10,6 +10,14 @@
         <div v-else class="toolbar-divide"></div>
       </div>
     </div>
+    <div class="presentation_body">
+      <template v-if="itemMap.text.length != 0">
+        <presentation-text v-for="(text, index) of itemMap.text" :textInfo="text"></presentation-text>
+      </template>
+      <template v-if="itemMap.image.length != 0">
+        <presentation-image v-for="(text, index) of itemMap.image"></presentation-image>
+      </template>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -22,16 +30,26 @@ export default {
 }
 </script>
 <script lang="ts" setup>
+import PresentationText from '@/modules/person/presentation/text/text.vue'
+import PresentationImage from '@/modules/person/presentation/image/image.vue'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
-const handleObj = reactive(new HandlePresentation());
-console.log(handleObj);
+const handleObj = reactive(new HandlePresentation())
+const itemMap = reactive({
+  text: [],
+  image: [],
+  code: [],
+})
 const handleAction = (action: string) => {
-  console.log(action);
-  
+  let fn = Reflect.get(handleObj, action)
+  if (action === 'addTextArea') {
+    itemMap.text.push(fn())
+  }
 }
 </script>
 <style lang="scss" scoped>
 .presentation-container {
+  height: 100%;
+  width: 100%;
   .presentation-toolbar {
     height: 40px;
     width: 100%;
@@ -55,6 +73,12 @@ const handleAction = (action: string) => {
       height: 20px;
       margin: auto;
     }
+  }
+  .presentation_body {
+    width: 100%;
+    overflow: hidden;
+    height: calc(100% - 41px);
+    position: relative;
   }
 }
 </style>

@@ -28,8 +28,8 @@ const QuestionRule = {
             trigger: 'blur'
         },
         {
-            max: 50,
-            message: "问题内容长度不可超过50个字符",
+            max: 200,
+            message: "问题内容长度不可超过200个字符",
             trigger: 'blur'
         }
     ],
