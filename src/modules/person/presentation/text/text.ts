@@ -3,10 +3,10 @@ const addTextArea = function () {
         layout: {
             width: '200px',
             height: '100px',
-            left: '20%',
-            top: '50%',
+            // left: '50%',
+            // top: '50%',
             lineHeight: '14px',
-            layer: 999
+            layer: 900
         },
         backgroundColor: "#EBEDF0",
         border: "none",

@@ -1,13 +1,11 @@
 <template>
-  <resize-element>
-    <!-- <textarea
-      ref="presentationTextarea"
-      :style="textAreaCss"
-      rows="1"
-      class="presentation-text_textarea"
-      v-model="text"
-    ></textarea> -->
-  </resize-element>
+  <textarea
+    ref="presentationTextarea"
+    :style="textAreaCss"
+    rows="1"
+    class="presentation-text_textarea"
+    v-model="text"
+  ></textarea>
 </template>
 <script lang="ts">
 import { ref, defineProps, watch, computed } from 'vue'
@@ -17,7 +15,6 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
 const props = defineProps<{
   textInfo: any
 }>()

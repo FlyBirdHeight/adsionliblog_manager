@@ -10,12 +10,16 @@
         <div v-else class="toolbar-divide"></div>
       </div>
     </div>
-    <div class="presentation_body">
+    <div class="presentation_body" id="presentation_body">
       <template v-if="itemMap.text.length != 0">
-        <presentation-text v-for="(text, index) of itemMap.text" :textInfo="text"></presentation-text>
+        <resize-element :parent="'presentation_body'" v-for="(text, index) of itemMap.text">
+          <presentation-text :textInfo="text"></presentation-text>
+        </resize-element>
       </template>
       <template v-if="itemMap.image.length != 0">
-        <presentation-image v-for="(text, index) of itemMap.image"></presentation-image>
+        <resize-element :parent="'presentation_body'" v-for="(text, index) of itemMap.image">
+          <presentation-image v-for="(text, index) of itemMap.image"></presentation-image>
+        </resize-element>
       </template>
     </div>
   </div>
@@ -30,6 +34,7 @@ export default {
 }
 </script>
 <script lang="ts" setup>
+import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
 import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
