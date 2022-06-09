@@ -10,6 +10,7 @@
  */
 const calculateChangeWidthAndHeight = (x: number, y: number, mX: number, mY: number, oW: number, oH: number, type: string) => {
     let nH = 0, nW = 0;
+
     if (type === 'right-top') {
         nH = Math.abs(y - mY)
         if (x > mX) {
@@ -26,8 +27,19 @@ const calculateChangeWidthAndHeight = (x: number, y: number, mX: number, mY: num
         nH = Math.abs(y - mY)
     }
     if (type === 'left-top') {
-        console.log(x, mX);
         nH = Math.abs(Math.floor(y) - Math.floor(mY));
+        nW = Math.abs(Math.floor(x) - Math.floor(mX));
+        if (nW != 0) {
+            nW = Math.abs(nW - 12);
+        }
+    }
+    if (type === 'right-center') {
+        nW = Math.abs(Math.floor(x) - Math.floor(mX));
+        if (nW != 0) {
+            nW = Math.abs(nW - 12);
+        }
+    }
+    if (type === 'left-center') {
         nW = Math.abs(Math.floor(x) - Math.floor(mX));
         if (nW != 0) {
             nW = Math.abs(nW - 12);
@@ -45,39 +57,45 @@ const calculateChangeWidthAndHeight = (x: number, y: number, mX: number, mY: num
  */
 const changeLocation = (type: string, element: any, parentDom: any, position: any) => {
     position.type = type;
+    let { left, right, top, height } = parentDom.value.getBoundingClientRect();
+    let { left: eLeft, right: eRight, top: eTop, height: eHeight, width: eWidth } = element.value.getBoundingClientRect()
+
     if (type === 'right-top' || type === 'top-center') {
-        position.top = parentDom.value.clientHeight - parentDom.value.clientHeight * 0.3 - 30
-        position.left = parentDom.value.clientWidth * 0.3 + 260;
+        position.top = eTop + eHeight
+        position.left = eLeft;
         element.value.style.top = 'unset'
-        element.value.style.bottom = 'calc(70% - 112px)'
+        element.value.style.bottom = height - (eTop - top + eHeight) + 'px';
         element.value.style.right = 'unset'
-        element.value.style.left = '30%'
+        element.value.style.left = eLeft - left + 'px';
     }
     if (type === 'right-center') {
-        position.left = parentDom.value.clientWidth * 0.3;
-        element.value.style.left = position.left + 'px';
+        position.left = eLeft;
+        element.value.style.right = 'unset'
+        element.value.style.left = (eLeft - left) + 'px';
     }
     if (type === 'right-bottom') {
-        position.top = parentDom.value.clientHeight * 0.3;
-        element.value.style.top = position.top + 'px';
-        position.left = parentDom.value.clientWidth * 0.3;
-        element.value.style.left = position.left + 'px';
+        position.top = eTop;
+        element.value.style.top = (eTop - top) + 'px';
+        position.left = eLeft;
+        element.value.style.left = (eLeft - left) + 'px';
     }
     if (type === 'left-top') {
-        position.top = parentDom.value.clientHeight - parentDom.value.clientHeight * 0.3 - 30
-        position.left = parentDom.value.clientWidth * 0.3 + 212 + 260;
-        console.log(position, parentDom.value.clientWidth * 0.3, parentDom);
-        console.log(element);
-        
+        position.top = eTop + eHeight
+        position.left = eLeft + eWidth
         element.value.style.left = 'unset';
-        element.value.style.right = "calc(70% - 212px)";
+        element.value.style.right = right - eRight + 'px';
         element.value.style.top = 'unset';
-        element.value.style.bottom = 'calc(70% - 112px)';
+        element.value.style.bottom = height - (eTop - top + eHeight) + 'px';
+    }
+    if (type === 'left-center') {
+        position.left = eLeft + eWidth;
+        element.value.style.left = 'unset';
+        element.value.style.right = right - eRight + 'px';
     }
     if (type === 'bottom-center') {
-        position.top = parentDom.value.clientHeight * 0.3 + parentDom.value.offsetTop;
+        position.top = eTop;
         element.value.style.bottom = 'unset';
-        element.value.style.top = '30%';
+        element.value.style.top = eTop - top + 'px';
     }
 }
 
