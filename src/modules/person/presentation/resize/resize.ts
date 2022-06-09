@@ -67,7 +67,8 @@ const changeLocation = (type: string, element: any, parentDom: any, position: an
         position.top = parentDom.value.clientHeight - parentDom.value.clientHeight * 0.3 - 30
         position.left = parentDom.value.clientWidth * 0.3 + 212 + 260;
         console.log(position, parentDom.value.clientWidth * 0.3, parentDom);
-
+        console.log(element);
+        
         element.value.style.left = 'unset';
         element.value.style.right = "calc(70% - 212px)";
         element.value.style.top = 'unset';
