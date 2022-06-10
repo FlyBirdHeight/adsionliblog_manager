@@ -10,22 +10,32 @@
         <div v-else class="toolbar-divide"></div>
       </div>
     </div>
-    <div class="presentation_body" id="presentation_body">
-      <template v-if="itemMap.text.length != 0">
-        <resize-element :parent="'presentation_body'" v-for="(text, index) of itemMap.text">
-          <presentation-text :textInfo="text"></presentation-text>
-        </resize-element>
-      </template>
-      <template v-if="itemMap.image.length != 0">
-        <resize-element :parent="'presentation_body'" v-for="(text, index) of itemMap.image">
-          <presentation-image v-for="(text, index) of itemMap.image"></presentation-image>
-        </resize-element>
-      </template>
+    <div class="presentation-edit">
+      <div class="presentation_body" id="presentation_body" @click="handleClick">
+        <template v-if="itemMap.text.length != 0">
+          <resize-element
+            @changeStatus="changeStatus"
+            @emitActive="emitActive"
+            :parent="'presentation_body'"
+            v-for="(text, index) of itemMap.text"
+          >
+            <presentation-text :info="text"></presentation-text>
+          </resize-element>
+        </template>
+        <template v-if="itemMap.image.length != 0">
+          <resize-element :parent="'presentation_body'" v-for="(text, index) of itemMap.image">
+            <presentation-image v-for="(text, index) of itemMap.image"></presentation-image>
+          </resize-element>
+        </template>
+      </div>
+      <div class="persentation_edit-tool">
+        <presentation-edit-tool></presentation-edit-tool>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { ref, computed, watch, reactive, watchEffect } from 'vue'
+import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
 import HandlePresentation from '@/modules/person/presentation/handle'
@@ -37,18 +47,37 @@ export default {
 import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
 import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
+import PresentationEditTool from "@/components/site/person/presentation/editTool.vue"
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
 const itemMap = reactive({
   text: [],
   image: [],
   code: [],
+  count: 0,
 })
+const activeItem = ref<number>(-1)
+const clickTime = ref<number>(0)
+provide('activeItem', activeItem)
 const handleAction = (action: string) => {
   let fn = Reflect.get(handleObj, action)
   if (action === 'addTextArea') {
-    itemMap.text.push(fn())
+    itemMap.text.push(fn(itemMap.count + 1))
+    activeItem.value = itemMap.count + 1
+    itemMap.count += 1
   }
+}
+const emitActive = (val: number) => {
+  activeItem.value = val
+}
+const handleClick = (e: any) => {
+  if (e.timeStamp === clickTime.value) {
+    return
+  }
+  activeItem.value = -1
+}
+const changeStatus = (val: number) => {
+  clickTime.value = val
 }
 </script>
 <style lang="scss" scoped>
@@ -79,11 +108,22 @@ const handleAction = (action: string) => {
       margin: auto;
     }
   }
-  .presentation_body {
+  .presentation-edit {
+    display: flex;
     width: 100%;
-    overflow: hidden;
+    justify-content: flex-start;
     height: calc(100% - 41px);
-    position: relative;
+    .presentation_body {
+      width: calc(100% - 300px);
+      overflow: hidden;
+      height: 100%;
+      position: relative;
+    }
+    .persentation_edit-tool {
+      width: 300px;
+      height: 100%;
+      border-left: 1px solid #dcdfe6;
+    }
   }
 }
 </style>

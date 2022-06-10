@@ -1,12 +1,12 @@
-const addTextArea = function () {
+const addTextArea = function (index: number) {
     return {
         layout: {
             width: '200px',
             height: '100px',
-            lineHeight: '14px',
+            lineHeight: '100px',
             layer: 900
         },
-        backgroundColor: "#EBEDF0",
+        backgroundColor: "transparent",
         border: "none",
         color: "rgba(0,0,0,1)",
         font: {
@@ -25,7 +25,8 @@ const addTextArea = function () {
                 time: 0
             }
         },
-        value: '添加文字',
+        data: '添加文字',
+        index
     }
 }
 

@@ -2,48 +2,57 @@
   <div
     class="resize-element"
     ref="resizeElement"
+    id="dragResizeElement"
+    :class="activeItem === activeIndex ? '' : 'resize-element-border'"
     @mouseenter.stop="dragMouseEnter"
     @mouseleave.stop="dragMouseLeave"
-    @mouseup.stop="dragMouseEnd"
-    @mousedown.stop="dragMouseStart"
-    @mousemove.stop="dragMouseMove"
+    @click.stop="emit('emitActive', activeIndex)"
+    v-dragResize
   >
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point top-center"
       id="top-center"
       @mousedown.stop="handleDown"
     ></div>
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point left-top"
       id="left-top"
       @mousedown.stop="handleDown"
     ></div>
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point left-center"
       id="left-center"
       @mousedown.stop="handleDown"
     ></div>
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point left-bottom"
       id="left-bottom"
       @mousedown.stop="handleDown"
     ></div>
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point right-top"
       id="right-top"
       @mousedown.stop="handleDown"
     ></div>
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point right-center"
       id="right-center"
       @mousedown.stop="handleDown"
     ></div>
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point right-bottom"
       id="right-bottom"
       @mousedown.stop="handleDown"
     ></div>
     <div
+      v-show="activeItem === activeIndex"
       class="resize-point bottom-center"
       id="bottom-center"
       @mousedown.stop="handleDown"
@@ -52,48 +61,63 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, useSlots, defineProps, reactive, onMounted } from "vue";
-import { calculateChangeWidthAndHeight, changeLocation } from "./resize";
+import { ref, useSlots, defineProps, reactive, onMounted, getCurrentInstance, inject, defineEmits } from 'vue'
+import { calculateChangeWidthAndHeight, changeLocation } from './resize'
 export default {
-  name: "ResizeElement",
-};
+  name: 'ResizeElement',
+  directives: {
+    //数据检索位置拖动
+    dragResize(el: any, bindings: any) {
+      el.onmousedown = function (e: any) {
+        let box: any = this
+        if (e.path[0].id !== 'dragResizeElement') {
+          return
+        }
+        let disX: any = e.clientX - box.offsetLeft
+        let disY: any = e.clientY - box.offsetTop
+        document.onmousemove = function (e) {
+          box.style.left = e.pageX - disX + 'px'
+          box.style.top = e.pageY - disY + 'px'
+        }
+        document.onmouseup = function () {
+          document.onmousemove = document.onmouseup = null
+        }
+      }
+    },
+  },
+}
 </script>
 <script lang="ts" setup>
 const props = defineProps({
   parent: {
     type: String,
-    default: "body",
+    default: 'body',
   },
-});
-const slots = useSlots();
+})
+const slots = useSlots()
+const child = ref(null)
+const childDom = ref(null)
+const activeIndex = ref<number>(0)
+const activeItem = inject('activeItem')
+const emit = defineEmits(['emitActive', 'changeStatus'])
 onMounted(() => {
-  let child = slots.default?.()[0];
-  let { width, height } = child?.props?.textInfo.layout;
-  resizeElement.value.style.width = width;
-  resizeElement.value.style.height = height;
-});
-
-const parentDom = ref<any>(null);
-const resizeElement = ref<any>();
-//NOTE：专门用来处理拖拽改变位置的内容
-const dragStatus = ref<boolean>(false);
+  child.value = slots.default?.()[0]
+  let { width, height } = child.value?.props?.info.layout
+  resizeElement.value.style.width = width
+  resizeElement.value.style.height = height
+  let length = resizeElement.value.__vnode.children.length
+  childDom.value = resizeElement.value.__vnode.children[length - 1].children[0]
+  activeIndex.value = childDom.value.props.info.index
+})
+const parentDom = ref<any>(null)
+const resizeElement = ref<any>()
+//NOTE: 专门用来处理拖拽改变位置的内容
 const dragMouseEnter = (event: any) => {
-  resizeElement.value.style.cursor = "move";
-};
+  resizeElement.value.style.cursor = 'move'
+}
 const dragMouseLeave = (event: any) => {
-  resizeElement.value.style.cursor = "auto";
-};
-const dragMouseStart = (event: any) => {
-  dragStatus.value = true;
-};
-const dragMouseMove = (event: any) => {
-  if (dragStatus.value) {
-    console.log(event);
-  }
-};
-const dragMouseEnd = (event: any) => {
-  
-};
+  resizeElement.value.style.cursor = 'auto'
+}
 
 //NOTE: 专门用来处理修改大小的内容
 const position = reactive({
@@ -101,10 +125,10 @@ const position = reactive({
   left: 0,
   right: 0,
   bottom: 0,
-  type: "",
-});
+  type: '',
+})
 const mouseMoveListener = (event: any) => {
-  let { width, height } = resizeElement.value.getBoundingClientRect();
+  let { width, height } = resizeElement.value.getBoundingClientRect()
   let { nH, nW } = calculateChangeWidthAndHeight(
     event.x,
     event.y,
@@ -113,36 +137,38 @@ const mouseMoveListener = (event: any) => {
     width,
     height,
     position.type
-  );
+  )
   if (nH !== 0) {
-    resizeElement.value.style.height = nH + "px";
+    resizeElement.value.style.height = nH + 'px'
+    child.value.props.info.layout.lineHeight = nH + 'px'
   }
   if (nW !== 0) {
-    resizeElement.value.style.width = nW + "px";
+    resizeElement.value.style.width = nW + 'px'
   }
-};
+}
 const mouseUpListener = (event: any) => {
-  parentDom.value.removeEventListener("mousemove", mouseMoveListener);
-  parentDom.value.removeEventListener("mouseup", mouseUpListener);
-};
+  event.stopPropagation()
+  parentDom.value.removeEventListener('mousemove', mouseMoveListener)
+  parentDom.value.removeEventListener('mouseup', mouseUpListener)
+  emit('changeStatus', event.timeStamp)
+}
 const mouseLeaveListener = (event: any) => {
-  parentDom.value.removeEventListener("mousemove", mouseMoveListener);
-  parentDom.value.removeEventListener("mouseup", mouseUpListener);
-  parentDom.value.removeEventListener("mouseleave", mouseLeaveListener);
-};
+  parentDom.value.removeEventListener('mousemove', mouseMoveListener)
+  parentDom.value.removeEventListener('mouseup', mouseUpListener)
+  parentDom.value.removeEventListener('mouseleave', mouseLeaveListener)
+}
 const handleDown = (event: any) => {
   for (let v of event.path) {
     if (v.id === props.parent) {
-      parentDom.value = v;
-      break;
+      parentDom.value = v
+      break
     }
   }
-  parentDom.value.addEventListener("mousemove", mouseMoveListener);
-  parentDom.value.addEventListener("mouseup", mouseUpListener);
-  parentDom.value.addEventListener("mouseleave", mouseLeaveListener);
-
-  changeLocation(event.path[0].id, resizeElement, parentDom, position);
-};
+  parentDom.value.addEventListener('mousemove', mouseMoveListener)
+  parentDom.value.addEventListener('mouseup', mouseUpListener)
+  parentDom.value.addEventListener('mouseleave', mouseLeaveListener)
+  changeLocation(event.path[0].id, resizeElement, parentDom, position)
+}
 </script>
 <style lang="scss" scoped>
 .resize-element {
@@ -199,5 +225,8 @@ const handleDown = (event: any) => {
     left: calc(50% - 5px);
     cursor: n-resize;
   }
+}
+.resize-element-border {
+  border: none;
 }
 </style>

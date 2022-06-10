@@ -5,6 +5,7 @@
 declare module 'vue' {
   export interface GlobalComponents {
     Arrange_upload: typeof import('./src/components/form/image/arrange_upload.vue')['default']
+    Body: typeof import('./src/components/site/person/presentation/edit/body.vue')['default']
     Bottom: typeof import('./src/components/layout/bottom.vue')['default']
     Card: typeof import('./src/components/pages/learning_card/card.vue')['default']
     Card_fold: typeof import('./src/components/pages/learning_card/card_fold.vue')['default']
@@ -24,6 +25,7 @@ declare module 'vue' {
     Edit: typeof import('./src/components/dialog/page/learning_card/edit.vue')['default']
     Edit_solution: typeof import('./src/components/dialog/page/learning_card/edit_solution.vue')['default']
     Editor_image_setting: typeof import('./src/components/dialog/utils/editor_image_setting.vue')['default']
+    EditTool: typeof import('./src/components/site/person/presentation/editTool.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
@@ -32,6 +34,7 @@ declare module 'vue' {
     ElCascaderPanel: typeof import('element-plus/es')['ElCascaderPanel']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxButton: typeof import('element-plus/es')['ElCheckboxButton']
+    ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
@@ -53,6 +56,7 @@ declare module 'vue' {
     ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElPopconfirm: typeof import('element-plus/es')['ElPopconfirm']
+    ElPopover: typeof import('element-plus/es')['ElPopover']
     ElProgress: typeof import('element-plus/es')['ElProgress']
     ElRadio: typeof import('element-plus/es')['ElRadio']
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']

@@ -13,6 +13,9 @@ const calculateChangeWidthAndHeight = (x: number, y: number, mX: number, mY: num
 
     if (type === 'top-center' || type === 'bottom-center') {
         nH = Math.abs(y - mY)
+        if (nH != 0) {
+            nH = Math.abs(nH - 12);
+        }
     } else if (type === 'left-center' || type === 'right-center') {
         nW = Math.abs(Math.floor(x) - Math.floor(mX));
         if (nW != 0) {
@@ -23,6 +26,9 @@ const calculateChangeWidthAndHeight = (x: number, y: number, mX: number, mY: num
         nW = Math.abs(Math.floor(x) - Math.floor(mX));
         if (nW != 0) {
             nW = Math.abs(nW - 12);
+        }
+        if (nH != 0) {
+            nH = Math.abs(nH - 12);
         }
     }
 
