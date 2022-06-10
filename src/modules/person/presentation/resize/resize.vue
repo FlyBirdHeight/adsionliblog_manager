@@ -13,7 +13,7 @@
 </template>
 <script lang="ts">
 import { ref, useSlots, defineProps, getCurrentInstance, reactive } from 'vue'
-import { calculateChangeWidthAndHeight, changeLocation } from './resize.ts'
+import { calculateChangeWidthAndHeight, changeLocation } from './resize'
 export default {
   name: 'ResizeElement',
 }
@@ -26,8 +26,8 @@ const props = defineProps({
   },
 })
 const slots = useSlots()
-const parentDom = ref(null)
-const resizeElement = ref()
+const parentDom = ref<any>(null)
+const resizeElement = ref<any>()
 const position = reactive({
   top: 0,
   left: 0,
@@ -35,7 +35,7 @@ const position = reactive({
   bottom: 0,
   type: '',
 })
-const mouseMoveListener = (event) => {
+const mouseMoveListener = (event: any) => {
   let { x, y, width, height } = resizeElement.value.getBoundingClientRect()
   let { nH, nW } = calculateChangeWidthAndHeight(event.x, event.y, position.left, position.top, width, height, position.type)
   if (nH !== 0) {
@@ -45,11 +45,11 @@ const mouseMoveListener = (event) => {
     resizeElement.value.style.width = nW + 'px'
   }
 }
-const mouseUpListener = (event) => {
+const mouseUpListener = (event: any) => {
   parentDom.value.removeEventListener('mousemove', mouseMoveListener)
   parentDom.value.removeEventListener('mouseup', mouseUpListener)
 }
-const mouseLeaveListener = (event) => {
+const mouseLeaveListener = (event: any) => {
   parentDom.value.removeEventListener('mousemove', mouseMoveListener)
   parentDom.value.removeEventListener('mouseup', mouseUpListener)
   parentDom.value.removeEventListener('mouseleave', mouseLeaveListener)

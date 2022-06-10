@@ -11,35 +11,15 @@
 const calculateChangeWidthAndHeight = (x: number, y: number, mX: number, mY: number, oW: number, oH: number, type: string) => {
     let nH = 0, nW = 0;
 
-    if (type === 'right-top') {
+    if (type === 'top-center' || type === 'bottom-center') {
         nH = Math.abs(y - mY)
-        if (x > mX) {
-            nW = x - mX;
-        } else {
-            nW = mX - x;
+    } else if (type === 'left-center' || type === 'right-center') {
+        nW = Math.abs(Math.floor(x) - Math.floor(mX));
+        if (nW != 0) {
+            nW = Math.abs(nW - 12);
         }
-        nW = Math.abs(nW - 12);
-    }
-    if (type === 'top-center') {
-        nH = Math.abs(y - mY)
-    }
-    if (type === 'bottom-center') {
-        nH = Math.abs(y - mY)
-    }
-    if (type === 'left-top') {
+    } else {
         nH = Math.abs(Math.floor(y) - Math.floor(mY));
-        nW = Math.abs(Math.floor(x) - Math.floor(mX));
-        if (nW != 0) {
-            nW = Math.abs(nW - 12);
-        }
-    }
-    if (type === 'right-center') {
-        nW = Math.abs(Math.floor(x) - Math.floor(mX));
-        if (nW != 0) {
-            nW = Math.abs(nW - 12);
-        }
-    }
-    if (type === 'left-center') {
         nW = Math.abs(Math.floor(x) - Math.floor(mX));
         if (nW != 0) {
             nW = Math.abs(nW - 12);
@@ -68,17 +48,6 @@ const changeLocation = (type: string, element: any, parentDom: any, position: an
         element.value.style.right = 'unset'
         element.value.style.left = eLeft - left + 'px';
     }
-    if (type === 'right-center') {
-        position.left = eLeft;
-        element.value.style.right = 'unset'
-        element.value.style.left = (eLeft - left) + 'px';
-    }
-    if (type === 'right-bottom') {
-        position.top = eTop;
-        element.value.style.top = (eTop - top) + 'px';
-        position.left = eLeft;
-        element.value.style.left = (eLeft - left) + 'px';
-    }
     if (type === 'left-top') {
         position.top = eTop + eHeight
         position.left = eLeft + eWidth
@@ -86,6 +55,11 @@ const changeLocation = (type: string, element: any, parentDom: any, position: an
         element.value.style.right = right - eRight + 'px';
         element.value.style.top = 'unset';
         element.value.style.bottom = height - (eTop - top + eHeight) + 'px';
+    }
+    if (type === 'right-center') {
+        position.left = eLeft;
+        element.value.style.right = 'unset'
+        element.value.style.left = (eLeft - left) + 'px';
     }
     if (type === 'left-center') {
         position.left = eLeft + eWidth;
@@ -97,6 +71,25 @@ const changeLocation = (type: string, element: any, parentDom: any, position: an
         element.value.style.bottom = 'unset';
         element.value.style.top = eTop - top + 'px';
     }
+
+    if (type === 'right-bottom') {
+        element.value.style.bottom = 'unset';
+        element.value.style.right = 'unset';
+        position.top = eTop;
+        element.value.style.top = (eTop - top) + 'px';
+        position.left = eLeft;
+        element.value.style.left = (eLeft - left) + 'px';
+    }
+    if (type === 'left-bottom') {
+        position.top = eTop;
+        element.value.style.bottom = 'unset';
+        element.value.style.left = 'unset';
+        element.value.style.top = (eTop - top) + 'px';
+        position.left = eLeft + eWidth;
+        element.value.style.right = right - eRight + 'px';
+    }
+
+
 }
 
 export {
