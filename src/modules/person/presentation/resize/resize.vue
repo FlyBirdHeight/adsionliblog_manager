@@ -1,82 +1,154 @@
 <template>
-  <div class="resize-element" ref="resizeElement">
-    <div class="resize-point top-center" id="top-center" @mousedown.stop="handleDown"></div>
-    <div class="resize-point left-top" id="left-top" @mousedown.stop="handleDown"></div>
-    <div class="resize-point left-center" id="left-center" @mousedown.stop="handleDown"></div>
-    <div class="resize-point left-bottom" id="left-bottom" @mousedown.stop="handleDown"></div>
-    <div class="resize-point right-top" id="right-top" @mousedown.stop="handleDown"></div>
-    <div class="resize-point right-center" id="right-center" @mousedown.stop="handleDown"></div>
-    <div class="resize-point right-bottom" id="right-bottom" @mousedown.stop="handleDown"></div>
-    <div class="resize-point bottom-center" id="bottom-center" @mousedown.stop="handleDown"></div>
+  <div
+    class="resize-element"
+    ref="resizeElement"
+    @mouseenter.stop="dragMouseEnter"
+    @mouseleave.stop="dragMouseLeave"
+    @mouseup.stop="dragMouseEnd"
+    @mousedown.stop="dragMouseStart"
+    @mousemove.stop="dragMouseMove"
+  >
+    <div
+      class="resize-point top-center"
+      id="top-center"
+      @mousedown.stop="handleDown"
+    ></div>
+    <div
+      class="resize-point left-top"
+      id="left-top"
+      @mousedown.stop="handleDown"
+    ></div>
+    <div
+      class="resize-point left-center"
+      id="left-center"
+      @mousedown.stop="handleDown"
+    ></div>
+    <div
+      class="resize-point left-bottom"
+      id="left-bottom"
+      @mousedown.stop="handleDown"
+    ></div>
+    <div
+      class="resize-point right-top"
+      id="right-top"
+      @mousedown.stop="handleDown"
+    ></div>
+    <div
+      class="resize-point right-center"
+      id="right-center"
+      @mousedown.stop="handleDown"
+    ></div>
+    <div
+      class="resize-point right-bottom"
+      id="right-bottom"
+      @mousedown.stop="handleDown"
+    ></div>
+    <div
+      class="resize-point bottom-center"
+      id="bottom-center"
+      @mousedown.stop="handleDown"
+    ></div>
     <slot></slot>
   </div>
 </template>
 <script lang="ts">
-import { ref, useSlots, defineProps, getCurrentInstance, reactive } from 'vue'
-import { calculateChangeWidthAndHeight, changeLocation } from './resize'
+import { ref, useSlots, defineProps, reactive, onMounted } from "vue";
+import { calculateChangeWidthAndHeight, changeLocation } from "./resize";
 export default {
-  name: 'ResizeElement',
-}
+  name: "ResizeElement",
+};
 </script>
 <script lang="ts" setup>
 const props = defineProps({
   parent: {
     type: String,
-    default: 'body',
+    default: "body",
   },
-})
-const slots = useSlots()
-const parentDom = ref<any>(null)
-const resizeElement = ref<any>()
+});
+const slots = useSlots();
+onMounted(() => {
+  let child = slots.default?.()[0];
+  let { width, height } = child?.props?.textInfo.layout;
+  resizeElement.value.style.width = width;
+  resizeElement.value.style.height = height;
+});
+
+const parentDom = ref<any>(null);
+const resizeElement = ref<any>();
+//NOTE：专门用来处理拖拽改变位置的内容
+const dragStatus = ref<boolean>(false);
+const dragMouseEnter = (event: any) => {
+  resizeElement.value.style.cursor = "move";
+};
+const dragMouseLeave = (event: any) => {
+  resizeElement.value.style.cursor = "auto";
+};
+const dragMouseStart = (event: any) => {
+  dragStatus.value = true;
+};
+const dragMouseMove = (event: any) => {
+  if (dragStatus.value) {
+    console.log(event);
+  }
+};
+const dragMouseEnd = (event: any) => {
+  
+};
+
+//NOTE: 专门用来处理修改大小的内容
 const position = reactive({
   top: 0,
   left: 0,
   right: 0,
   bottom: 0,
-  type: '',
-})
+  type: "",
+});
 const mouseMoveListener = (event: any) => {
-  let { x, y, width, height } = resizeElement.value.getBoundingClientRect()
-  let { nH, nW } = calculateChangeWidthAndHeight(event.x, event.y, position.left, position.top, width, height, position.type)
+  let { width, height } = resizeElement.value.getBoundingClientRect();
+  let { nH, nW } = calculateChangeWidthAndHeight(
+    event.x,
+    event.y,
+    position.left,
+    position.top,
+    width,
+    height,
+    position.type
+  );
   if (nH !== 0) {
-    resizeElement.value.style.height = nH + 'px'
+    resizeElement.value.style.height = nH + "px";
   }
   if (nW !== 0) {
-    resizeElement.value.style.width = nW + 'px'
+    resizeElement.value.style.width = nW + "px";
   }
-}
+};
 const mouseUpListener = (event: any) => {
-  parentDom.value.removeEventListener('mousemove', mouseMoveListener)
-  parentDom.value.removeEventListener('mouseup', mouseUpListener)
-}
+  parentDom.value.removeEventListener("mousemove", mouseMoveListener);
+  parentDom.value.removeEventListener("mouseup", mouseUpListener);
+};
 const mouseLeaveListener = (event: any) => {
-  parentDom.value.removeEventListener('mousemove', mouseMoveListener)
-  parentDom.value.removeEventListener('mouseup', mouseUpListener)
-  parentDom.value.removeEventListener('mouseleave', mouseLeaveListener)
-}
+  parentDom.value.removeEventListener("mousemove", mouseMoveListener);
+  parentDom.value.removeEventListener("mouseup", mouseUpListener);
+  parentDom.value.removeEventListener("mouseleave", mouseLeaveListener);
+};
 const handleDown = (event: any) => {
   for (let v of event.path) {
     if (v.id === props.parent) {
-      parentDom.value = v
-      break
+      parentDom.value = v;
+      break;
     }
   }
-  parentDom.value.addEventListener('mousemove', mouseMoveListener)
-  parentDom.value.addEventListener('mouseup', mouseUpListener)
-  parentDom.value.addEventListener('mouseleave', mouseLeaveListener)
-  console.log(event);
-  
+  parentDom.value.addEventListener("mousemove", mouseMoveListener);
+  parentDom.value.addEventListener("mouseup", mouseUpListener);
+  parentDom.value.addEventListener("mouseleave", mouseLeaveListener);
 
-  changeLocation(event.path[0].id, resizeElement, parentDom, position)
-}
+  changeLocation(event.path[0].id, resizeElement, parentDom, position);
+};
 </script>
 <style lang="scss" scoped>
 .resize-element {
   position: absolute;
   left: 30%;
   top: 30%;
-  width: 200px;
-  height: 100px;
   border: 1px dashed rgba(0, 0, 0, 0.6);
   padding: 5px;
   .resize-point {

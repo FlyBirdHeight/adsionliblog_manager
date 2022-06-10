@@ -8,35 +8,35 @@
   ></textarea>
 </template>
 <script lang="ts">
-import { ref, defineProps, watch, computed } from 'vue'
-import { analysisCss } from '@/modules/person/presentation/text/text'
+import { ref, defineProps, watch, computed } from "vue";
+import { analysisCss } from "@/modules/person/presentation/text/text";
 export default {
-  name: 'PresentationText',
-}
+  name: "PresentationText",
+};
 </script>
 <script lang="ts" setup>
 const props = defineProps<{
-  textInfo: any
-}>()
-const text = ref<string>('hello')
-const presentationTextarea = ref()
+  textInfo: any;
+}>();
+const text = ref<string>("hello");
+const presentationTextarea = ref();
 const textAreaCss = computed(() => {
   if (props.textInfo) {
-    return analysisCss(props.textInfo)
+    return analysisCss(props.textInfo);
   }
   return {
-    width: '100px',
-    height: '50px',
-    left: '50%',
-    top: '50%',
-  }
-})
+    left: "50%",
+    top: "50%",
+  };
+});
 watch(text, (newV, oldV) => {
-  if (presentationTextarea.value.getBoundingClientRect().height < presentationTextarea.value.scrollHeight) {
-    textAreaCss.value.height = presentationTextarea.value.scrollHeight + 'px'
-    console.log(presentationTextarea.value.style.height)
+  if (
+    presentationTextarea.value.getBoundingClientRect().height <
+    presentationTextarea.value.scrollHeight
+  ) {
+    textAreaCss.value.height = presentationTextarea.value.scrollHeight + "px";
   }
-})
+});
 </script>
 <style lang="scss" scoped>
 .presentation-text_textarea {
@@ -45,5 +45,7 @@ watch(text, (newV, oldV) => {
   overflow-y: visible;
   resize: none;
   padding: 0;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
 }
 </style>

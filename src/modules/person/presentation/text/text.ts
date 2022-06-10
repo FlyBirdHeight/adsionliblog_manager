@@ -3,8 +3,6 @@ const addTextArea = function () {
         layout: {
             width: '200px',
             height: '100px',
-            // left: '50%',
-            // top: '50%',
             lineHeight: '14px',
             layer: 900
         },
@@ -39,8 +37,8 @@ const analysisCss = function (textInfo: any) {
     returnCss.zIndex = textInfo.layout.layer;
     let { style: fontStyle, size: fontSize, weight: fontWeight, align: textAlign } = textInfo.font;
     returnCss = Object.assign({ fontStyle, fontSize, fontWeight, textAlign }, returnCss);
-    let { width, height, left, top, lineHeight } = textInfo.layout;
-    returnCss = Object.assign({ width, height, left, top, lineHeight }, returnCss);
+    let { lineHeight } = textInfo.layout;
+    returnCss = Object.assign({ lineHeight }, returnCss);
 
     return returnCss;
 }
