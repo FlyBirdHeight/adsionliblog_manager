@@ -72,8 +72,6 @@ class HandlePresentation {
             item: []
         });
         this.registerFn();
-        console.log(this);
-
     }
 
     /**

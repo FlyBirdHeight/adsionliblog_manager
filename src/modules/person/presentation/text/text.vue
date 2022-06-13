@@ -4,8 +4,7 @@
     :style="textAreaCss"
     rows="1"
     class="presentation-text_textarea"
-    v-model="text"
-    @contextmenu.prevent="showStyleConfig"
+    v-model="props.info.data"
   ></textarea>
 </template>
 <script lang="ts">
@@ -27,25 +26,6 @@ const textAreaCss = computed(() => {
   } else {
     return null
   }
-})
-const showStyleConfig = () => {
-  console.log("showStyleConfig");
-}
-watch(
-  () => props.info,
-  (newV, oldV) => {
-    if (newV) {
-      text.value = newV.data
-    }
-  },
-  {
-    immediate: true,
-  }
-)
-watch(text, (newV, oldV) => {
-  // if (presentationTextarea.value.getBoundingClientRect().height < presentationTextarea.value.scrollHeight) {
-  //   textAreaCss.value.height = presentationTextarea.value.scrollHeight + 'px'
-  // }
 })
 </script>
 <style lang="scss" scoped>

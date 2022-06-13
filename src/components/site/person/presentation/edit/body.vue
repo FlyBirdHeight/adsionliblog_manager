@@ -21,14 +21,7 @@
         <div class="label" style="cursor: pointer" @click.stop="hideStatus.bgSetting = !hideStatus.bgSetting">
           <span>背景图设置：</span>
           <span style="float: right">
-            <el-icon
-              ><component
-                :style="{
-                  transition: 'all 0.4s linear',
-                  transform: hideStatus.bgSetting ? 'rotate(0deg)' : 'rotate(90deg)',
-                }"
-                :is="$icon['CaretBottom']"
-            /></el-icon>
+            <open-icon :change="hideStatus.bgSetting" />
           </span>
         </div>
         <transition name="bg-image-setting-show">
@@ -115,9 +108,7 @@
     </div>
     <div class="item-list">
       <div class="label">页面内容：</div>
-      <div class="item-list-group">
-        <div class="item-list-group_item"></div>
-      </div>
+      <body-item-list></body-item-list>
     </div>
   </div>
   <edit-body-image-setting
@@ -135,6 +126,8 @@ export default {
 </script>
 <script lang="ts" setup>
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
+import BodyItemList from '@/components/site/person/presentation/edit/body_item_list.vue'
+
 const emit = defineEmits(['setBackground', 'editBackground', 'removeBackgroundImage'])
 
 const bgColor = ref('rgba(255,255,255, 1.0)')
@@ -166,6 +159,7 @@ const changeBgColor = (val: string) => {
 const closeDialog = (val: boolean) => {
   showImageSetting.value = false
 }
+//NOTE: 背景图片设置相关
 const setImageData = (type: string) => {
   checkedImage.value = false
   settingType.value = type

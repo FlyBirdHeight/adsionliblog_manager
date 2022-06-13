@@ -12,25 +12,25 @@
     </div>
     <div class="presentation-edit">
       <div class="presentation_body" ref="presentationBody" id="presentation_body" @click="handleClick">
-        <template v-if="itemMap.text.length != 0">
+        <template v-if="pageMap.item.text.length != 0">
           <resize-element
             @changeStatus="changeStatus"
             @emitActive="emitActive"
             :parent="'presentation_body'"
-            v-for="(text, index) of itemMap.text"
+            v-for="(text, index) of pageMap.item.text"
           >
             <presentation-text :info="text"></presentation-text>
           </resize-element>
         </template>
-        <template v-if="itemMap.image.length != 0">
-          <resize-element :parent="'presentation_body'" v-for="(text, index) of itemMap.image">
-            <presentation-image v-for="(text, index) of itemMap.image"></presentation-image>
+        <template v-if="pageMap.item.image.length != 0">
+          <resize-element :parent="'presentation_body'" v-for="(text, index) of pageMap.item.image">
+            <presentation-image v-for="(text, index) of pageMap.item.image"></presentation-image>
           </resize-element>
         </template>
       </div>
-      <div class="persentation_edit-tool">
-        <presentation-edit-tool @setItem="setItem"></presentation-edit-tool>
-      </div>
+      <el-scrollbar :always="true" class="persentation_edit-tool">
+        <presentation-edit-tool @setItem="setItem" @setPage="setPage"></presentation-edit-tool>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -38,7 +38,7 @@
 import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
-import { handleSetting } from '@/modules/person/presentation/utils/item'
+import { handleSetting, setPageMap } from '@/modules/person/presentation/utils/item'
 import HandlePresentation from '@/modules/person/presentation/handle'
 export default {
   name: 'PresentationContainer',
@@ -52,7 +52,6 @@ import PresentationEditTool from '@/components/site/person/presentation/editTool
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
 /**
- * @property {any} itemMap 当前Page中的内容
  * @property {any} pageMap 当前Page的配置内容
  * @property {any} pageInfo 当前播放页的所有页面信息集合
  */
@@ -61,54 +60,73 @@ const pageInfo = reactive({
   pageCount: 1,
   pageMap: [],
 })
-const itemMap = reactive({
-  text: [],
-  image: [],
-  code: [],
-  count: 0,
-})
-const pageMap = reactive({
-  item: [],
-  setting: {
-    background: {
-      type: '',
-      data: '',
-      config: '',
+const pageMap = reactive(
+  {
+    item: {
+      text: [],
+      image: [],
+      code: [],
+      count: 0,
     },
-    resolution: {
-      x: 1600,
-      y: 900,
+    setting: {
+      background: {
+        type: '',
+        data: '',
+        config: null,
+      },
+      resolution: {
+        x: 1600,
+        y: 900,
+      },
     },
   },
-})
+  { deep: true }
+)
+provide('itemList', pageMap.item)
 const activeItem = ref<number>(-1)
+const itemTypeIndexList = ref<{ index: number; type: string }[]>([])
 const clickTime = ref<number>(0)
 const presentationBody = ref()
 
 provide('activeItem', activeItem)
+provide('itemTypeIndexList', itemTypeIndexList)
 const handleAction = (action: string) => {
   let fn = Reflect.get(handleObj, action)
   if (action === 'addTextArea') {
-    itemMap.text.push(fn(itemMap.count + 1))
-    activeItem.value = itemMap.count + 1
-    itemMap.count += 1
+    const text = fn(pageMap.item.count + 1)
+    pageMap.item.text.push(text)
+    activeItem.value = pageMap.item.count + 1
+    pageMap.item.count += 1
+    itemTypeIndexList.value.push({ index: activeItem.value, type: 'text' })
   }
 }
+/**
+ * @method emitActive 设置选中项的index
+ */
 const emitActive = (val: number) => {
   activeItem.value = val
 }
+/**
+ * @method handleClick 选中非目标时的activeIndex取消
+ */
 const handleClick = (e: any) => {
   if (e.timeStamp === clickTime.value) {
     return
   }
   activeItem.value = -1
 }
+/**
+ * @method changeStatus 专门用来处理Active选中取消的点击事件，避免重复执行
+ */
 const changeStatus = (val: number) => {
   clickTime.value = val
 }
-const setItem = (val: any, type: string) => {
+const setPage = (val: any, type: string) => {
   handleSetting(presentationBody.value, val, type)
+  setPageMap(pageMap, type, val)
 }
+
+const setItem = (val: any, type: string) => {}
 </script>
 <style lang="scss" scoped>
 .presentation-container {

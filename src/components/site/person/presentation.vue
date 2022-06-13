@@ -4,7 +4,7 @@
       <presentation-container></presentation-container>
     </div>
     <div class="divider"></div>
-    <div class="show">show</div>
+    <!-- <div class="show">show</div> -->
   </div>
 </template>
 <script lang="ts">

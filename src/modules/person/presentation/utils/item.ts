@@ -47,7 +47,32 @@ const clearBackgroundImage = (dom: any) => {
     dom.style.backgroundPosition = null;
     dom.style.backgroundImage = null;
 }
-
+/**
+ * @method setPageMap 设置当前页保存数据
+ * @param data 
+ * @param {string} type 类型
+ * @param val 
+ */
+const setPageMap = (data: any, type: string, val: any) => {
+    if (type === 'removeBackgroundImage') {
+        data.setting.background.data = val.val;
+        data.setting.background.type = 'color';
+        data.setting.background.config = null;
+        return;
+    }
+    if (type === 'background') {
+        if (val.defaultSetting) {
+            data.setting.background.type = 'image';
+            data.setting.background.config = val.defaultSetting;
+        } else {
+            data.setting.background.type = 'color';
+        }
+        data.setting.background.data = val.val;
+    } else {
+        data.setting.background.config = val;
+    }
+}
 export {
-    handleSetting
+    handleSetting,
+    setPageMap
 }
