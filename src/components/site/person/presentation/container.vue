@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="presentation-edit">
-      <div class="presentation_body" id="presentation_body" @click="handleClick">
+      <div class="presentation_body" ref="presentationBody" id="presentation_body" @click="handleClick">
         <template v-if="itemMap.text.length != 0">
           <resize-element
             @changeStatus="changeStatus"
@@ -29,7 +29,7 @@
         </template>
       </div>
       <div class="persentation_edit-tool">
-        <presentation-edit-tool></presentation-edit-tool>
+        <presentation-edit-tool @setItem="setItem"></presentation-edit-tool>
       </div>
     </div>
   </div>
@@ -38,6 +38,7 @@
 import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
+import { handleSetting } from '@/modules/person/presentation/utils/item'
 import HandlePresentation from '@/modules/person/presentation/handle'
 export default {
   name: 'PresentationContainer',
@@ -47,17 +48,43 @@ export default {
 import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
 import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
-import PresentationEditTool from "@/components/site/person/presentation/editTool.vue"
+import PresentationEditTool from '@/components/site/person/presentation/editTool.vue'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
+/**
+ * @property {any} itemMap 当前Page中的内容
+ * @property {any} pageMap 当前Page的配置内容
+ * @property {any} pageInfo 当前播放页的所有页面信息集合
+ */
+const pageInfo = reactive({
+  currentPage: 0,
+  pageCount: 1,
+  pageMap: [],
+})
 const itemMap = reactive({
   text: [],
   image: [],
   code: [],
   count: 0,
 })
+const pageMap = reactive({
+  item: [],
+  setting: {
+    background: {
+      type: '',
+      data: '',
+      config: '',
+    },
+    resolution: {
+      x: 1600,
+      y: 900,
+    },
+  },
+})
 const activeItem = ref<number>(-1)
 const clickTime = ref<number>(0)
+const presentationBody = ref()
+
 provide('activeItem', activeItem)
 const handleAction = (action: string) => {
   let fn = Reflect.get(handleObj, action)
@@ -78,6 +105,9 @@ const handleClick = (e: any) => {
 }
 const changeStatus = (val: number) => {
   clickTime.value = val
+}
+const setItem = (val: any, type: string) => {
+  handleSetting(presentationBody.value, val, type)
 }
 </script>
 <style lang="scss" scoped>

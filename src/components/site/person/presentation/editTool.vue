@@ -4,7 +4,11 @@
       <span>绘板设置</span>
     </div>
     <div class="editTool-body">
-      <presentation-body-setting></presentation-body-setting>
+      <presentation-body-setting
+        @setBackground="setBackground"
+        @editBackground="editBackground"
+        @removeBackgroundImage="removeBackgroundImage"
+      ></presentation-body-setting>
     </div>
   </div>
 </template>
@@ -17,7 +21,17 @@ export default {
 <script lang="ts" setup>
 import PresentationBodySetting from '@/components/site/person/presentation/edit/body.vue'
 const props = defineProps()
-const emit = defineEmits([])
+const emit = defineEmits(['setItem'])
+const setBackground = (val: string, defaultSetting: any) => {
+  emit('setItem', { val, defaultSetting }, 'background')
+}
+
+const editBackground = (val: any) => {
+  emit('setItem', val, 'backgroundEdit')
+}
+const removeBackgroundImage = (val: any) => {
+  emit('setItem', { val }, 'removeBackgroundImage')
+}
 </script>
 <style lang="scss" scoped>
 .editTool {

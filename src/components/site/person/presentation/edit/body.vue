@@ -18,46 +18,99 @@
         </div>
       </div>
       <div class="bg-image-setting" v-show="bgImage !== ''">
-        <div class="label">背景图设置：</div>
-        <div class="bg-image-preview" style="margin-bottom: 5px">
-          <div class="sub-label">预览：</div>
-          <el-image style="width: 146px; height: 146px; margin: auto; display: block" :src="bgImage" :fit="'cover'" />
+        <div class="label" style="cursor: pointer" @click.stop="hideStatus.bgSetting = !hideStatus.bgSetting">
+          <span>背景图设置：</span>
+          <span style="float: right">
+            <el-icon
+              ><component
+                :style="{
+                  transition: 'all 0.4s linear',
+                  transform: hideStatus.bgSetting ? 'rotate(0deg)' : 'rotate(90deg)',
+                }"
+                :is="$icon['CaretBottom']"
+            /></el-icon>
+          </span>
         </div>
-        <div class="bg-image-size">
-          <span class="sub-label">大小：</span>
-          <div class="bg-image-size-group">
-            <div class="bg-image-x-size">
-              <span class="third-title">x方向大小(%):</span>
-              <el-input-number style="width: 100px" controls-position="right" label="%" v-model="formData.xSize" :min="1" :max="200" size="small" />
+        <transition name="bg-image-setting-show">
+          <div class="bg-image-setting-item" v-if="hideStatus.bgSetting">
+            <div class="bg-image-preview" style="margin-bottom: 5px">
+              <div class="sub-label">预览：</div>
+              <el-image
+                style="width: 146px; height: 146px; margin: auto; display: block"
+                :src="bgImage"
+                :fit="'cover'"
+              />
             </div>
-            <div class="bg-image-y-size">
-              <span class="third-title">y方向大小(%):</span>
-              <el-input-number style="width: 100px" controls-position="right" v-model="formData.ySize" :min="1" :max="200" size="small" />
+            <div class="bg-image-size">
+              <span class="sub-label">大小：</span>
+              <div class="bg-image-size-group">
+                <div class="bg-image-x-size">
+                  <span class="third-title">x方向大小(%):</span>
+                  <el-input-number
+                    style="width: 100px"
+                    controls-position="right"
+                    label="%"
+                    v-model="formData.xSize"
+                    :min="1"
+                    :max="200"
+                    size="small"
+                  />
+                </div>
+                <div class="bg-image-y-size">
+                  <span class="third-title">y方向大小(%):</span>
+                  <el-input-number
+                    style="width: 100px"
+                    controls-position="right"
+                    v-model="formData.ySize"
+                    :min="1"
+                    :max="200"
+                    size="small"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="bg-image-repeat">
+              <span class="sub-label">重复：</span>
+              <el-radio-group class="bg-image-repeat-group" v-model="formData.bgRepeat">
+                <el-radio label="no-repeat" size="small">不重复</el-radio>
+                <el-radio label="repeat" size="small">普通</el-radio>
+                <el-radio label="repeat-x" size="small">x轴重复</el-radio>
+                <el-radio label="repeat-y" size="small">y轴重复</el-radio>
+              </el-radio-group>
+            </div>
+            <div class="bg-image-position">
+              <span class="sub-label">显示位置：</span>
+              <div class="bg-image-position-group">
+                <div class="bg-image-x-position">
+                  <span class="third-title">x方向偏移(%):</span>
+                  <el-input-number
+                    style="width: 100px"
+                    controls-position="right"
+                    v-model="formData.xPosition"
+                    :min="-99"
+                    :max="200"
+                    size="small"
+                  />
+                </div>
+                <div class="bg-image-y-position">
+                  <span class="third-title">y方向偏移(%):</span>
+                  <el-input-number
+                    style="width: 100px"
+                    controls-position="right"
+                    v-model="formData.yPosition"
+                    :min="-99"
+                    :max="200"
+                    size="small"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="bg-image-button">
+              <el-button size="small" type="primary">自定义设置</el-button>
+              <el-button size="small" type="danger" @click="removeBgImage">移除背景图</el-button>
             </div>
           </div>
-        </div>
-        <div class="bg-image-repeat">
-          <span class="sub-label">重复：</span>
-          <el-radio-group class="bg-image-repeat-group" v-model="formData.bgRepeat">
-            <el-radio label="no-repeat" size="small">不重复</el-radio>
-            <el-radio label="repeat" size="small">普通</el-radio>
-            <el-radio label="x-repeat" size="small">x轴重复</el-radio>
-            <el-radio label="y-repeat" size="small">y轴重复</el-radio>
-          </el-radio-group>
-        </div>
-        <div class="bg-image-position">
-          <span class="sub-label">显示位置：</span>
-          <div class="bg-image-position-group">
-            <div class="bg-image-x-position">
-              <span class="third-title">x方向偏移(%):</span>
-              <el-input-number style="width: 100px" controls-position="right" v-model="formData.xPosition" :min="1" :max="200" size="small" />
-            </div>
-            <div class="bg-image-y-position">
-              <span class="third-title">y方向偏移(%):</span>
-              <el-input-number style="width: 100px" controls-position="right" v-model="formData.yPosition" :min="1" :max="200" size="small" />
-            </div>
-          </div>
-        </div>
+        </transition>
       </div>
     </div>
     <div class="item-list">
@@ -75,30 +128,40 @@
   ></edit-body-image-setting>
 </template>
 <script lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, defineEmits, watch } from 'vue'
 export default {
   name: 'PresentationBodySetting',
 }
 </script>
 <script lang="ts" setup>
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
+const emit = defineEmits(['setBackground', 'editBackground', 'removeBackgroundImage'])
+
 const bgColor = ref('rgba(255,255,255, 1.0)')
 const bgImage = ref<string>('')
 const checkedImage = ref<boolean>(false)
 const showImageSetting = ref<boolean>(false)
+const hideStatus = reactive({
+  bgSetting: true,
+})
 const settingType = ref<string>('linkPath')
 const formData = reactive({
   bgRepeat: 'repeat',
   xSize: 100,
   ySize: 100,
-  xPosition: 100,
-  yPosition: 100,
+  xPosition: 0,
+  yPosition: 0,
 })
+
 const setImagePath = (val: string) => {
   bgImage.value = val
+  emit('setBackground', bgImage.value, formData)
 }
-const changeBgColor = () => {
-  console.log(bgColor.value)
+const changeBgColor = (val: string) => {
+  if (bgImage.value !== '') {
+    return
+  }
+  emit('setBackground', bgColor.value, null)
 }
 const closeDialog = (val: boolean) => {
   showImageSetting.value = false
@@ -108,6 +171,19 @@ const setImageData = (type: string) => {
   settingType.value = type
   showImageSetting.value = true
 }
+const removeBgImage = () => {
+  bgImage.value = ''
+  emit('removeBackgroundImage', bgColor.value)
+}
+watch(
+  formData,
+  (newV, oldV) => {
+    emit('editBackground', newV)
+  },
+  {
+    deep: true,
+  }
+)
 </script>
 <style lang="scss" scoped>
 @mixin settingLabel() {
@@ -158,44 +234,52 @@ const setImageData = (type: string) => {
       .label {
         @include settingLabel();
       }
-      .bg-image-size,
-      .bg-image-repeat,
-      .bg-image-position {
-        @include normalFlex();
-      }
-      .sub-label {
-        @include subSettingLabel();
-      }
-      .bg-image-size {
-        .bg-image-size-group {
-          width: 100%;
-          .bg-image-x-size {
-            @include normalFlex();
-            margin-bottom: 5px;
-          }
-          .bg-image-y-size {
-            @include normalFlex();
+      .bg-image-setting-item {
+        .bg-image-size,
+        .bg-image-repeat,
+        .bg-image-position {
+          @include normalFlex();
+        }
+        .bg-image-button {
+          @include normalFlex();
+          justify-content: flex-end;
+          margin-top: 10px;
+          padding: 0 10px;
+        }
+        .sub-label {
+          @include subSettingLabel();
+        }
+        .bg-image-size {
+          .bg-image-size-group {
+            width: 100%;
+            .bg-image-x-size {
+              @include normalFlex();
+              margin-bottom: 5px;
+            }
+            .bg-image-y-size {
+              @include normalFlex();
+            }
           }
         }
-      }
-      .bg-image-position {
-        .bg-image-position-group {
-          width: 100%;
-          .bg-image-x-position {
-            @include normalFlex();
-            margin-bottom: 5px;
-          }
-          .bg-image-y-position {
-            @include normalFlex();
+        .bg-image-position {
+          .bg-image-position-group {
+            width: 100%;
+            .bg-image-x-position {
+              @include normalFlex();
+              margin-bottom: 5px;
+            }
+            .bg-image-y-position {
+              @include normalFlex();
+            }
           }
         }
-      }
-      .bg-image-repeat .bg-image-repeat-group {
-        width: 70%;
-        margin: auto;
-      }
-      .third-title {
-        @include thirdTitle();
+        .bg-image-repeat .bg-image-repeat-group {
+          width: 70%;
+          margin: auto;
+        }
+        .third-title {
+          @include thirdTitle();
+        }
       }
     }
   }
@@ -205,5 +289,32 @@ const setImageData = (type: string) => {
       @include settingLabel();
     }
   }
+}
+
+.bg-image-setting-show-enter-from {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.bg-image-setting-show-enter-to {
+  opacity: 1;
+  max-height: 600px;
+}
+.bg-image-setting-show-enter-active {
+  transition: all 0.4s linear;
+  overflow: hidden;
+}
+.bg-image-setting-show-leave-active {
+  transition: all 0.4s linear;
+  max-height: 600px;
+}
+.bg-image-setting-show-leave-to {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.bg-image-setting-show-leave {
+  max-height: 600px;
+  opacity: 1;
 }
 </style>
