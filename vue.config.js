@@ -49,9 +49,7 @@ module.exports = {
             sass: {
                 // 全局sass变量	
                 //sass-loader 新版本
-                prependData: `
-                    @import "./public/scss/variable.scss";
-                    @import "./public/scss/mixin.scss";
+                data: `
                     @import "./public/scss/index.scss";
                 `
             }

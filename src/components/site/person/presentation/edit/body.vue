@@ -127,9 +127,7 @@ export default {
 <script lang="ts" setup>
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
 import BodyItemList from '@/components/site/person/presentation/edit/body_item_list.vue'
-
 const emit = defineEmits(['setBackground', 'editBackground', 'removeBackgroundImage'])
-
 const bgColor = ref('rgba(255,255,255, 1.0)')
 const bgImage = ref<string>('')
 const checkedImage = ref<boolean>(false)
@@ -180,29 +178,6 @@ watch(
 )
 </script>
 <style lang="scss" scoped>
-@mixin settingLabel() {
-  font-size: 14px;
-  font-weight: 500;
-  width: 100%;
-  height: 35px;
-}
-@mixin subSettingLabel() {
-  font-size: 13px;
-  font-weight: 500;
-  width: 100%;
-  height: 25px;
-  line-height: 25px;
-}
-@mixin thirdTitle() {
-  font-size: 12px;
-  font-weight: 500;
-}
-@mixin normalFlex() {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
-}
 .presentation-body-setting {
   margin-top: 10px;
   .setting {
@@ -214,11 +189,11 @@ watch(
       padding-bottom: 10px;
       border-bottom: 1px solid #dcdfe6;
       .label {
-        @include settingLabel();
+        @include header();
       }
       .bg-select {
         width: 100%;
-        @include normalFlex();
+        @include flexNormal();
       }
     }
     .bg-image-setting {
@@ -226,32 +201,32 @@ watch(
       padding-bottom: 10px;
       border-bottom: 1px solid #dcdfe6;
       .label {
-        @include settingLabel();
+        @include header();
       }
       .bg-image-setting-item {
         .bg-image-size,
         .bg-image-repeat,
         .bg-image-position {
-          @include normalFlex();
+          @include flexNormal();
         }
         .bg-image-button {
-          @include normalFlex();
+          @include flexNormal();
           justify-content: flex-end;
           margin-top: 10px;
           padding: 0 10px;
         }
         .sub-label {
-          @include subSettingLabel();
+          @include subHeader();
         }
         .bg-image-size {
           .bg-image-size-group {
             width: 100%;
             .bg-image-x-size {
-              @include normalFlex();
+              @include flexNormal();
               margin-bottom: 5px;
             }
             .bg-image-y-size {
-              @include normalFlex();
+              @include flexNormal();
             }
           }
         }
@@ -259,11 +234,11 @@ watch(
           .bg-image-position-group {
             width: 100%;
             .bg-image-x-position {
-              @include normalFlex();
+              @include flexNormal();
               margin-bottom: 5px;
             }
             .bg-image-y-position {
-              @include normalFlex();
+              @include flexNormal();
             }
           }
         }
@@ -272,7 +247,7 @@ watch(
           margin: auto;
         }
         .third-title {
-          @include thirdTitle();
+          @include thridHeader();
         }
       }
     }
@@ -280,7 +255,7 @@ watch(
   .item-list {
     padding: 4px;
     .label {
-      @include settingLabel();
+      @include header();
     }
   }
 }

@@ -82,12 +82,12 @@ const pageMap = reactive(
   },
   { deep: true }
 )
-provide('itemList', pageMap.item)
+
 const activeItem = ref<number>(-1)
 const itemTypeIndexList = ref<{ index: number; type: string }[]>([])
 const clickTime = ref<number>(0)
 const presentationBody = ref()
-
+provide('itemList', pageMap.item)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
 const handleAction = (action: string) => {

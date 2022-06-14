@@ -1,0 +1,26 @@
+@mixin header() {
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    height: 35px;
+}
+
+@mixin subHeader() {
+    font-size: 13px;
+    font-weight: 500;
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+}
+
+@mixin thridHeader() {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+@mixin flexNormal() {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}

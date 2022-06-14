@@ -7,6 +7,7 @@
     @mouseenter.stop="dragMouseEnter"
     @mouseleave.stop="dragMouseLeave"
     @click.stop="emit('emitActive', activeIndex)"
+    @mousedown="activeItem = activeIndex"
     v-dragResize
   >
     <div
@@ -70,9 +71,6 @@ export default {
     dragResize(el: any, bindings: any) {
       el.onmousedown = function (e: any) {
         let box: any = this
-        if (e.path[0].id !== 'dragResizeElement') {
-          return
-        }
         let disX: any = e.clientX - box.offsetLeft
         let disY: any = e.clientY - box.offsetTop
         document.onmousemove = function (e) {
@@ -102,7 +100,7 @@ const activeItem = inject('activeItem')
 const emit = defineEmits(['emitActive', 'changeStatus'])
 onMounted(() => {
   child.value = slots.default?.()[0]
-  let { width, height } = child.value?.props?.info.layout
+  let { width, height } = child.value?.props?.info.style.layout
   resizeElement.value.style.width = width
   resizeElement.value.style.height = height
   let length = resizeElement.value.__vnode.children.length
@@ -140,10 +138,11 @@ const mouseMoveListener = (event: any) => {
   )
   if (nH !== 0) {
     resizeElement.value.style.height = nH + 'px'
-    child.value.props.info.layout.lineHeight = nH + 'px'
+    child.value!.props!.info!.style!.layout!.height = nH
   }
   if (nW !== 0) {
     resizeElement.value.style.width = nW + 'px'
+    child.value!.props!.info!.style!.layout!.width = nW
   }
 }
 const mouseUpListener = (event: any) => {
@@ -177,6 +176,9 @@ const handleDown = (event: any) => {
   top: 30%;
   border: 1px dashed rgba(0, 0, 0, 0.6);
   padding: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   .resize-point {
     position: absolute;
     width: 10px;

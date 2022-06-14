@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import '../public/scss/index.scss';
+// import '../public/scss/mixin.scss';
 import installIcon from '@/utils/ImportIcon'
 import IconFont from "@/components/utils/icon.vue"
 import OpenIcon from "@/components/utils/icon/open.vue"

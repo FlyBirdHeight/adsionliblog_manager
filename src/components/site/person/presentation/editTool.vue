@@ -23,6 +23,7 @@
           @editBackground="editBackground"
           @removeBackgroundImage="removeBackgroundImage"
         ></presentation-body-setting>
+        <edit-presentation-text v-else-if="activeInfo == 'text'" />
       </keep-alive>
     </div>
   </div>
@@ -35,6 +36,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import PresentationBodySetting from '@/components/site/person/presentation/edit/body.vue'
+import EditPresentationText from '@/components/site/person/presentation/edit/text/edit_text.vue'
 const props = defineProps()
 const emit = defineEmits(['setItem', 'setPage'])
 const tabList = ref([
@@ -86,17 +88,25 @@ const displayTab = () => {
   })
 }
 watch(activeIndex, (newV, oldV) => {
+  if (newV === -1) {
+    displayTab()
+    activeInfo.value = 'main'
+    return
+  }
   let index = itemTypeIndexList.value.findIndex((v) => v.index === newV)
   if (index == -1) {
     displayTab()
+    activeInfo.value = 'main'
     return
   }
   let tI = tabList.value.findIndex((v) => v.value === itemTypeIndexList.value[index].type)
   if (tI == -1) {
     displayTab()
+    activeInfo.value = 'main'
     return
   }
   tabList.value[tI].show = true
+  activeInfo.value = itemTypeIndexList.value[index].type
 })
 </script>
 <style lang="scss" scoped>

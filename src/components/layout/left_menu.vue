@@ -28,7 +28,7 @@ export default defineComponent({
     const storeState = useState('header', ['activeRouter'])
     const route = useRoute()
     const firstJoin = ref<boolean>(true)
-    const collapse = ref<boolean>(false)
+    const collapse = ref<boolean>(true)
     const menuData = reactive(generateMenuData.handleMenuData(generateMenuData.menuData))
     const activeMenu = ref<string>('adsionli-home')
     watch(
