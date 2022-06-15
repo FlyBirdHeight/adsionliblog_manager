@@ -5,11 +5,14 @@ const defaultStyle = {
         layer: 900
     },
     backgroundColor: "transparent",
-    border: "none",
+    border: {
+        set: "none",
+        color: "rgba(0,0,0,1)"
+    },
     color: "rgba(0,0,0,1)",
     font: {
         style: "normal",
-        size: "22px",
+        size: 22,
         weight: "400",
         align: "center",
         family: "monospace"
@@ -76,6 +79,30 @@ const fontFamilyList = [
     }
 ]
 
+const decorationStyle = [
+    {
+        label: "曲线",
+        value: "wavy"
+    },
+    {
+        label: "直线",
+        value: "solid"
+    },
+    {
+        label: "点线",
+        value: "dotted"
+    },
+    {
+        label: "短划线",
+        value: "dashed"
+    },
+    {
+        label: "双划线",
+        value: "double"
+    }
+
+]
+
 const addTextArea = function (index: number) {
     return {
         style: {
@@ -85,11 +112,14 @@ const addTextArea = function (index: number) {
                 layer: 900
             },
             backgroundColor: "transparent",
-            border: "none",
+            border: {
+                set: "none",
+                color: "rgba(0,0,0,1)"
+            },
             color: "rgba(0,0,0,1)",
             font: {
                 style: "normal",
-                size: "22px",
+                size: 22,
                 weight: "400",
                 align: "center",
                 family: "monospace"
@@ -120,11 +150,11 @@ const addTextArea = function (index: number) {
 const analysisCss = function (textInfo: any) {
     let returnCss: any = {};
     returnCss.backgroundColor = textInfo.backgroundColor;
-    returnCss.border = textInfo.border;
+    returnCss.border = textInfo.border.set == 'none' ? textInfo.border.set : `${textInfo.border.set} ${textInfo.border.color}`;
     returnCss.color = textInfo.color;
     returnCss.zIndex = textInfo.layout.layer;
     let { style: fontStyle, size: fontSize, weight: fontWeight, align: textAlign, family: fontFamily } = textInfo.font;
-    returnCss = Object.assign({ fontStyle, fontSize, fontWeight, textAlign, fontFamily }, returnCss);
+    returnCss = Object.assign({ fontStyle, fontSize: fontSize + 'px', fontWeight, textAlign, fontFamily }, returnCss);
     let { line: textDecorationLine, style: textDecorationStyle, color: textDecorationColor } = textInfo.text.decoration;
     returnCss = Object.assign({ textDecorationLine, textDecorationStyle, textDecorationColor }, returnCss);
 
@@ -135,5 +165,6 @@ export {
     addTextArea,
     analysisCss,
     defaultStyle,
-    fontFamilyList
+    fontFamilyList,
+    decorationStyle
 }

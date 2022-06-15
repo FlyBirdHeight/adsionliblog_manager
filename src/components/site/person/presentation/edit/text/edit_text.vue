@@ -3,12 +3,9 @@
     <div class="edit-text-font">
       <div class="text-font_header" @click.stop="hideStatus.fontSet = !hideStatus.fontSet">
         <span>文本设置：</span>
-        <span style="float: right">
-          <open-icon :change="hideStatus.fontSet" />
-        </span>
       </div>
       <div class="text-font_body">
-        <edit-font @changeFont="changeFont" />
+        <edit-font />
       </div>
     </div>
   </div>
@@ -24,16 +21,12 @@ export default {
 import EditFont from './font.vue'
 const activeIndex = inject('activeItem')
 const itemList = inject('itemList')
+const itemObject = ref(null)
 const textStyle = ref(defaultStyle)
-provide('fontStyle', textStyle.value.font)
+provide('textStyle', textStyle)
 const hideStatus = reactive({
   fontSet: true,
 })
-const changeFont = (val: any) => {
-  let idx = itemList.text.findIndex((v) => v.index === activeIndex.value)
-  textStyle.font = val
-  itemList.text[idx].style.font = val
-}
 watch(
   activeIndex,
   (newV, oldV) => {
@@ -41,7 +34,8 @@ watch(
       if (itemList.text.length != 0) {
         let idx = itemList.text.findIndex((v) => v.index === newV)
         if (idx !== -1) {
-          textStyle.value = itemList.text[idx].style
+          itemObject.value = itemList.text[idx]
+          textStyle.value = itemObject.value.style
         }
       }
     }
@@ -62,7 +56,6 @@ watch(
     .text-font_header {
       @include header();
       line-height: 35px;
-      cursor: pointer;
     }
     .text-font_body {
       width: 100%;
