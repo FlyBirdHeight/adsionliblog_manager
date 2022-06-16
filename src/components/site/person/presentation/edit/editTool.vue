@@ -24,12 +24,13 @@
           @removeBackgroundImage="removeBackgroundImage"
         ></presentation-body-setting>
         <edit-presentation-text v-else-if="activeInfo == 'text'" />
+        <edit-presentation-image v-else-if="activeInfo == 'image'" />
       </keep-alive>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect, inject, provide } from 'vue'
+import { ref, defineEmits, computed, watch, reactive, watchEffect, inject, provide } from 'vue'
 export default {
   name: 'PresentationEditTool',
 }
@@ -37,7 +38,7 @@ export default {
 <script lang="ts" setup>
 import PresentationBodySetting from '@/components/site/person/presentation/edit/body/body.vue'
 import EditPresentationText from '@/components/site/person/presentation/edit/text/edit_text.vue'
-const props = defineProps()
+import EditPresentationImage from '@/components/site/person/presentation/edit/image/edit_image.vue'
 const emit = defineEmits(['setItem', 'setPage'])
 const tabList = ref([
   {
@@ -88,21 +89,19 @@ const displayTab = () => {
   })
 }
 watch(activeIndex, (newV, oldV) => {
+  displayTab()
   if (newV === -1) {
-    displayTab()
     activeInfo.value = 'main'
     return
   }
   let index = itemTypeIndexList.value.findIndex((v) => v.index === newV)
 
   if (index == -1) {
-    displayTab()
     activeInfo.value = 'main'
     return
   }
   let tI = tabList.value.findIndex((v) => v.value === itemTypeIndexList.value[index].type)
   if (tI == -1) {
-    displayTab()
     activeInfo.value = 'main'
     return
   }

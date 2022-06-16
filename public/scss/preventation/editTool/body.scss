@@ -1,0 +1,19 @@
+.edit-body {
+    width: 100%;
+    margin-top: 10px;
+
+    .edit-body-container {
+        padding: 3px;
+        border: 1px solid #e4e7ed;
+        border-radius: 5px;
+
+        .edit-container_header {
+            @include header();
+            line-height: 35px;
+        }
+
+        .edit-container_body {
+            width: 100%;
+        }
+    }
+}

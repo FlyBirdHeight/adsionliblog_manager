@@ -1,5 +1,5 @@
 <template>
-  <img draggable="false" :src="props.info.url" :style="imageCss" />
+  <img draggable="false" :src="props.info.url" :style="imageCss" class="preventationImage" />
 </template>
 <script lang="ts">
 import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
@@ -24,4 +24,8 @@ const imageCss = computed(() => {
   }
 })
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.preventationImage {
+  user-select: none;
+}
+</style>

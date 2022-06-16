@@ -5,6 +5,11 @@ const defaultStyle = () => {
             height: "100px",
             layer: 900
         },
+        transform: {
+            rotate: 0,
+            scaleX: 1,
+            scaleY: 1
+        },
         backgroundColor: "transparent",
         border: {
             set: "none",
