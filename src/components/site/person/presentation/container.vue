@@ -23,8 +23,8 @@
           </resize-element>
         </template>
         <template v-if="pageMap.item.image.length != 0">
-          <resize-element :parent="'presentation_body'" v-for="(text, index) of pageMap.item.image">
-            <presentation-image v-for="(text, index) of pageMap.item.image"></presentation-image>
+          <resize-element :parent="'presentation_body'" v-for="(image, index) of pageMap.item.image">
+            <presentation-image :info="image"></presentation-image>
           </resize-element>
         </template>
       </div>
@@ -38,7 +38,7 @@
 import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
-import { handleSetting, setPageMap } from '@/modules/person/presentation/utils/item'
+import { handleSetting, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
 import HandlePresentation from '@/modules/person/presentation/handle'
 export default {
   name: 'PresentationContainer',
@@ -48,7 +48,7 @@ export default {
 import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
 import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
-import PresentationEditTool from '@/components/site/person/presentation/editTool.vue'
+import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
 /**
@@ -82,7 +82,6 @@ const pageMap = reactive(
   },
   { deep: true }
 )
-
 const activeItem = ref<number>(-1)
 const itemTypeIndexList = ref<{ index: number; type: string }[]>([])
 const clickTime = ref<number>(0)
@@ -90,14 +89,12 @@ const presentationBody = ref()
 provide('itemList', pageMap.item)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
-const handleAction = (action: string) => {
-  let fn = Reflect.get(handleObj, action)
-  if (action === 'addTextArea') {
-    const text = fn(pageMap.item.count + 1)
-    pageMap.item.text.push(text)
-    activeItem.value = pageMap.item.count + 1
-    pageMap.item.count += 1
-    itemTypeIndexList.value.push({ index: activeItem.value, type: 'text' })
+
+const handleAction = async (action: string) => {
+  let data = await handleToolAction(pageMap, handleObj, action)
+  if (data) {
+    activeItem.value = data.activeItem
+    itemTypeIndexList.value.push(data.itemType)
   }
 }
 /**

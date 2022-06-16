@@ -46,8 +46,9 @@ type Page = {
     },
     item: PageItem[]
 }
-import * as text from "@/modules/person/presentation/text/text";
-const initFn = [text];
+import { addTextArea } from "@/modules/person/presentation/text/text";
+import { addImage } from "@/modules/person/presentation/image/image";
+const initFn = [addTextArea, addImage];
 class HandlePresentation {
     pageList: Map<number, Page>;
     currentPage: number;
@@ -79,9 +80,7 @@ class HandlePresentation {
      */
     registerFn() {
         for (let v of initFn) {
-            for (let key in v) {
-                Reflect.set(this, key, Reflect.get(v, key))
-            }
+            Reflect.set(this, v.name, v)
         }
     }
 

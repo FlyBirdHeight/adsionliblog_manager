@@ -22,7 +22,7 @@ import EditFont from './font.vue'
 const activeIndex = inject('activeItem')
 const itemList = inject('itemList')
 const itemObject = ref(null)
-const textStyle = ref(defaultStyle)
+const textStyle = ref(defaultStyle())
 provide('textStyle', textStyle)
 const hideStatus = reactive({
   fontSet: true,

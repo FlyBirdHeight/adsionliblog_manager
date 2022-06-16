@@ -72,7 +72,38 @@ const setPageMap = (data: any, type: string, val: any) => {
         data.setting.background.config = val;
     }
 }
+const countChange: string[] = ['addImage', 'addTextArea']
+/**
+ * @method handleToolAction 处理toolbar点击按钮事件
+ */
+const handleToolAction = async (pageMap: any, handleObj: any, action: string) => {
+    let fn = Reflect.get(handleObj, action)
+    let count = pageMap.item.count;
+    let activeItem, itemType;
+    const editAction: boolean = countChange.findIndex(v => v == action) != -1
+    if (editAction) {
+        activeItem = count + 1
+        pageMap.item.count += 1
+    }
+    if (action === 'addTextArea') {
+        const text = fn(count + 1)
+        pageMap.item.text.push(text)
+        itemType = { index: activeItem, type: 'text' };
+    }
+    if (action === 'addImage') {
+        const image = await fn(count + 1, 'http://10.12.44.122:3000/file/link/images/pc/wallpapers/IMG_2647.JPG');
+        pageMap.item.image.push(image)
+        itemType = { index: activeItem, type: 'image' };
+    }
+    if (editAction) {
+        return {
+            activeItem,
+            itemType
+        }
+    }
+}
 export {
     handleSetting,
-    setPageMap
+    setPageMap,
+    handleToolAction
 }

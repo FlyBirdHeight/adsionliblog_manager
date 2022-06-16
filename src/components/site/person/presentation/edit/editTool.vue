@@ -35,7 +35,7 @@ export default {
 }
 </script>
 <script lang="ts" setup>
-import PresentationBodySetting from '@/components/site/person/presentation/edit/body.vue'
+import PresentationBodySetting from '@/components/site/person/presentation/edit/body/body.vue'
 import EditPresentationText from '@/components/site/person/presentation/edit/text/edit_text.vue'
 const props = defineProps()
 const emit = defineEmits(['setItem', 'setPage'])
@@ -94,6 +94,7 @@ watch(activeIndex, (newV, oldV) => {
     return
   }
   let index = itemTypeIndexList.value.findIndex((v) => v.index === newV)
+
   if (index == -1) {
     displayTab()
     activeInfo.value = 'main'

@@ -126,7 +126,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
-import BodyItemList from '@/components/site/person/presentation/edit/body_item_list.vue'
+import BodyItemList from '@/components/site/person/presentation/edit/body/body_item_list.vue'
 const emit = defineEmits(['setBackground', 'editBackground', 'removeBackgroundImage'])
 const bgColor = ref('rgba(255,255,255, 1.0)')
 const bgImage = ref<string>('')

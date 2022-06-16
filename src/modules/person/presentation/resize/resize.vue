@@ -94,6 +94,7 @@ const props = defineProps({
 })
 const slots = useSlots()
 const child = ref(null)
+const childType = ref<string>('text')
 const childDom = ref(null)
 const activeIndex = ref<number>(0)
 const activeItem = inject('activeItem')
@@ -101,8 +102,12 @@ const emit = defineEmits(['emitActive', 'changeStatus'])
 onMounted(() => {
   child.value = slots.default?.()[0]
   let { width, height } = child.value?.props?.info.style.layout
+  let { x, y } = child.value?.props?.info.style.position
+  childType.value = child.value?.props?.info.type
   resizeElement.value.style.width = width
   resizeElement.value.style.height = height
+  resizeElement.value.style.left = x
+  resizeElement.value.style.top = y
   let length = resizeElement.value.__vnode.children.length
   childDom.value = resizeElement.value.__vnode.children[length - 1].children[0]
   activeIndex.value = childDom.value.props.info.index
@@ -172,8 +177,6 @@ const handleDown = (event: any) => {
 <style lang="scss" scoped>
 .resize-element {
   position: absolute;
-  left: 30%;
-  top: 30%;
   border: 1px dashed rgba(0, 0, 0, 0.6);
   padding: 5px;
   display: flex;

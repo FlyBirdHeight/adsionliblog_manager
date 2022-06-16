@@ -104,11 +104,11 @@ const checkedItem = (index: number) => {
 const labelItemList = ref()
 const settingItem = (index: number, item: string, type: string) => {
   if (type === 'delete') {
+    let idx = itemList[item].findIndex((v) => v.index === index)
     if (activeIndex.value === index) {
       activeIndex.value = -1
     }
-    let index = itemList[item].findIndex((v) => v.index === index)
-    itemList[item].splice(index, 1)
+    itemList[item].splice(idx, 1)
     return
   } else {
     activeIndex.value = index

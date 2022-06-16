@@ -1,37 +1,43 @@
-const defaultStyle = {
-    layout: {
-        width: "200px",
-        height: "100px",
-        layer: 900
-    },
-    backgroundColor: "transparent",
-    border: {
-        set: "none",
-        color: "rgba(0,0,0,1)"
-    },
-    color: "rgba(0,0,0,1)",
-    font: {
-        style: "normal",
-        size: 22,
-        weight: "400",
-        align: "center",
-        family: "monospace"
-    },
-    text: {
-        decoration: {
-            line: "unset",
-            style: "solid",
-            color: "rgba(0,0,0,1)"
-        }
-    },
-    animate: {
-        join: {
-            type: "none",
-            time: 0
+const defaultStyle = () => {
+    return {
+        layout: {
+            width: "200px",
+            height: "100px",
+            layer: 900
         },
-        left: {
-            type: "none",
-            time: 0
+        backgroundColor: "transparent",
+        border: {
+            set: "none",
+            color: "rgba(0,0,0,1)"
+        },
+        position: {
+            x: "30%",
+            y: "30%"
+        },
+        color: "rgba(0,0,0,1)",
+        font: {
+            style: "normal",
+            size: 22,
+            weight: "400",
+            align: "center",
+            family: "monospace"
+        },
+        text: {
+            decoration: {
+                line: "unset",
+                style: "solid",
+                color: "rgba(0,0,0,1)"
+            }
+        },
+        animate: {
+            join: {
+                type: "none",
+                time: 0
+            },
+            left: {
+                type: "none",
+                time: 0
+            }
         }
     }
 }
@@ -105,45 +111,10 @@ const decorationStyle = [
 
 const addTextArea = function (index: number) {
     return {
-        style: {
-            layout: {
-                width: "200px",
-                height: "100px",
-                layer: 900
-            },
-            backgroundColor: "transparent",
-            border: {
-                set: "none",
-                color: "rgba(0,0,0,1)"
-            },
-            color: "rgba(0,0,0,1)",
-            font: {
-                style: "normal",
-                size: 22,
-                weight: "400",
-                align: "center",
-                family: "monospace"
-            },
-            text: {
-                decoration: {
-                    line: "unset",
-                    style: "solid",
-                    color: "rgba(0,0,0,1)"
-                }
-            },
-            animate: {
-                join: {
-                    type: "none",
-                    time: 0
-                },
-                left: {
-                    type: "none",
-                    time: 0
-                }
-            }
-        },
+        style: defaultStyle(),
         data: "添加文字",
-        index
+        index,
+        type: "text"
     }
 }
 
