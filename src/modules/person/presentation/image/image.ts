@@ -110,7 +110,7 @@ const analysisCss = (styleData: any, url: string) => {
     let returnCss: any = {};
     returnCss.border = border.line == 'none' ? 'none' : `${border.width} ${border.style}`;
     returnCss.borderColor = border.color;
-    returnCss.transform = `rotate(${transform.rotate}deg) scaleX(${transform.scaleX}) scaleY(${transform.scaleY})`;
+    // returnCss.transform = `rotate(${transform.rotate}deg) scaleX(${transform.scaleX}) scaleY(${transform.scaleY})`;
     returnCss.filter = `contrast(${style.contrast}) opacity(${style.opacity}) blur(${style.blur}px) brightness(${style.brightness}) invert(${style.invert}) drop-shadow(${style.drop_shadow.x}px ${style.drop_shadow.x}px ${style.drop_shadow.radius}px ${style.drop_shadow.color})`
     returnCss.width = typeof (layout.width) == 'number' ? layout.width + 'px' : layout.width;
     returnCss.height = typeof (layout.height) == 'number' ? layout.height + 'px' : layout.height;

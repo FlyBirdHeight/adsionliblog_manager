@@ -12,48 +12,56 @@
   >
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('top-center') }"
       class="resize-point top-center"
       id="top-center"
       @mousedown.stop="handleDown"
     ></div>
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('left-top') }"
       class="resize-point left-top"
       id="left-top"
       @mousedown.stop="handleDown"
     ></div>
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('left-center') }"
       class="resize-point left-center"
       id="left-center"
       @mousedown.stop="handleDown"
     ></div>
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('left-bottom') }"
       class="resize-point left-bottom"
       id="left-bottom"
       @mousedown.stop="handleDown"
     ></div>
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('right-top') }"
       class="resize-point right-top"
       id="right-top"
       @mousedown.stop="handleDown"
     ></div>
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('right-center') }"
       class="resize-point right-center"
       id="right-center"
       @mousedown.stop="handleDown"
     ></div>
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('right-bottom') }"
       class="resize-point right-bottom"
       id="right-bottom"
       @mousedown.stop="handleDown"
     ></div>
     <div
       v-show="activeItem === activeIndex"
+      :style="{ cursor: getCursor('bottom-center') }"
       class="resize-point bottom-center"
       id="bottom-center"
       @mousedown.stop="handleDown"
@@ -63,7 +71,7 @@
 </template>
 <script lang="ts">
 import { ref, useSlots, defineProps, reactive, onMounted, getCurrentInstance, inject, defineEmits } from 'vue'
-import { calculateChangeWidthAndHeight, changeLocation } from './resize'
+import { calculateChangeWidthAndHeight, changeLocation, getCursorType, setResizeStyle, updateCenter } from './resize'
 export default {
   name: 'ResizeElement',
   directives: {
@@ -98,16 +106,15 @@ const childType = ref<string>('text')
 const childDom = ref(null)
 const activeIndex = ref<number>(0)
 const activeItem = inject('activeItem')
+const rotateData = ref<number>(0)
+const centerPosition = reactive<{ x: number; y: number }>({
+  x: 0,
+  y: 0,
+})
 const emit = defineEmits(['emitActive', 'changeStatus'])
 onMounted(() => {
   child.value = slots.default?.()[0]
-  let { width, height } = child.value?.props?.info.style.layout
-  let { x, y } = child.value?.props?.info.style.position
-  childType.value = child.value?.props?.info.type
-  resizeElement.value.style.width = width
-  resizeElement.value.style.height = height
-  resizeElement.value.style.left = x
-  resizeElement.value.style.top = y
+  setResizeStyle(resizeElement, child, rotateData, childType, centerPosition)
   let length = resizeElement.value.__vnode.children.length
   childDom.value = resizeElement.value.__vnode.children[length - 1].children[0]
   activeIndex.value = childDom.value.props.info.index
@@ -128,19 +135,11 @@ const position = reactive({
   left: 0,
   right: 0,
   bottom: 0,
-  type: '',
+  type: 1,
+  oldType: 1,
 })
 const mouseMoveListener = (event: any) => {
-  let { width, height } = resizeElement.value.getBoundingClientRect()
-  let { nH, nW } = calculateChangeWidthAndHeight(
-    event.x,
-    event.y,
-    position.left,
-    position.top,
-    width,
-    height,
-    position.type
-  )
+  let { nH, nW } = calculateChangeWidthAndHeight(event, rotateData.value, parentDom.value, position, position.type)
   if (nH !== 0) {
     resizeElement.value.style.height = nH + 'px'
     child.value!.props!.info!.style!.layout!.height = nH
@@ -154,6 +153,7 @@ const mouseUpListener = (event: any) => {
   event.stopPropagation()
   parentDom.value.removeEventListener('mousemove', mouseMoveListener)
   parentDom.value.removeEventListener('mouseup', mouseUpListener)
+
   emit('changeStatus', event.timeStamp)
 }
 const mouseLeaveListener = (event: any) => {
@@ -171,7 +171,11 @@ const handleDown = (event: any) => {
   parentDom.value.addEventListener('mousemove', mouseMoveListener)
   parentDom.value.addEventListener('mouseup', mouseUpListener)
   parentDom.value.addEventListener('mouseleave', mouseLeaveListener)
-  changeLocation(event.path[0].id, resizeElement, parentDom, position)
+  updateCenter(resizeElement, centerPosition)
+  changeLocation(event.path[0].id, resizeElement, parentDom, position, rotateData.value, centerPosition)
+}
+const getCursor = (type: string) => {
+  return getCursorType(rotateData.value, type)
 }
 </script>
 <style lang="scss" scoped>

@@ -9,7 +9,6 @@ declare global {
   const ElCascaderPanel: typeof import('element-plus/es')['ElCascaderPanel']
   const ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
   const ElCheckboxButton: typeof import('element-plus/es')['ElCheckboxButton']
-  const ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
   const ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
   const ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
   const ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
