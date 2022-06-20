@@ -115,8 +115,8 @@ const calculateChangeWidthAndHeight = (event: any, rotate: number, parentDom: an
  * @param {number} rotate 旋转角度
  */
 const changeLocation = (type: string, element: any, parentDom: any, position: any, rotate: number, center: any) => {
-    let { left, right, top, height, width } = parentDom.value.getBoundingClientRect();
-    let { left: eLeft, right: eRight, top: eTop, height: eHeight, width: eWidth } = element.value.getBoundingClientRect()
+    let { height, width } = parentDom.value.getBoundingClientRect();
+    let { height: eHeight, width: eWidth } = element.value.getBoundingClientRect()
     let hRotate = rotate % 360;
     if (hRotate < 0) {
         hRotate += 360;
@@ -170,26 +170,9 @@ const changeLocation = (type: string, element: any, parentDom: any, position: an
             element.value.style.left = xL + 'px';
         }
     }
-
-    if (rotate !== 0) {
-        // console.log(setOrigin(position.oldType, position.type));
-        // element.value.style.transformOrigin = setOrigin(position.oldType, position.type)
-    }
 }
 
-const origin = [
-    'right bottom', 'bottom top', 'left bottom', 'left center',
-    'left top', 'center top', 'right top', 'right center'
-];
-/**
- * @method setOrigin 设置锚点，用于指定方向增加
- * @param {number} oldType 原定旋转内容
- * @param {number} actionType 旋转点
- */
-const setOrigin = (oldType: number, actionType: number) => {
-    // return origin[actionType - 1];
-    return 'left top'
-}
+
 
 /**
  * @method handleRotatePosition 处理旋转下的位置定位
