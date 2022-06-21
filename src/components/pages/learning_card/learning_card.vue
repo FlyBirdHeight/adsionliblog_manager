@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar style="height: 90% !important">
+  <el-scrollbar @scroll="showMoreCard" ref="cardScrollbar" style="height: 90% !important">
     <div class="learningCard-container">
       <div ref="learningCardContainer">
         <card-abbreviation
@@ -11,10 +11,8 @@
         ></card-abbreviation>
       </div>
     </div>
-    <div class="scrollbar-bottom">
-      <el-button type="success" v-show="totalCount > pagination.page * pagination.size" @click="getMoreData"
-        >加载更多闪卡</el-button
-      >
+    <div class="scrollbar-bottom" :style="{ opacity: showMore ? 1 : 0 }">
+      <el-button type="success" v-show="showMore" @click="getMoreData">加载更多闪卡</el-button>
     </div>
   </el-scrollbar>
   <learning-card-info @closeDialog="closeDialog"></learning-card-info>
@@ -49,13 +47,14 @@ const show = reactive({
 })
 const pagination = reactive({
   page: 1,
-  size: 20,
+  size: 10,
   sort: { name: 'sort', type: 'desc' },
 })
 const cardInfo = ref<CardFold | null>(null)
 const totalCount = ref<number>(0)
 const questionIndex = ref<number>(0)
 const updateList = inject('update')
+const cardScrollbar = ref()
 provide('show', show)
 provide('cardInfo', cardInfo)
 provide('questionIndex', questionIndex)
@@ -112,9 +111,10 @@ watchEffect(async () => {
   }
 })
 const getMoreData = async () => {
+  showMore.value = false
   pagination.page = pagination.page + 1
   let data = await getData('list', pagination)
-  cardFoldList.push(data.data)
+  cardFoldList.value = cardFoldList.value.concat(data.data)
   buildGridLayout()
 }
 const deleteData = (id: number) => {
@@ -131,6 +131,23 @@ const updateShowData = async (id: number) => {
   cardFoldList.value[index] = newData
   buildGridLayout()
 }
+const showMore = ref<boolean>(false)
+const showMoreCard = () => {
+  let status = totalCount.value > pagination.page * pagination.size
+  nextTick(() => {
+    let dom = cardScrollbar.value.wrap$
+    const height = dom.children[0].getBoundingClientRect().height
+    if (dom.clientHeight + dom.scrollTop < height) {
+      if (height - (dom.clientHeight + dom.scrollTop) < 50 && !showMore.value) {
+        showMore.value = status ? true : false
+      } else {
+        showMore.value = false
+      }
+    } else {
+      showMore.value = status ? true : false
+    }
+  })
+}
 </script>
 <style lang="scss" scoped>
 .learningCard-container {
@@ -142,5 +159,6 @@ const updateShowData = async (id: number) => {
   text-align: center;
   width: 100%;
   height: 40px;
+  transition: all 0.5s linear;
 }
 </style>
