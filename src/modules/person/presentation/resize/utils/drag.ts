@@ -12,6 +12,8 @@ const dragDom = (domOffset: DomOffset, clickPosition: ClickPosition) => {
 
 const onDrag = (document: Document, drag: any) => {
     const up = () => {
+        console.log('up');
+        
         document.removeEventListener('mousemove', drag)
         document.removeEventListener('mouseup', up)
     }

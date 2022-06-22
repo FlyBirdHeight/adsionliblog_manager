@@ -16,6 +16,7 @@
       :style="domStyle.controls"
       v-show="activeItem === activeIndex"
     >
+      <div class="rotate-button" @mousedown.stop="handleRotate($event)" />
       <div
         :style="{ cursor: getCursor(1) }"
         class="resize-point left-top"
@@ -65,6 +66,7 @@ import { ref, onMounted, defineEmits, computed, watch, reactive, inject, useSlot
 import { setResizeStyle, getCursorType, generateData } from './utils/init'
 import { onDrag, dragDom } from './utils/drag'
 import styler from './utils/style'
+import { rotate } from './utils/rotate'
 export default {
   name: 'ResizeOverwrite',
 }
@@ -106,6 +108,7 @@ watch(
     deep: true,
   }
 )
+
 const handleDrag = (event) => {
   if (activeItem.value !== activeIndex.value) {
     activeItem.value = activeIndex.value
@@ -116,6 +119,21 @@ const handleDrag = (event) => {
 const handleSclae = (activeType: number, event: Event) => {
   console.log(activeType)
   console.log(event)
+}
+
+const handleRotate = (event) => {
+  const rotateDom = rotate(
+    resizeData.offset,
+    resizeData.scale,
+    resizeData.attribute,
+    { x: event.pageX, y: event.pageY },
+    resizeData.containerOffset,
+    (data) => {
+      resizeData.attribute.angle = data.angel
+    }
+  )
+
+  onDrag(resizeElement.value.parentElement, rotateDom)
 }
 //NOTE: 专门用来处理拖拽改变位置的内容
 const dragMouseEnter = (event: any) => {
@@ -145,6 +163,17 @@ const getCursor = (type: string) => {
       border-radius: 50%;
       background-color: #409eff;
       z-index: 999;
+    }
+    .rotate-button {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #409eff;
+      top: -45px;
+      left: calc(50% - 6px);
+      z-index: 999;
+      cursor: grabbing;
     }
     .right-top {
       cursor: ne-resize;

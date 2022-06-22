@@ -19,7 +19,8 @@ const styler = (domOffset: DomOffset, domAttribute: DomAttribute, domScale: DomS
     const newWidth = domAttribute.width - changedWidth;
     const changedHeight = domAttribute.height * (1 - domScale.y);
     const newHeight = domAttribute.height - changedHeight;
-
+    let width = domAttribute.width;
+    let height = domAttribute.height;
     let transformMatrix;
 
     if (disableScale === false) {
@@ -33,14 +34,14 @@ const styler = (domOffset: DomOffset, domAttribute: DomAttribute, domScale: DomS
             translate(roundTo(domOffset.x + changedWidth), roundTo(domOffset.y + changedHeight)),
             rotate((domAttribute.angle || 0) * (Math.PI / 180)),
         );
-        domAttribute.width = newWidth;
-        domAttribute.height = newHeight;
+        width = newWidth;
+        height = newHeight;
     }
-
+    
     return {
         element: {
-            width: domAttribute.width,
-            height: domAttribute.height,
+            width: width,
+            height: height,
             transform: toCSS(transformMatrix),
             position: "absolute",
             zIndex: layer

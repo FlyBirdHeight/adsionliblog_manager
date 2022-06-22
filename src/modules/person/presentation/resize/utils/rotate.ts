@@ -2,14 +2,15 @@ import { DomOffset, DomScale, DomAttribute, ClickPosition, ContainerOffset } fro
 import { getCenter } from './point'
 
 const rotate = (domOffset: DomOffset, domScale: DomScale, domAttribute: DomAttribute, clickPosition: ClickPosition, containerOffset: ContainerOffset, updatedFunc: Function) => {
+    const domAttributeAngle = domAttribute.angle || 0;
     const center = getCenter(domAttribute, domOffset, domScale);
-    const pressAngle = Math.atan2((clickPosition.x - containerOffset.x), (clickPosition.y - containerOffset.y)) * 180 / Math.PI;
+    const pressAngle = Math.atan2((clickPosition.y - containerOffset.y) - center.y, (clickPosition.x - containerOffset.x) - center.x) * 180 / Math.PI;
 
     return (event: any) => {
         const degree = Math.atan2((event.pageY - containerOffset.y) - center.y, (event.pageX - containerOffset.x) - center.x) * 180 / Math.PI;
-        let ang = (domAttribute.angle || 0) + degree - pressAngle;
+        let ang = domAttributeAngle + degree - pressAngle;
 
-        if (event.shift) {
+        if (event.shiftKey) {
             ang = (ang / 15 >> 0) * 15;
         }
 
