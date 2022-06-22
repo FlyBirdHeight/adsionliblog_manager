@@ -1,17 +1,18 @@
 const imageInfo = () => {
     return {
-        layout: {
-            width: '200px',
-            height: '200px'
+        attribute: {
+            width: 200,
+            height: 200,
+            angle: 0,
         },
+        layer: 900,
         position: {
-            x: '30%',
-            y: '30%'
+            x: 200,
+            y: 100
         },
-        transform: {
-            rotate: 0,
-            scaleX: 1,
-            scaleY: 1
+        scale: {
+            x: 1,
+            y: 1
         },
         border: {
             line: 'none',
@@ -90,8 +91,8 @@ const addImage = (index: number, url: string) => {
             style.natural.width = imgWidth;
             style.natural.height = imgHeight;
             if (imgWidth > 1000 || imgHeight > 1000) {
-                style.layout.width = imgWidth * 0.3 + 'px';
-                style.layout.height = imgHeight * 0.3 + 'px';
+                style.attribute.width = imgWidth * 0.3;
+                style.attribute.height = imgHeight * 0.3;
             }
             style.ratio = ratio;
             resolve({
@@ -106,14 +107,15 @@ const addImage = (index: number, url: string) => {
 }
 
 const analysisCss = (styleData: any, url: string) => {
-    let { border, layout, style, transform, objectFit, objectPosition } = styleData;
+    let { border, attribute, style, scale, objectFit, objectPosition, layer } = styleData;
     let returnCss: any = {};
     returnCss.border = border.line == 'none' ? 'none' : `${border.width} ${border.style}`;
     returnCss.borderColor = border.color;
+    returnCss.zIndex = layer;
     // returnCss.transform = `rotate(${transform.rotate}deg) scaleX(${transform.scaleX}) scaleY(${transform.scaleY})`;
     returnCss.filter = `contrast(${style.contrast}) opacity(${style.opacity}) blur(${style.blur}px) brightness(${style.brightness}) invert(${style.invert}) drop-shadow(${style.drop_shadow.x}px ${style.drop_shadow.x}px ${style.drop_shadow.radius}px ${style.drop_shadow.color})`
-    returnCss.width = typeof (layout.width) == 'number' ? layout.width + 'px' : layout.width;
-    returnCss.height = typeof (layout.height) == 'number' ? layout.height + 'px' : layout.height;
+    returnCss.width = typeof (attribute.width) == 'number' ? attribute.width + 'px' : attribute.width;
+    returnCss.height = typeof (attribute.height) == 'number' ? attribute.height + 'px' : attribute.height;
     returnCss.objectFit = objectFit;
     returnCss.objectPosition = `${objectPosition.x}% ${objectPosition.y}%`;
 

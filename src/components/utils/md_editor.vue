@@ -67,6 +67,7 @@ const submitImage = ref<boolean>(false)
 const submitImageCb = ref(null)
 const uploadImage = async (files: FileList, callback: (urls: string[]) => void) => {
   try {
+    console.log(files);
     //NOTE: 先把数据处理一下，然后弹出设置框，让其设置好路径，然后再上传
     imageSettingList.value = []
     files.forEach((v, index) => {

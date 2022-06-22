@@ -87,7 +87,7 @@ watch(activeItem, (newV, oldV) => {
 .presentation-text_textarea {
   position: absolute;
   width: calc(100% - 12px);
-  height: 100%;
+  height: calc(100% - 12px);
   display: flex;
   align-items: center;
   .show-presentation-text {

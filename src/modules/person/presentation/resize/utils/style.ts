@@ -14,8 +14,7 @@ const roundTo = (n: number, digits: number = 2) => {
     return +(test.toFixed(2));
 }
 
-const styler = (domOffset: DomOffset, domAttribute: DomAttribute, domScale: DomScale, disableScale: boolean = false) => {
-
+const styler = (domOffset: DomOffset, domAttribute: DomAttribute, domScale: DomScale, layer: number, disableScale: boolean = false) => {
     const changedWidth = domAttribute.width * (1 - domScale.x);
     const newWidth = domAttribute.width - changedWidth;
     const changedHeight = domAttribute.height * (1 - domScale.y);
@@ -25,7 +24,7 @@ const styler = (domOffset: DomOffset, domAttribute: DomAttribute, domScale: DomS
 
     if (disableScale === false) {
         transformMatrix = transform(
-            translate(roundTo(domOffset.x + changedWidth / 2), roundTo(y + changedHeight / 2)),
+            translate(roundTo(domOffset.x + changedWidth / 2), roundTo(domOffset.y + changedHeight / 2)),
             rotate((domAttribute.angle || 0) * (Math.PI / 180)),
             scale(domScale.x, domScale.y)
         );
@@ -44,6 +43,7 @@ const styler = (domOffset: DomOffset, domAttribute: DomAttribute, domScale: DomS
             height: domAttribute.height,
             transform: toCSS(transformMatrix),
             position: "absolute",
+            zIndex: layer
         },
         controls: {
             width: newWidth,
@@ -55,6 +55,7 @@ const styler = (domOffset: DomOffset, domAttribute: DomAttribute, domScale: DomS
                 )
             ),
             position: "absolute",
+            zIndex: 'auto'
         }
     }
 }

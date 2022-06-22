@@ -1,14 +1,14 @@
 const defaultStyle = () => {
     return {
-        layout: {
-            width: "200px",
-            height: "100px",
-            layer: 900
+        attribute: {
+            width: 200,
+            height: 100,
+            angle: 0,
         },
-        transform: {
-            rotate: 0,
-            scaleX: 1,
-            scaleY: 1
+        layer: 900,
+        scale: {
+            x: 1,
+            y: 1
         },
         backgroundColor: "transparent",
         border: {
@@ -16,8 +16,8 @@ const defaultStyle = () => {
             color: "rgba(0,0,0,1)"
         },
         position: {
-            x: "30%",
-            y: "30%"
+            x: 200,
+            y: 100
         },
         color: "rgba(0,0,0,1)",
         font: {
@@ -128,7 +128,7 @@ const analysisCss = function (textInfo: any) {
     returnCss.backgroundColor = textInfo.backgroundColor;
     returnCss.border = textInfo.border.set == 'none' ? textInfo.border.set : `${textInfo.border.set} ${textInfo.border.color}`;
     returnCss.color = textInfo.color;
-    returnCss.zIndex = textInfo.layout.layer;
+    returnCss.zIndex = textInfo.layer;
     let { style: fontStyle, size: fontSize, weight: fontWeight, align: textAlign, family: fontFamily } = textInfo.font;
     returnCss = Object.assign({ fontStyle, fontSize: fontSize + 'px', fontWeight, textAlign, fontFamily }, returnCss);
     let { line: textDecorationLine, style: textDecorationStyle, color: textDecorationColor } = textInfo.text.decoration;

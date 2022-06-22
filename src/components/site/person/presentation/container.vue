@@ -13,14 +13,14 @@
     <div class="presentation-edit">
       <div class="presentation_body" ref="presentationBody" id="presentation_body" @click="handleClick">
         <template v-if="pageMap.item.text.length != 0">
-          <resize-element
+          <resize-overwrite
             @changeStatus="changeStatus"
             @emitActive="emitActive"
             :parent="'presentation_body'"
             v-for="(text, index) of pageMap.item.text"
           >
             <presentation-text :info="text"></presentation-text>
-          </resize-element>
+          </resize-overwrite>
         </template>
         <template v-if="pageMap.item.image.length != 0">
           <resize-element :parent="'presentation_body'" v-for="(image, index) of pageMap.item.image">
@@ -46,6 +46,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
+import ResizeOverwrite from '@/modules/person/presentation/resize/resize_overwrite.vue'
 import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
 import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
