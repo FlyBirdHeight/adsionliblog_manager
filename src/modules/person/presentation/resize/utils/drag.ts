@@ -10,12 +10,12 @@ const dragDom = (domOffset: DomOffset, clickPosition: ClickPosition) => {
     }
 }
 
-const onDrag = (document: Document, drag: any) => {
-    const up = () => {
-        console.log('up');
-        
+const onDrag = (document: Document, drag: any, updateFunc: Function) => {
+    const up = (e: Event) => {
+        e.stopPropagation()
         document.removeEventListener('mousemove', drag)
         document.removeEventListener('mouseup', up)
+        updateFunc(e.timeStamp)
     }
 
     document.addEventListener('mousemove', drag)

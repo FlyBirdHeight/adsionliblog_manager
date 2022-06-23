@@ -6,28 +6,29 @@ import { DomAttribute, DomOffset, DomScale, OppositePoint, Point, MoveDiff } fro
  * @param domScale dom放缩
  */
 const getCenter = (domAttribute: DomAttribute, domOffset: DomOffset, domScale: DomScale) => {
-    const center = {
-        x: 0,
-        y: 0
-    }
     const changeWidth = domAttribute.width * domScale.x;
     const changeHeight = domAttribute.height * domScale.y;
 
     const widthDiff = changeWidth - domAttribute.width;
     const heightDiff = changeHeight - domAttribute.height;
-    center.x = domOffset.x - widthDiff + changeWidth / 2;
-    center.y = domOffset.y - heightDiff + changeHeight / 2;
 
-    return center;
+    return {
+        x: domOffset.x - widthDiff + changeWidth / 2,
+        y: domOffset.y - heightDiff + changeHeight / 2
+    };
 }
 /**
  * @method getOriginalPositionFromScale 获取放缩变换后的点的位置
- * @param offset 原有偏移量
- * @param value 原有数据大小
+ * @param position 原有偏移量
+ * @param size 原有数据大小
  * @param scale 放缩大小
  */
-const getOriginalPositionFromScale = (offset: number, value: number, scale: number) => {
-    return offset - (value * scale - value);
+const getOriginalPositionFromScale = (position: number, size: number, scale: number) => {
+    let changed = size * scale;
+
+    let diff = changed - size;
+
+    return position - diff;
 }
 /**
  * @method findPoint 寻找旋转之后的定位点位置
@@ -40,73 +41,175 @@ const findPoint = (x: number, y: number, rotate: number, center: { x: number, y:
     const radian = rotate * (Math.PI / 180)
     return {
         x: (x - center.x) * Math.cos(radian) - (y - center.y) * Math.sin(radian) + center.x,
-        y: (x - center.x) * Math.cos(radian) + (y - center.y) * Math.sin(radian) + center.y
+        y: (x - center.x) * Math.sin(radian) + (y - center.y) * Math.cos(radian) + center.y
     }
 }
+
+const getTL = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+    return findPoint(x, y, angle, center);
+}
+
+const getBL = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+    return findPoint(x, y + (height * scaleY), angle, center);
+}
+
+const getTR = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+
+    return findPoint(x + (width * scaleX), y, angle, center);
+}
+
+const getBR = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+    return findPoint(x + (width * scaleX), y + (height * scaleY), angle, center);
+}
+
+const getMR = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+    return findPoint(x + (width * scaleX), y + (height * scaleY) / 2, angle, center);
+}
+
+const getBM = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+    return findPoint(x + (width * scaleX) / 2, y + (height * scaleY), angle, center);
+}
+
+const getTM = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+    return findPoint(x + (width * scaleX) / 2, y, angle, center);
+}
+
+const getML = (props: { x: number, y: number, scaleX: number, scaleY: number, width: number, height: number, angle: number, center: any }) => {
+    let { x, y, scaleX, scaleY, width, height, angle, center } = props
+    return findPoint(x, y + (height * scaleY) / 2, angle, center);
+}
+
 /**
  * @method getPoint 获取定位点坐标
- * @param domAttribute dom属性
- * @param domOffset dom偏移
- * @param domScale dom放缩
- * @param scaleFromCenter 是否中心放缩
  * @param scaleType 定位点类型 
  */
-const getPoint = (domAttribute: DomAttribute, domOffset: DomOffset, domScale: DomScale, scaleFromCenter: boolean, scaleType: number) => {
-    const center = getCenter(domAttribute, domOffset, domScale);
-    if (scaleFromCenter) {
+const getPoint = (scaleType: string, props: {
+    x: number,
+    y: number,
+    angle: number,
+    width: number,
+    height: number,
+    scaleX: number,
+    scaleY: number,
+    scaleFromCenter: boolean,
+    center: any
+}) => {
+    //计算中心点
+    const center = getCenter(
+        { width: props.width, height: props.height, angle: props.angle },
+        { x: props.x, y: props.y },
+        { x: props.scaleX, y: props.scaleY }
+    )
+    //判断是否是通过中心进行放缩，如果是的话，直接返回中心点
+    if (props.scaleFromCenter) {
         return center;
     }
-    const pointInfo = {
-        angle: domAttribute.angle || 0,
-        domOffset,
-        domScale,
-        x: getOriginalPositionFromScale(domOffset.x, domAttribute.width, domScale.x),
-        y: getOriginalPositionFromScale(domOffset.y, domAttribute.height, domScale.y)
-    }
-    const nCenter = getCenter(domAttribute, { x: pointInfo.x, y: pointInfo.y }, domScale)
-    switch (scaleType) {
-        case 1:
-            break;
-        case 2:
-            pointInfo.x = pointInfo.x + (domAttribute.width * domScale.x) / 2
-            break;
-        case 3:
-            pointInfo.x = pointInfo.x + (domAttribute.width * domScale.x)
-            break;
-        case 4:
-            pointInfo.x = pointInfo.x + (domAttribute.width * domScale.x)
-            pointInfo.y = pointInfo.y + (domAttribute.height * domScale.y) / 2
-            break;
-        case 5:
-            pointInfo.x = pointInfo.x + (domAttribute.width * domScale.x)
-            pointInfo.y = pointInfo.y + (domAttribute.height * domScale.y)
-            break;
-        case 6:
-            pointInfo.x = pointInfo.x + (domAttribute.width * domScale.x) / 2
-            pointInfo.y = pointInfo.y + (domAttribute.height * domScale.y)
-            break;
-        case 7:
-            pointInfo.y = pointInfo.y + (domAttribute.height * domScale.y)
-            break;
-        case 8:
-            pointInfo.y = pointInfo.y + (domAttribute.height * domScale.y) / 2
-            break;
+    //这里的x,y是重新根据width和height以及是否有scale给出的计算缩放后的点的位置
+    props = {
+        ...props,
+        x: getOriginalPositionFromScale(props.x, props.width, props.scaleX),
+        y: getOriginalPositionFromScale(props.y, props.height, props.scaleY)
     }
 
-    return findPoint(pointInfo.x, pointInfo.y, pointInfo.angle || 0, nCenter);
+    let caller = getTL;
+    switch (scaleType) {
+        case 'tl':
+            caller = getTL
+            break;
+        case 'ml':
+            caller = getML
+            break;
+        case 'tr':
+            caller = getTR
+            break;
+        case 'tm':
+            caller = getTM
+            break;
+        case 'bl':
+            caller = getBL
+            break;
+        case 'bm':
+            caller = getBM
+            break;
+        case 'br':
+            caller = getBR
+            break;
+        case 'mr':
+            caller = getMR
+            break;
+    }
+    props.center = center;
+
+    return caller(props)
 }
 /**
  * @method getOppositePoint 获取相反点坐标
- * @param domAttribute dom属性
- * @param domOffset dom偏移
- * @param domScale dom放缩
- * @param scaleFromCenter 是否中心放缩
  * @param scaleType 定位点类型 
  */
-const getOppositePoint = (domAttribute: DomAttribute, domOffset: DomOffset, domScale: DomScale, scaleFromCenter: boolean, scaleType: number) => {
-    const oppositeType = (scaleType + 4) > 8 ? (scaleType + 4 - 8) : (scaleType + 4);
+const getOppositePoint = (scaleType: string, props: {
+    x: number,
+    y: number,
+    angle: number,
+    width: number,
+    height: number,
+    scaleX: number,
+    scaleY: number,
+    center: any
+}) => {
+    let caller = getTL;
+    const center = getCenter(
+        { width: props.width, height: props.height, angle: props.angle },
+        { x: props.x, y: props.y },
+        { x: props.scaleX, y: props.scaleY }
+    )
 
-    return getPoint(domAttribute, domOffset, domScale, scaleFromCenter, oppositeType);
+    props = {
+        ...props,
+        x: getOriginalPositionFromScale(props.x, props.width, props.scaleX),
+        y: getOriginalPositionFromScale(props.y, props.height, props.scaleY)
+    }
+    switch (scaleType) {
+        case 'tl':
+            caller = getBR
+            break
+
+        case 'ml':
+            caller = getMR
+            break
+
+        case 'tr':
+            caller = getBL
+            break
+
+        case 'tm':
+            caller = getBM
+            break
+
+        case 'bl':
+            caller = getTR
+            break
+
+        case 'bm':
+            caller = getTM
+            break
+
+        case 'br':
+            caller = getTL
+            break
+
+        case 'mr':
+            caller = getML
+            break
+    }
+    props.center = center;
+    return caller(props)
 }
 
 /**
@@ -116,47 +219,49 @@ const getOppositePoint = (domAttribute: DomAttribute, domOffset: DomOffset, domS
  * @param oppositePoint 
  * @param scaleType 
  */
-const getMovePoint = (moveDiff: MoveDiff, point: Point, oppositePoint: OppositePoint, scaleType: number) => {
-    const movePoint = {
-        x: 0,
-        y: 0
-    }
+const getMovePoint = (moveDiff: MoveDiff, point: Point, oppositePoint: OppositePoint, scaleType: string) => {
     switch (scaleType) {
-        case 1:
-        case 8:
-            movePoint.x = oppositePoint.x - moveDiff.x - point.x;
-            movePoint.y = oppositePoint.y - moveDiff.y - point.y;
-            break;
-        case 2:
-        case 3:
-            movePoint.x = point.x + moveDiff.x - oppositePoint.x;
-            movePoint.y = oppositePoint.y - moveDiff.y - point.y;
-            break;
-        case 4:
-        case 5:
-            movePoint.x = point.x + moveDiff.x - oppositePoint.x;
-            movePoint.y = point.y + moveDiff.y - oppositePoint.y;
-            break;
-        case 6:
-        case 7:
-            movePoint.x = oppositePoint.x - moveDiff.x - point.x;
-            movePoint.y = point.y + moveDiff.y - oppositePoint.y;
-            break;
+        case 'tl':
+            return {
+                x: oppositePoint.x - (moveDiff.x + point.x),
+                y: oppositePoint.y - (moveDiff.y + point.y)
+            };
+        case 'ml':
+            return {
+                x: oppositePoint.x - moveDiff.x - point.x,
+                y: oppositePoint.y - moveDiff.y - point.y
+            };
+        case 'tr':
+        case 'tm':
+            return {
+                x: point.x + (moveDiff.x - oppositePoint.x),
+                y: oppositePoint.y - (moveDiff.y + point.y)
+            };
+        case 'mr':
+        case 'br':
+            return {
+                x: point.x + (moveDiff.x - oppositePoint.x),
+                y: point.y + (moveDiff.y - oppositePoint.y)
+            };
+        case 'bl':
+        case 'bm':
+            return {
+                x: oppositePoint.x - (moveDiff.x + point.x),
+                y: point.y + (moveDiff.y - oppositePoint.y)
+            };
     }
-
-    return movePoint;
 }
 /**
  * @method getSineCosine 获取正余弦表达式
  * @param scaleType 
  * @param angle 
  */
-const getSineCosine = (scaleType: number, angle: number) => {
+const getSineCosine = (scaleType: string, angle: number) => {
     switch (scaleType) {
-        case 2:
-        case 3:
-        case 6:
-        case 7:
+        case 'tr':
+        case 'tm':
+        case 'bl':
+        case 'bm':
             return {
                 cos: Math.cos(-angle * (Math.PI / 180)),
                 sin: Math.sin(-angle * (Math.PI / 180))

@@ -13,85 +13,159 @@ import { getPoint, getOppositePoint, getMovePoint, getSineCosine, getCenter } fr
  * @param scaleLimit 
  * @param updateFunc 
  */
-const scale = (domAttribute: DomAttribute, domOffset: DomOffset, domScale: DomScale, clickPosition: ClickPosition, eventAttribute: EventAttribute, scaleType: number, scaleLimit: number, updateFunc: Function) => {
-    const ratio = (domAttribute.width * domScale.x) / (domAttribute.height * domScale.y);
-    let point = getPoint(domAttribute, domOffset, domScale, eventAttribute.scaleFromCenter, scaleType);
-    let oppositePoint = getOppositePoint(domAttribute, domOffset, domScale, eventAttribute.scaleFromCenter, scaleType);
+const scale = (
+    props: {
+        width: number,
+        height: number,
+        angle: number,
+        x: number,
+        y: number,
+        scaleX: number,
+        scaleY: number,
+        startX: number,
+        startY: number,
+        scaleFromCenter: boolean,
+        enableScaleFromCenter: boolean,
+        aspectRatio: boolean,
+        enableAspectRatio: boolean,
+    },
+    scaleType: string,
+    scaleLimit: number,
+    updateFunc: Function) => {
+    let {
+        width,
+        height,
+        angle,
+        x,
+        y,
+        scaleX,
+        scaleY,
+        startX,
+        startY,
+        scaleFromCenter,
+        enableScaleFromCenter,
+        aspectRatio,
+        enableAspectRatio
+    } = props;
+    const ratio = (width * scaleX) / (height * scaleY);
+
+    let point = getPoint(scaleType, {
+        x, y, scaleX, scaleY, width, height, angle, scaleFromCenter,
+        center: null
+    });
+
+    let oppositePoint = getOppositePoint(scaleType, {
+        x,
+        y,
+        scaleX,
+        scaleY,
+        width,
+        height,
+        angle,
+        center: null
+    });
+
     const currentProps = {
-        x: domOffset.x,
-        y: domOffset.y,
-        scaleX: domScale.x,
-        scaleY: domScale.y
+        x: x,
+        y: y,
+        scaleX: scaleX,
+        scaleY: scaleY
     }
     return (event: any) => {
-        if (eventAttribute.enableScaleFromCenter && ((event.altKey && !eventAttribute.scaleFromCenter) || (!event.altKey && eventAttribute.scaleFromCenter))) {
-            clickPosition.x = event.pageX;
-            clickPosition.y = event.pageY;
+        if (enableScaleFromCenter && ((event.altKey && !scaleFromCenter) || (!event.altKey && scaleFromCenter))) {
+            startX = event.pageX;
+            startY = event.pageY;
 
-            eventAttribute.scaleFromCenter = event.altKey && !eventAttribute.scaleFromCenter;
-            point = getPoint(domAttribute, { x: currentProps.x, y: currentProps.y }, { x: currentProps.scaleX, y: currentProps.scaleY }, eventAttribute.scaleFromCenter, scaleType);
-            oppositePoint = getOppositePoint(domAttribute, { x: currentProps.x, y: currentProps.y }, { x: currentProps.scaleX, y: currentProps.scaleY }, eventAttribute.scaleFromCenter, scaleType);
+            scaleFromCenter = event.altKey && !scaleFromCenter;
+            point = getPoint(scaleType, {
+                ...currentProps,
+                width,
+                height,
+                angle,
+                scaleFromCenter,
+                center: null
+            });
+            oppositePoint = getOppositePoint(scaleType, {
+                ...currentProps,
+                width,
+                height,
+                angle,
+                center: null
+            });
         }
 
-        if (eventAttribute.aspectRatio && !event.shiftKey) {
-            eventAttribute.aspectRatio = false;
-        } else if (event.shiftKey && !eventAttribute.aspectRatio) {
-            eventAttribute.aspectRatio = true;
+        if (aspectRatio && !event.shiftKey) {
+            aspectRatio = false;
+        } else if (event.shiftKey && !aspectRatio) {
+            aspectRatio = true;
         }
-        if (!eventAttribute.enableAspectRatio) {
-            eventAttribute.aspectRatio = false;
+        if (!enableAspectRatio) {
+            aspectRatio = false;
         }
         const moveDiff = {
-            x: event.pageX - clickPosition.x,
-            y: event.pageY - clickPosition.y
+            x: event.pageX - startX,
+            y: event.pageY - startY
         }
 
-        const movePoint = getMovePoint(moveDiff, point, oppositePoint, scaleType);
-        if (eventAttribute.scaleFromCenter) {
-            movePoint.x *= 2;
-            movePoint.y *= 2;
+        const movePoint = getMovePoint(moveDiff, { x: point!.x, y: point!.y }, { x: oppositePoint!.x, y: oppositePoint!.y }, scaleType);
+        if (enableScaleFromCenter && scaleFromCenter) {
+            movePoint!.x *= 2;
+            movePoint!.y *= 2;
         }
-        const rotateFormula = getSineCosine(scaleType, domAttribute.angle || 0);
+        const { cos, sin } = getSineCosine(scaleType, angle);
 
         const rotationPoint = {
-            x: movePoint.x * rotateFormula.cos + movePoint.y * rotateFormula.sin,
-            y: movePoint.y * rotateFormula.cos - movePoint.x * rotateFormula.sin
+            x: movePoint!.x * cos + movePoint!.y * sin,
+            y: movePoint!.y * cos - movePoint!.x * sin
         }
 
-        currentProps.scaleX = (rotationPoint.x / domAttribute.width) > scaleLimit ? rotationPoint.x / domAttribute.width : scaleLimit;
-        currentProps.scaleY = (rotationPoint.y / domAttribute.height) > scaleLimit ? rotationPoint.y / domAttribute.height : scaleLimit;
 
+        currentProps.scaleX = rotationPoint.x / width
+        currentProps.scaleY = rotationPoint.y / height
         switch (scaleType) {
-            case 8:
-            case 4:
-                currentProps.scaleY = domScale.y
+            case 'ml':
+            case 'mr':
+                currentProps.scaleY = scaleY
                 //等比变换的话，就需要把X变换的比例赋给Y
-                if (eventAttribute.aspectRatio) {
-                    currentProps.scaleY = ((domAttribute.width * currentProps.scaleX) * (1 / ratio)) / domAttribute.height;
+                if (aspectRatio) {
+                    currentProps.scaleY = ((width * currentProps.scaleX) * (1 / ratio)) / height;
                 }
                 break;
-            case 2:
-            case 6:
-                currentProps.scaleX = domScale.x
-                if (eventAttribute.aspectRatio) {
-                    currentProps.scaleX = ((domAttribute.height * currentProps.scaleY) * ratio) / domAttribute.width;
+            case 'tm':
+            case 'bm':
+                currentProps.scaleX = scaleX
+                if (aspectRatio) {
+                    currentProps.scaleX = ((height * currentProps.scaleY) * ratio) / width;
                 }
                 break;
             default:
-                if (eventAttribute.aspectRatio) {
-                    currentProps.scaleY = ((domAttribute.width * currentProps.scaleX) * (1 / ratio)) / domAttribute.height;
+                if (aspectRatio) {
+                    currentProps.scaleY = ((width * currentProps.scaleX) * (1 / ratio)) / height;
                 }
         }
 
-        if (eventAttribute.enableScaleFromCenter && eventAttribute.scaleFromCenter) {
-            const center = getCenter(domAttribute, domOffset, { x: currentProps.scaleX, y: currentProps.scaleY })
-            currentProps.x = domOffset.x + (point.x - center.x)
-            currentProps.y = domOffset.y + (point.y - center.y)
+        if (enableScaleFromCenter && scaleFromCenter) {
+            const center = getCenter(
+                { width, height, angle },
+                { x, y },
+                { x: currentProps.scaleX, y: currentProps.scaleY }
+            )
+            currentProps.x = x + (point!.x - center.x)
+            currentProps.y = y + (point!.y - center.y)
         } else {
-            const freshOppositePoint = getOppositePoint(domAttribute, domOffset, { x: currentProps.scaleX, y: currentProps.scaleY }, eventAttribute.scaleFromCenter, scaleType);
+            const freshOppositePoint = getOppositePoint(scaleType, {
+                width,
+                height,
+                angle,
+                x,
+                y,
+                scaleX: currentProps.scaleX,
+                scaleY: currentProps.scaleY,
+                center: null
+            });
 
-            currentProps.x = domOffset.x + (oppositePoint.x - freshOppositePoint.x)
-            currentProps.y = domOffset.y + (oppositePoint.y - freshOppositePoint.y)
+            currentProps.x = x + (oppositePoint!.x - freshOppositePoint!.x)
+            currentProps.y = y + (oppositePoint!.y - freshOppositePoint!.y)
         }
 
         updateFunc(currentProps)

@@ -1,23 +1,13 @@
-import { getCenter } from './point'
-const pointPositionType = {
-    "left-top": 1,
-    "top-center": 2,
-    "right-top": 3,
-    "right-center": 4,
-    "right-bottom": 5,
-    "bottom-center": 6,
-    "left-bottom": 7,
-    "left-center": 8
-}
+
 const cursorType = {
-    1: "nw-resize",
-    2: "n-resize",
-    3: "ne-resize",
-    4: "e-resize",
-    5: "se-resize",
-    6: "s-resize",
-    7: "sw-resize",
-    8: "w-resize"
+    1: "nwse-resize",
+    2: "ns-resize",
+    3: "nesw-resize",
+    4: "ew-resize",
+    5: "nwse-resize",
+    6: "ns-resize",
+    7: "nesw-resize",
+    8: "ew-resize"
 }
 const rotateType = [
     {
@@ -79,7 +69,7 @@ const generateData = () => {
             enableAspectRatio: false
         },
         layer: 900,
-        disableScale: false
+        disableScale: true
     }
 }
 const setResizeStyle = (child: any, childType: any, resizeData: any, containerLayout: DOMRect) => {
@@ -116,14 +106,7 @@ const handleRotatePosition = (rotate: number, actionType: number) => {
  * @param {string} type
  */
 const getCursorType = (rotate: number, type: string) => {
-    let hRotate = rotate % 360;
-    if (hRotate < 0) {
-        hRotate += 360;
-    }
-    let actionType: any = Reflect.get(pointPositionType, type);
-    actionType = handleRotatePosition(hRotate, actionType);
-
-    return Reflect.get(cursorType, actionType);
+    return Reflect.get(cursorType, type);
 }
 
 export {

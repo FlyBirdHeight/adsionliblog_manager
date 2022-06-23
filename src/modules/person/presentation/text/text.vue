@@ -86,8 +86,8 @@ watch(activeItem, (newV, oldV) => {
 <style lang="scss" scoped>
 .presentation-text_textarea {
   position: absolute;
-  width: calc(100% - 12px);
-  height: calc(100% - 12px);
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   .show-presentation-text {

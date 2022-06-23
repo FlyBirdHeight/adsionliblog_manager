@@ -20,43 +20,43 @@
       <div
         :style="{ cursor: getCursor(1) }"
         class="resize-point left-top"
-        @mousedown.stop="handleSclae(1, $event)"
+        @mousedown.stop="handleScale('tl', $event)"
       ></div>
       <div
         :style="{ cursor: getCursor(2) }"
         class="resize-point top-center"
-        @mousedown.stop="handleSclae(2, $event)"
+        @mousedown.stop="handleScale('tm', $event)"
       ></div>
 
       <div
         :style="{ cursor: getCursor(3) }"
         class="resize-point right-top"
-        @mousedown.stop="handleSclae(3, $event)"
+        @mousedown.stop="handleScale('tr', $event)"
       ></div>
       <div
         :style="{ cursor: getCursor(4) }"
         class="resize-point right-center"
-        @mousedown.stop="handleSclae(4, $event)"
+        @mousedown.stop="handleScale('mr', $event)"
       ></div>
       <div
         :style="{ cursor: getCursor(5) }"
         class="resize-point right-bottom"
-        @mousedown.stop="handleSclae(5, $event)"
+        @mousedown.stop="handleScale('br', $event)"
       ></div>
       <div
         :style="{ cursor: getCursor(6) }"
         class="resize-point bottom-center"
-        @mousedown.stop="handleSclae(6, $event)"
+        @mousedown.stop="handleScale('bm', $event)"
       ></div>
       <div
         :style="{ cursor: getCursor(8) }"
         class="resize-point left-center"
-        @mousedown.stop="handleSclae(8, $event)"
+        @mousedown.stop="handleScale('ml', $event)"
       ></div>
       <div
         :style="{ cursor: getCursor(7) }"
         class="resize-point left-bottom"
-        @mousedown.stop="handleSclae(7, $event)"
+        @mousedown.stop="handleScale('bl', $event)"
       ></div>
     </div>
   </div>
@@ -67,6 +67,7 @@ import { setResizeStyle, getCursorType, generateData } from './utils/init'
 import { onDrag, dragDom } from './utils/drag'
 import styler from './utils/style'
 import { rotate } from './utils/rotate'
+import { scale } from './utils/scale'
 export default {
   name: 'ResizeOverwrite',
 }
@@ -80,6 +81,7 @@ const activeItem = inject('activeItem')
 const parentDom = ref<any>(null)
 const resizeElement = ref<any>()
 const resizeData = reactive(generateData())
+const emit = defineEmits(['changeStatus'])
 const domStyle = reactive({
   element: {},
   controls: {},
@@ -114,11 +116,32 @@ const handleDrag = (event) => {
     activeItem.value = activeIndex.value
   }
   const drag = dragDom(resizeData.offset, { x: event.pageX, y: event.pageY })
-  onDrag(resizeElement.value, drag)
+  onDrag(resizeElement.value, drag, (timestamp) => {
+    emit('changeStatus', timestamp)
+  })
 }
-const handleSclae = (activeType: number, event: Event) => {
-  console.log(activeType)
-  console.log(event)
+const handleScale = (activeType: string, event: Event) => {
+  event.stopPropagation()
+  let scaleData = Object.assign({}, resizeData.attribute);
+  scaleData = Object.assign(scaleData, resizeData.offset);
+  scaleData = Object.assign(scaleData, { scaleX: resizeData.scale.x, scaleY: resizeData.scale.y });
+  scaleData = Object.assign(scaleData, { startX: event.pageX, startY: event.pageY });
+  scaleData = Object.assign(scaleData, resizeData.event);
+
+  const scaleDom = scale(
+    scaleData,
+    activeType,
+    0.1,
+    (currentData) => {
+      resizeData.offset = { x: currentData.x, y: currentData.y }
+      resizeData.scale = { x: currentData.scaleX, y: currentData.scaleY }
+    }
+  )
+  // console.log(scaleDom);
+
+  onDrag(resizeElement.value.parentElement, scaleDom, (timestamp) => {
+    emit('changeStatus', timestamp)
+  })
 }
 
 const handleRotate = (event) => {
@@ -133,15 +156,11 @@ const handleRotate = (event) => {
     }
   )
 
-  onDrag(resizeElement.value.parentElement, rotateDom)
+  onDrag(resizeElement.value.parentElement, rotateDom, (timestamp) => {
+    emit('changeStatus', timestamp)
+  })
 }
-//NOTE: 专门用来处理拖拽改变位置的内容
-const dragMouseEnter = (event: any) => {
-  resizeElement.value.style.cursor = 'move'
-}
-const dragMouseLeave = (event: any) => {
-  resizeElement.value.style.cursor = 'auto'
-}
+
 const getCursor = (type: string) => {
   return getCursorType(resizeData.attribute.angle, type)
 }
@@ -151,10 +170,8 @@ const getCursor = (type: string) => {
   position: absolute;
   .content {
     user-select: none;
-    padding: 5px;
   }
   .control {
-    padding: 5px;
     border: 1px dashed rgba(0, 0, 0, 0.6);
     .resize-point {
       position: absolute;

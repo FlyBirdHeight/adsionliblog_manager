@@ -23,9 +23,14 @@
           </resize-overwrite>
         </template>
         <template v-if="pageMap.item.image.length != 0">
-          <resize-element :parent="'presentation_body'" v-for="(image, index) of pageMap.item.image">
+          <resize-overwrite
+            @changeStatus="changeStatus"
+            @emitActive="emitActive"
+            :parent="'presentation_body'"
+            v-for="(image, index) of pageMap.item.image"
+          >
             <presentation-image :info="image"></presentation-image>
-          </resize-element>
+          </resize-overwrite>
         </template>
       </div>
       <el-scrollbar :always="true" class="persentation_edit-tool">
