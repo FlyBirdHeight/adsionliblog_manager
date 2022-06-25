@@ -430,6 +430,9 @@ const clickRight = (event, data: MenuDataList) => {
     name: data.name,
     index: data.index,
   }
+  if(Reflect.has(data, 'relative_path')){
+    rightClickData.value.relative_path = data.relative_path.replace("/file/link", '')
+  }
   showRightList.value = true
   showPosition.value = [event.clientX, event.clientY]
 }

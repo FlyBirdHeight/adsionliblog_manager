@@ -99,7 +99,11 @@ const closePreview = () => {
 const remove = (file: UploadFile) => {
   uploadImage.value.handleRemove(file)
   if (uploadImage.value.uploadFiles.length < 1) {
-    uploadImage.value.$el.children[1].style.display = 'inline-block'
+    nextTick(() => {
+      setTimeout(() => {
+        uploadImage.value.$el.children[1].style.display = 'inline-block'
+      }, 500)
+    })
   }
   previewList.value = []
 }
