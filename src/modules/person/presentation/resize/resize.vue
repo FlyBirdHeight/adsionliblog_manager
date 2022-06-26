@@ -2,237 +2,230 @@
   <div
     class="resize-element"
     ref="resizeElement"
-    id="dragResizeElement"
-    :class="activeItem === activeIndex ? '' : 'resize-element-border'"
     @mouseenter.stop="dragMouseEnter"
     @mouseleave.stop="dragMouseLeave"
-    @click.stop="emit('emitActive', activeIndex)"
-    @mousedown="activeItem = activeIndex"
-    v-dragResize
+    @click.stop="activeItem = activeIndex"
+    @mousedown.stop="handleDrag"
   >
+    <div class="content" :style="domStyle.element">
+      <slot></slot>
+    </div>
     <div
+      class="control"
+      :class="activeItem === activeIndex ? '' : 'resize-element-border'"
+      :style="domStyle.controls"
       v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('top-center') }"
-      class="resize-point top-center"
-      id="top-center"
-      @mousedown.stop="handleDown"
-    ></div>
-    <div
-      v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('left-top') }"
-      class="resize-point left-top"
-      id="left-top"
-      @mousedown.stop="handleDown"
-    ></div>
-    <div
-      v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('left-center') }"
-      class="resize-point left-center"
-      id="left-center"
-      @mousedown.stop="handleDown"
-    ></div>
-    <div
-      v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('left-bottom') }"
-      class="resize-point left-bottom"
-      id="left-bottom"
-      @mousedown.stop="handleDown"
-    ></div>
-    <div
-      v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('right-top') }"
-      class="resize-point right-top"
-      id="right-top"
-      @mousedown.stop="handleDown"
-    ></div>
-    <div
-      v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('right-center') }"
-      class="resize-point right-center"
-      id="right-center"
-      @mousedown.stop="handleDown"
-    ></div>
-    <div
-      v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('right-bottom') }"
-      class="resize-point right-bottom"
-      id="right-bottom"
-      @mousedown.stop="handleDown"
-    ></div>
-    <div
-      v-show="activeItem === activeIndex"
-      :style="{ cursor: getCursor('bottom-center') }"
-      class="resize-point bottom-center"
-      id="bottom-center"
-      @mousedown.stop="handleDown"
-    ></div>
-    <slot></slot>
+    >
+      <div class="rotate-button" @mousedown.stop="handleRotate($event)" />
+      <div
+        :style="{ cursor: getCursor(1) }"
+        class="resize-point left-top"
+        @mousedown.stop="handleScale('tl', $event)"
+      ></div>
+      <div
+        :style="{ cursor: getCursor(2) }"
+        class="resize-point top-center"
+        @mousedown.stop="handleScale('tm', $event)"
+      ></div>
+
+      <div
+        :style="{ cursor: getCursor(3) }"
+        class="resize-point right-top"
+        @mousedown.stop="handleScale('tr', $event)"
+      ></div>
+      <div
+        :style="{ cursor: getCursor(4) }"
+        class="resize-point right-center"
+        @mousedown.stop="handleScale('mr', $event)"
+      ></div>
+      <div
+        :style="{ cursor: getCursor(5) }"
+        class="resize-point right-bottom"
+        @mousedown.stop="handleScale('br', $event)"
+      ></div>
+      <div
+        :style="{ cursor: getCursor(6) }"
+        class="resize-point bottom-center"
+        @mousedown.stop="handleScale('bm', $event)"
+      ></div>
+      <div
+        :style="{ cursor: getCursor(8) }"
+        class="resize-point left-center"
+        @mousedown.stop="handleScale('ml', $event)"
+      ></div>
+      <div
+        :style="{ cursor: getCursor(7) }"
+        class="resize-point left-bottom"
+        @mousedown.stop="handleScale('bl', $event)"
+      ></div>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { ref, useSlots, defineProps, reactive, onMounted, getCurrentInstance, inject, defineEmits } from 'vue'
-import { calculateChangeWidthAndHeight, changeLocation, getCursorType, setResizeStyle, updateCenter } from './resize'
+import { ref, onMounted, defineEmits, computed, watch, reactive, inject, useSlots } from 'vue'
+import { setResizeStyle, getCursorType, generateData } from './utils/init'
+import { onDrag, dragDom } from './utils/drag'
+import styler from './utils/style'
+import { rotate } from './utils/rotate'
+import { scale } from './utils/scale'
 export default {
   name: 'ResizeElement',
-  directives: {
-    //数据检索位置拖动
-    dragResize(el: any, bindings: any) {
-      el.onmousedown = function (e: any) {
-        let box: any = this
-        let disX: any = e.clientX - box.offsetLeft
-        let disY: any = e.clientY - box.offsetTop
-        document.onmousemove = function (e) {
-          box.style.left = e.pageX - disX + 'px'
-          box.style.top = e.pageY - disY + 'px'
-        }
-        document.onmouseup = function () {
-          document.onmousemove = document.onmouseup = null
-        }
-      }
-    },
-  },
 }
 </script>
 <script lang="ts" setup>
-const props = defineProps({
-  parent: {
-    type: String,
-    default: 'body',
-  },
-})
 const slots = useSlots()
 const child = ref(null)
 const childType = ref<string>('text')
-const childDom = ref(null)
 const activeIndex = ref<number>(0)
 const activeItem = inject('activeItem')
-const rotateData = ref<number>(0)
-const centerPosition = reactive<{ x: number; y: number }>({
-  x: 0,
-  y: 0,
-})
-const emit = defineEmits(['emitActive', 'changeStatus'])
-onMounted(() => {
-  child.value = slots.default?.()[0]
-  setResizeStyle(resizeElement, child, rotateData, childType, centerPosition)
-  let length = resizeElement.value.__vnode.children.length
-  childDom.value = resizeElement.value.__vnode.children[length - 1].children[0]
-  activeIndex.value = childDom.value.props.info.index
-})
 const parentDom = ref<any>(null)
 const resizeElement = ref<any>()
-//NOTE: 专门用来处理拖拽改变位置的内容
-const dragMouseEnter = (event: any) => {
-  resizeElement.value.style.cursor = 'move'
-}
-const dragMouseLeave = (event: any) => {
-  resizeElement.value.style.cursor = 'auto'
-}
-
-//NOTE: 专门用来处理修改大小的内容
-const position = reactive({
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  type: 1,
-  oldType: 1,
+const resizeData = reactive(generateData())
+const emit = defineEmits(['changeStatus'])
+const domStyle = reactive({
+  element: {},
+  controls: {},
 })
-const mouseMoveListener = (event: any) => {
-  let { nH, nW } = calculateChangeWidthAndHeight(event, rotateData.value, parentDom.value, position, position.type)
-  if (nH !== 0) {
-    resizeElement.value.style.height = nH + 'px'
-    child.value!.props!.info!.style!.layout!.height = nH
-  }
-  if (nW !== 0) {
-    resizeElement.value.style.width = nW + 'px'
-    child.value!.props!.info!.style!.layout!.width = nW
-  }
-}
-const mouseUpListener = (event: any) => {
-  event.stopPropagation()
-  parentDom.value.removeEventListener('mousemove', mouseMoveListener)
-  parentDom.value.removeEventListener('mouseup', mouseUpListener)
-
-  emit('changeStatus', event.timeStamp)
-}
-const mouseLeaveListener = (event: any) => {
-  parentDom.value.removeEventListener('mousemove', mouseMoveListener)
-  parentDom.value.removeEventListener('mouseup', mouseUpListener)
-  parentDom.value.removeEventListener('mouseleave', mouseLeaveListener)
-}
-const handleDown = (event: any) => {
-  for (let v of event.path) {
-    if (v.id === props.parent) {
-      parentDom.value = v
-      break
+onMounted(() => {
+  child.value = slots.default?.()[0]
+  setResizeStyle(child, childType, resizeData, resizeElement.value.parentElement.getBoundingClientRect())
+  activeIndex.value = child.value.props.info.index
+})
+watch(
+  resizeData,
+  (newV, oldV) => {
+    const { element, controls } = styler(newV.offset, newV.attribute, newV.scale, newV.layer, newV.disableScale)
+    domStyle.element = {
+      ...element,
+      width: element.width ? `${element.width}px` : null,
+      height: element.height ? `${element.height}px` : null,
     }
+    domStyle.controls = {
+      ...controls,
+      width: `${controls.width}px`,
+      height: `${controls.height}px`,
+    }
+  },
+  {
+    deep: true,
   }
-  parentDom.value.addEventListener('mousemove', mouseMoveListener)
-  parentDom.value.addEventListener('mouseup', mouseUpListener)
-  parentDom.value.addEventListener('mouseleave', mouseLeaveListener)
-  updateCenter(resizeElement, centerPosition)
-  changeLocation(event.path[0].id, resizeElement, parentDom, position, rotateData.value, centerPosition)
+)
+
+const handleDrag = (event) => {
+  if (activeItem.value !== activeIndex.value) {
+    activeItem.value = activeIndex.value
+  }
+  const drag = dragDom(resizeData.offset, { x: event.pageX, y: event.pageY })
+  onDrag(resizeElement.value, drag, (timestamp) => {
+    emit('changeStatus', timestamp)
+  })
 }
+const handleScale = (activeType: string, event: Event) => {
+  event.stopPropagation()
+  let scaleData = Object.assign({}, resizeData.attribute)
+  scaleData = Object.assign(scaleData, resizeData.offset)
+  scaleData = Object.assign(scaleData, { scaleX: resizeData.scale.x, scaleY: resizeData.scale.y })
+  scaleData = Object.assign(scaleData, { startX: event.pageX, startY: event.pageY })
+  scaleData = Object.assign(scaleData, resizeData.event)
+
+  const scaleDom = scale(scaleData, activeType, 0.1, (currentData) => {
+    resizeData.offset = { x: currentData.x, y: currentData.y }
+    resizeData.scale.x = currentData.scaleX
+    resizeData.scale.y = currentData.scaleY
+  })
+  onDrag(resizeElement.value.parentElement, scaleDom, (timestamp) => {
+    emit('changeStatus', timestamp)
+  })
+}
+
+const handleRotate = (event) => {
+  const rotateDom = rotate(
+    resizeData.offset,
+    resizeData.scale,
+    resizeData.attribute,
+    { x: event.pageX, y: event.pageY },
+    resizeData.containerOffset,
+    (data) => {
+      resizeData.attribute.angle = data.angel
+    }
+  )
+
+  onDrag(resizeElement.value.parentElement, rotateDom, (timestamp) => {
+    emit('changeStatus', timestamp)
+  })
+}
+
 const getCursor = (type: string) => {
-  return getCursorType(rotateData.value, type)
+  return getCursorType(resizeData.attribute.angle, type)
 }
 </script>
 <style lang="scss" scoped>
 .resize-element {
   position: absolute;
-  border: 1px dashed rgba(0, 0, 0, 0.6);
-  padding: 5px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  .resize-point {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #409eff;
-    z-index: 999;
+  .content {
+    user-select: none;
   }
-  .right-top {
-    cursor: ne-resize;
-    top: -5px;
-    right: -5px;
-  }
-  .right-center {
-    top: calc(50% - 5px);
-    right: -5px;
-    cursor: e-resize;
-  }
-  .right-bottom {
-    top: calc(100% - 5px);
-    right: -5px;
-    cursor: se-resize;
-  }
-  .left-top {
-    cursor: nw-resize;
-    top: -5px;
-    left: -5px;
-  }
-  .left-center {
-    cursor: w-resize;
-    top: calc(50% - 5px);
-    left: -5px;
-  }
-  .left-bottom {
-    cursor: sw-resize;
-    top: calc(100% - 5px);
-    left: -5px;
-  }
-  .bottom-center {
-    bottom: -5px;
-    left: calc(50% - 5px);
-    cursor: s-resize;
-  }
-  .top-center {
-    top: -5px;
-    left: calc(50% - 5px);
-    cursor: n-resize;
+  .control {
+    border: 1px dashed rgba(0, 0, 0, 0.6);
+    .resize-point {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #409eff;
+      z-index: 999;
+    }
+    .rotate-button {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #409eff;
+      top: -45px;
+      left: calc(50% - 6px);
+      z-index: 999;
+      cursor: grabbing;
+    }
+    .right-top {
+      cursor: ne-resize;
+      top: -5px;
+      right: -5px;
+    }
+    .right-center {
+      top: calc(50% - 5px);
+      right: -5px;
+      cursor: e-resize;
+    }
+    .right-bottom {
+      top: calc(100% - 5px);
+      right: -5px;
+      cursor: se-resize;
+    }
+    .left-top {
+      cursor: nw-resize;
+      top: -5px;
+      left: -5px;
+    }
+    .left-center {
+      cursor: w-resize;
+      top: calc(50% - 5px);
+      left: -5px;
+    }
+    .left-bottom {
+      cursor: sw-resize;
+      top: calc(100% - 5px);
+      left: -5px;
+    }
+    .bottom-center {
+      bottom: -5px;
+      left: calc(50% - 5px);
+      cursor: s-resize;
+    }
+    .top-center {
+      top: -5px;
+      left: calc(50% - 5px);
+      cursor: n-resize;
+    }
   }
 }
 .resize-element-border {

@@ -94,11 +94,11 @@ const scale = (
             });
         }
 
-        if (aspectRatio && !event.shiftKey) {
-            aspectRatio = false;
-        } else if (event.shiftKey && !aspectRatio) {
-            aspectRatio = true;
-        }
+        // if (aspectRatio && !event.shiftKey) {
+        //     aspectRatio = false;
+        // } else if (event.shiftKey && !aspectRatio) {
+        //     aspectRatio = true;
+        // }
         if (!enableAspectRatio) {
             aspectRatio = false;
         }

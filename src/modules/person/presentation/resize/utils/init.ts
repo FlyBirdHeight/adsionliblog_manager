@@ -56,7 +56,7 @@ const generateData = () => {
         },
         scale: {
             x: 1,
-            y: 1
+            y: 1,
         },
         containerOffset: {
             x: 0,
@@ -75,11 +75,14 @@ const generateData = () => {
 const setResizeStyle = (child: any, childType: any, resizeData: any, containerLayout: DOMRect) => {
     let childStyle = child.value?.props?.info.style;
     let type = child.value?.props?.info.type;
-    resizeData.offset = childStyle.position;
     resizeData.attribute = childStyle.attribute;
     resizeData.offset = childStyle.position;
+    resizeData.scale = childStyle.scale;
     resizeData.layer = childStyle.layer;
     resizeData.containerOffset = { x: containerLayout.left, y: containerLayout.top }
+    if (Reflect.has(childStyle, 'event')) {
+        resizeData.event = childStyle.event
+    }
     childType.value = type;
 }
 /**

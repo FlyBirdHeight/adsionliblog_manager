@@ -13,7 +13,9 @@ const rotate = (domOffset: DomOffset, domScale: DomScale, domAttribute: DomAttri
         if (event.shiftKey) {
             ang = (ang / 15 >> 0) * 15;
         }
-
+        if(ang < 0) {
+            ang += 360
+        }
         updatedFunc({
             angel: ang
         })

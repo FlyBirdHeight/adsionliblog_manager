@@ -34,6 +34,12 @@ const imageInfo = () => {
             },
             invert: 0
         },
+        event: {
+            scaleFromCenter: false,
+            enableScaleFromCenter: false,
+            aspectRatio: true,
+            enableAspectRatio: true
+        },
         objectFit: "fill",
         objectPosition: {
             x: 0,
@@ -111,9 +117,10 @@ const analysisCss = (styleData: any, url: string) => {
     let returnCss: any = {};
     returnCss.border = border.line == 'none' ? 'none' : `${border.width} ${border.style}`;
     returnCss.borderColor = border.color;
+    returnCss.borderRadius = border.radius + '%'
     returnCss.zIndex = layer;
     // returnCss.transform = `rotate(${transform.rotate}deg) scaleX(${transform.scaleX}) scaleY(${transform.scaleY})`;
-    returnCss.filter = `contrast(${style.contrast}) opacity(${style.opacity}) blur(${style.blur}px) brightness(${style.brightness}) invert(${style.invert}) drop-shadow(${style.drop_shadow.x}px ${style.drop_shadow.x}px ${style.drop_shadow.radius}px ${style.drop_shadow.color})`
+    returnCss.filter = `contrast(${style.contrast}) opacity(${style.opacity}) blur(${style.blur}px) brightness(${style.brightness}) invert(${style.invert}) drop-shadow(${style.drop_shadow.x}px ${style.drop_shadow.y}px ${style.drop_shadow.radius}px ${style.drop_shadow.color})`
     returnCss.width = typeof (attribute.width) == 'number' ? attribute.width + 'px' : attribute.width;
     returnCss.height = typeof (attribute.height) == 'number' ? attribute.height + 'px' : attribute.height;
     returnCss.objectFit = objectFit;

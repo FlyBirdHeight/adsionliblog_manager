@@ -11,14 +11,39 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
+import { ref, computed, watch, reactive, inject, provide } from 'vue'
+import { imageInfo } from '@/modules/person/presentation/image/image'
 export default {
   name: 'EditPresentationImage',
 }
 </script>
 <script lang="ts" setup>
 import EditImage from './image.vue'
-const props = defineProps()
-const emit = defineEmits([])
+
+const activeIndex = inject('activeItem')
+const itemList = inject('itemList')
+const itemObject = ref(null)
+const imageStyle = ref(imageInfo())
+provide('imageStyle', imageStyle)
+const hideStatus = reactive({
+  fontSet: true,
+})
+watch(
+  activeIndex,
+  (newV, oldV) => {
+    if (newV !== -1) {
+      if (itemList.image.length != 0) {
+        let idx = itemList.image.findIndex((v) => v.index === newV)
+        if (idx !== -1) {
+          itemObject.value = itemList.image[idx]
+          imageStyle.value = itemObject.value.style
+        }
+      }
+    }
+  },
+  {
+    immediate: true,
+  }
+)
 </script>
 <style lang="scss" scoped></style>
