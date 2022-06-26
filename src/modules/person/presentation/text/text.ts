@@ -111,7 +111,6 @@ const decorationStyle = [
         label: "双划线",
         value: "double"
     }
-
 ]
 
 const addTextArea = function (index: number) {

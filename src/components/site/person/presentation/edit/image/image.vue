@@ -75,6 +75,45 @@
     </div>
     <div class="border-setting">
       <div class="subLabel">边框设置:</div>
+      <div class="border-member">
+        <div class="thridLabel" style="margin-right: 5px">显示:</div>
+        <el-checkbox
+          v-model="imageStyle.border.line"
+          label="边框"
+          :true-label="1"
+          :false-label="0"
+          border
+          size="small"
+        />
+      </div>
+      <div class="border-member">
+        <div class="thridLabel" style="margin-right: 5px">边框宽度:</div>
+        <el-input
+          class="input-number"
+          size="small"
+          v-model="imageStyle.border.width"
+          :disabled="imageStyle.border.line == 'none'"
+        />
+      </div>
+      <div class="border-member">
+        <div class="thridLabel">边框样式:</div>
+        <el-select
+          size="small"
+          style="width: 60%"
+          v-model="imageStyle.border.style"
+          placeholder="选取边框"
+        >
+          <el-option v-for="decoration in decorationStyle" :value="decoration.value" :label="decoration.label">
+            <span :style="{ textDecorationLine: 'underline', textDecorationStyle: decoration.value }">{{
+              decoration.label
+            }}</span>
+          </el-option>
+        </el-select>
+      </div>
+      <div class="border-member">
+        <div class="thridLabel" style="margin-right: 5px">边框颜色:</div>
+        <el-color-picker :disabled="imageStyle.border.line == 'none'" v-model="imageStyle.border.color" show-alpha />
+      </div>
     </div>
     <div class="filter-setting">
       <div class="subLabel">滤镜配置:</div>
@@ -83,7 +122,7 @@
         multiple
         collapse-tags
         collapse-tags-tooltip
-        v-model="imageFilter"
+        v-model="imageStyle.style.setStyle"
         placeholder="滤镜配置"
       >
         <el-option
@@ -94,7 +133,7 @@
         />
       </el-select>
       <div class="filter-member">
-        <div class="filter-member-item" v-show="imageFilter.includes('blur')">
+        <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('blur')">
           <span class="thridLabel">模糊:</span>
           <el-input-number
             class="number-input"
@@ -107,7 +146,7 @@
             controls-position="right"
           />
         </div>
-        <div class="filter-member-item" v-show="imageFilter.includes('brightness')">
+        <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('brightness')">
           <span class="thridLabel">亮度:</span>
           <el-input-number
             class="number-input"
@@ -120,7 +159,7 @@
             controls-position="right"
           />
         </div>
-        <div class="filter-member-item" v-show="imageFilter.includes('contrast')">
+        <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('contrast')">
           <span class="thridLabel">对比度:</span>
           <el-input-number
             class="number-input"
@@ -133,7 +172,7 @@
             controls-position="right"
           />
         </div>
-        <div class="filter-member-item" v-show="imageFilter.includes('opacity')">
+        <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('opacity')">
           <span class="thridLabel">透明度:</span>
           <el-input-number
             class="number-input"
@@ -146,7 +185,7 @@
             controls-position="right"
           />
         </div>
-        <div class="filter-member-item" v-show="imageFilter.includes('drop_shadow')">
+        <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('drop-shadow')">
           <span class="thridLabel">深度阴影:</span>
           <div class="shadow-set">
             <div class="shadow-member">
@@ -167,7 +206,7 @@
             </div>
           </div>
         </div>
-        <div class="filter-member-item" v-show="imageFilter.includes('invert')">
+        <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('invert')">
           <span class="thridLabel">颜色倒转:</span>
           <el-switch
             class="switch-invert"
@@ -185,7 +224,7 @@
 </template>
 <script lang="ts">
 import { ref, watch, reactive, provide, inject } from 'vue'
-import { filterStyle } from '@/modules/person/presentation/image/image'
+import { filterStyle, decorationStyle } from '@/modules/person/presentation/image/image'
 export default {
   name: 'EditImage',
 }
@@ -198,7 +237,6 @@ const sizeData = reactive({
   width: 0,
   ratio: 1,
 })
-const imageFilter = ref(['drop_shadow'])
 const imageStyle = inject('imageStyle')
 
 const handleRotateChange = () => {
@@ -250,163 +288,5 @@ watch(
 }
 </style>
 <style lang="scss" scoped>
-.edit-image {
-  margin-bottom: 10px;
-  .general-config,
-  .resolution-setting,
-  .border-setting,
-  .filter-setting {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 5px;
-    .subLabel {
-      @include subHeader();
-      width: 100%;
-    }
-  }
-  .rotate-set,
-  .flip-set,
-  .border-radius-set {
-    margin-top: 5px;
-    height: auto;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: wrap;
-    .thridLabel {
-      @include thridHeader();
-      width: 30%;
-      text-align: right;
-    }
-  }
-  .rotate-set {
-    .angle-setting {
-      width: 50%;
-      margin-left: 10px;
-      flex-shrink: 0;
-    }
-    .angle-rotate-button {
-      margin: 10px 0;
-      width: 100%;
-      height: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-  .flip-set {
-    height: 40px;
-    .switch-ratio {
-      width: 50%;
-      margin-left: 20px;
-    }
-  }
-  .border-radius-set {
-    .radius-setting {
-      width: 50%;
-      margin-left: 10px;
-      flex-shrink: 0;
-    }
-  }
-  .size-setting {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 100%;
-    .size-width,
-    .size-height,
-    .size-ratio-set {
-      margin-top: 10px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      width: 100%;
-      .thridLabel {
-        @include thridHeader();
-        width: 30%;
-        text-align: right;
-      }
-      .size-input,
-      .switch-ratio {
-        margin-left: 20px;
-        width: 50%;
-      }
-    }
-  }
-  .filter-member {
-    width: 100%;
-    margin-top: 10px;
-    .filter-member-item {
-      margin-top: 5px;
-      min-height: 30px;
-      width: 100%;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      flex-wrap: wrap;
-      .thridLabel {
-        @include thridHeader();
-        width: 20%;
-        text-align: right;
-      }
-      .number-input {
-        width: 50%;
-        margin-left: 10px;
-      }
-      .switch-invert {
-        width: 60%;
-        margin-left: 10px;
-      }
-      .shadow-set {
-        min-height: 50px;
-        width: 100%;
-        display: flex;
-        justify-content: flex-start;
-        align: center;
-        flex-wrap: wrap;
-        .shadow-member {
-          width: 45%;
-          height: 40px;
-          line-height: 40px;
-          display: inline;
-          .forthLabel {
-            display: inline-block;
-            @include thridHeader();
-            width: 40%;
-            text-align: right;
-            margin-right: 5px;
-          }
-          .input-number {
-            display: inline-block;
-            width: 45%;
-          }
-        }
-        .shadow-radius {
-          width: 45%;
-          .forthLabel {
-            text-align: left;
-            margin-right: 0px;
-            width: 50%;
-          }
-          .input-number {
-            width: 40%;
-          }
-        }
-        .shadow-color {
-          width: 50%;
-          .forthLabel {
-            text-align: left;
-            margin-right: 0px;
-            width: 40%;
-            margin-right: 5px;
-          }
-        }
-      }
-    }
-  }
-}
+@import "./image.scss"
 </style>

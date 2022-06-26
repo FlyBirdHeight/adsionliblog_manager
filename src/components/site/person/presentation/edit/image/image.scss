@@ -1,0 +1,208 @@
+.edit-image {
+    margin-bottom: 10px;
+
+    .general-config,
+    .resolution-setting,
+    .border-setting,
+    .filter-setting {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 5px;
+
+        .subLabel {
+            @include subHeader();
+            width: 100%;
+        }
+    }
+
+    .border-setting {
+        width: 100%;
+
+        .border-member {
+            margin-top: 5px;
+            width: 50%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            .thridLabel {
+                @include thridHeader();
+                width: 40%;
+                text-align: right;
+            }
+
+            .input-number {
+                width: 45%;
+            }
+        }
+    }
+
+    .rotate-set,
+    .flip-set,
+    .border-radius-set {
+        margin-top: 5px;
+        height: auto;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .thridLabel {
+            @include thridHeader();
+            width: 30%;
+            text-align: right;
+        }
+    }
+
+    .rotate-set {
+        .angle-setting {
+            width: 50%;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .angle-rotate-button {
+            margin: 10px 0;
+            width: 100%;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .flip-set {
+        height: 40px;
+
+        .switch-ratio {
+            width: 50%;
+            margin-left: 20px;
+        }
+    }
+
+    .border-radius-set {
+        .radius-setting {
+            width: 50%;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+    }
+
+    .size-setting {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+
+        .size-width,
+        .size-height,
+        .size-ratio-set {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+
+            .thridLabel {
+                @include thridHeader();
+                width: 30%;
+                text-align: right;
+            }
+
+            .size-input,
+            .switch-ratio {
+                margin-left: 20px;
+                width: 50%;
+            }
+        }
+    }
+
+    .filter-member {
+        width: 100%;
+        margin-top: 10px;
+
+        .filter-member-item {
+            margin-top: 5px;
+            min-height: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+
+            .thridLabel {
+                @include thridHeader();
+                width: 20%;
+                text-align: right;
+            }
+
+            .number-input {
+                width: 50%;
+                margin-left: 10px;
+            }
+
+            .switch-invert {
+                width: 60%;
+                margin-left: 10px;
+            }
+
+            .shadow-set {
+                min-height: 50px;
+                width: 100%;
+                display: flex;
+                justify-content: flex-start;
+                align: center;
+                flex-wrap: wrap;
+
+                .shadow-member {
+                    width: 45%;
+                    height: 40px;
+                    line-height: 40px;
+                    display: inline;
+
+                    .forthLabel {
+                        display: inline-block;
+                        @include thridHeader();
+                        width: 40%;
+                        text-align: right;
+                        margin-right: 5px;
+                    }
+
+                    .input-number {
+                        display: inline-block;
+                        width: 45%;
+                    }
+                }
+
+                .shadow-radius {
+                    width: 45%;
+
+                    .forthLabel {
+                        text-align: left;
+                        margin-right: 0px;
+                        width: 50%;
+                    }
+
+                    .input-number {
+                        width: 40%;
+                    }
+                }
+
+                .shadow-color {
+                    width: 50%;
+
+                    .forthLabel {
+                        text-align: left;
+                        margin-right: 0px;
+                        width: 40%;
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

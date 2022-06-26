@@ -15,7 +15,7 @@ const imageInfo = () => {
             y: 1
         },
         border: {
-            line: 'none',
+            line: 0,
             width: 1,
             style: "solid",
             radius: 0,
@@ -32,7 +32,8 @@ const imageInfo = () => {
                 radius: 6,
                 color: 'rgba(0, 0, 0, 1)'
             },
-            invert: 0
+            invert: 0,
+            setStyle: ["drop-shadow"]
         },
         event: {
             scaleFromCenter: false,
@@ -75,14 +76,27 @@ const filterStyle: FilterStyleList[] = [
     },
     {
         label: "深度阴影",
-        content: "drop_shadow",
+        content: "drop-shadow",
     },
     {
         label: "颜色倒转",
         content: "invert"
     }
 ]
-
+const decorationStyle = [
+    {
+        label: "直线",
+        value: "solid"
+    },
+    {
+        label: "点线",
+        value: "dotted"
+    },
+    {
+        label: "短划线",
+        value: "dashed"
+    }
+]
 const addImage = (index: number, url: string) => {
     return new Promise(resolve => {
         let image = new Image();
@@ -115,16 +129,26 @@ const addImage = (index: number, url: string) => {
 const analysisCss = (styleData: any, url: string) => {
     let { border, attribute, style, scale, objectFit, objectPosition, layer } = styleData;
     let returnCss: any = {};
-    returnCss.border = border.line == 'none' ? 'none' : `${border.width} ${border.style}`;
+    returnCss.border = !Boolean(border.line) ? 'none' : `${border.width}px ${border.style}`;
     returnCss.borderColor = border.color;
     returnCss.borderRadius = border.radius + '%'
     returnCss.zIndex = layer;
-    // returnCss.transform = `rotate(${transform.rotate}deg) scaleX(${transform.scaleX}) scaleY(${transform.scaleY})`;
-    returnCss.filter = `contrast(${style.contrast}) opacity(${style.opacity}) blur(${style.blur}px) brightness(${style.brightness}) invert(${style.invert}) drop-shadow(${style.drop_shadow.x}px ${style.drop_shadow.y}px ${style.drop_shadow.radius}px ${style.drop_shadow.color})`
+    returnCss.filter = "";
+    style.setStyle.forEach((v: string) => {
+        if (v === 'drop-shadow') {
+            returnCss.filter += `${v}(${style.drop_shadow.x}px ${style.drop_shadow.y}px ${style.drop_shadow.radius}px ${style.drop_shadow.color}) `
+        } else if (v === 'blur') {
+            returnCss.filter += `${v}(${style.blur}px)`
+        } else {
+            returnCss.filter += `${v}(${style[v]})`
+        }
+    })
+
     returnCss.width = typeof (attribute.width) == 'number' ? attribute.width + 'px' : attribute.width;
     returnCss.height = typeof (attribute.height) == 'number' ? attribute.height + 'px' : attribute.height;
     returnCss.objectFit = objectFit;
     returnCss.objectPosition = `${objectPosition.x}% ${objectPosition.y}%`;
+    console.log(returnCss.filter);
 
     return returnCss;
 }
@@ -133,5 +157,6 @@ export {
     addImage,
     imageInfo,
     filterStyle,
-    analysisCss
+    analysisCss,
+    decorationStyle
 }

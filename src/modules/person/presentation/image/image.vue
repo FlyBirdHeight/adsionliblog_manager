@@ -27,7 +27,8 @@ const imageCss = computed(() => {
 <style lang="scss" scoped>
 .preventationImage {
   user-select: none;
-  padding: 10px;
+  padding: 5px;
+  margin: 5px 5px;
   width: calc(100% - 20px) !important;
   height: calc(100% - 20px) !important;
 }
