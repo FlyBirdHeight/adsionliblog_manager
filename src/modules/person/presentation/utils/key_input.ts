@@ -17,7 +17,7 @@ const getHandleKeyDownData = (event: any) => {
  */
 const findItemInfo = (activeIndex: any, itemList: any) => {
     for (let key in itemList) {
-        if (itemList[key].index === activeIndex) {
+        if (itemList[key].index == activeIndex) {
             return {
                 index: key,
                 itemInfo: itemList[key]
@@ -62,15 +62,22 @@ const backspace = function (this: any, activeIndex: any, itemList: any, currentP
         return;
     }
     let idx = data.typeList.findIndex((v: any) => {
-        return v.index === activeIndex.value
+        return Number(v.index) == Number(activeIndex.value)
     })
     if (idx == -1) {
         return;
     }
+
+    let itemIdx = itemList.value.findIndex((v: any) => {
+        return Number(v.index) == Number(activeIndex.value)
+    })
+
     data.typeList.splice(idx, 1);
-    activeIndex.value = -1;
     data.pageData.item.count -= 1;
-    itemList.value.splice(data.itemData.index, 1);
+    activeIndex.value = -1;
+    itemList.value.splice(itemIdx, 1);
+    console.log(itemList.value, data.typeList);
+
 }
 /**
  * @method copy 复制内容
@@ -104,6 +111,7 @@ const paste = function (this: any, activeIndex: any, itemList: any, currentPage:
         return;
     }
     let copyItem = JSON.parse(JSON.stringify(data.typeList[idx]));
+
     copyItem.index = data.pageData.item.count + 1;
     copyItem.style.position.x += 20;
     copyItem.style.position.y += 20;
@@ -111,6 +119,8 @@ const paste = function (this: any, activeIndex: any, itemList: any, currentPage:
     data.pageData.item.count += 1;
     itemList.value.push({ index: copyItem.index, type: this.copyData.type });
     activeIndex.value = copyItem.index;
+    console.log(activeIndex.value);
+
     this.copyData = null;
 }
 

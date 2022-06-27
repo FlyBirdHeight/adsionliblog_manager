@@ -51,7 +51,7 @@
   <image-preview :previewList="previewList" :previewIndex="0" :showPreview="showPreview" @closePreview="closePreview" />
 </template>
 <script lang="ts">
-import { ref, defineProps, defineEmits, computed, reactive } from 'vue'
+import { ref, defineProps, defineEmits, computed, reactive, onUnmounted, watch } from 'vue'
 import { handleAndUpload, UploadFile } from '@/modules/files/slice.ts'
 export default {
   name: 'EditBodyImageSetting',
@@ -81,6 +81,7 @@ const title = computed(() => {
     return '图片上传'
   }
 })
+
 const settingImage = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
   formData.image = uploadFile
   previewList.value[0] = formData.image.url
@@ -99,6 +100,9 @@ const closePreview = () => {
  * @param {UploadFile} file 上传的图片
  */
 const remove = (file: UploadFile) => {
+  if (!uploadImage.value || !file) {
+    return
+  }
   uploadImage.value.handleRemove(file)
   if (uploadImage.value.uploadFiles.length < 1) {
     setTimeout(() => {
@@ -114,10 +118,10 @@ const submitImage = async () => {
     emit('closeDialog')
   } else {
     const directoryInfo = await getDirectoryInfo({
-      select: "id",
+      select: 'id',
       where: {
-        relative_path: "/file/link" + props.savePath
-      }
+        relative_path: '/file/link' + props.savePath,
+      },
     })
     const directoryId = directoryInfo[0].id
 
@@ -138,6 +142,7 @@ const submitImage = async () => {
       message: '图片上传成功',
       grouping: true,
     })
+    remove(formData.image)
     previewList.value = []
     formData.image = null
     emit('closeDialog')

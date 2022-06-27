@@ -25,6 +25,7 @@
             @emitActive="emitActive"
             :parent="'presentation_body'"
             v-for="(text, index) of pageMap.item.text"
+            :key="text.index"
           >
             <presentation-text :info="text"></presentation-text>
           </resize-element>
@@ -35,6 +36,7 @@
             @emitActive="emitActive"
             :parent="'presentation_body'"
             v-for="(image, index) of pageMap.item.image"
+            :key="image.index"
           >
             <presentation-image :info="image"></presentation-image>
           </resize-element>
@@ -104,6 +106,7 @@ const handleAction = async (action: string, options: any) => {
   let data = await handleToolAction(pageMap, handleObj, action, options)
   if (data) {
     activeItem.value = data.activeItem
+
     itemTypeIndexList.value.push(data.itemType)
   }
 }
@@ -153,7 +156,7 @@ const handleKey = (event: Event) => {
     return
   }
   let keyDownData = getHandleKeyDownData(event)
-  
+
   handleObj.keyInput(keyDownData, {
     activeIndex: activeItem,
     itemList: itemTypeIndexList,
