@@ -61,23 +61,16 @@ const backspace = function (this: any, activeIndex: any, itemList: any, currentP
     if (!data) {
         return;
     }
-    let idx = data.typeList.findIndex((v: any) => {
-        return Number(v.index) == Number(activeIndex.value)
-    })
-    if (idx == -1) {
+
+    let status = this.deleteItem(activeIndex.value, data.itemData.itemInfo.type)
+    if (!status) {
         return;
     }
-
     let itemIdx = itemList.value.findIndex((v: any) => {
         return Number(v.index) == Number(activeIndex.value)
     })
-
-    data.typeList.splice(idx, 1);
-    data.pageData.item.count -= 1;
     activeIndex.value = -1;
     itemList.value.splice(itemIdx, 1);
-    console.log(itemList.value, data.typeList);
-
 }
 /**
  * @method copy 复制内容
@@ -87,7 +80,10 @@ const backspace = function (this: any, activeIndex: any, itemList: any, currentP
  */
 const copy = function (this: any, activeIndex: any, itemList: any) {
     const data = findItemInfo(activeIndex.value, itemList.value);
-    this.copyData = data?.itemInfo;
+    if (!data) {
+        return;
+    }
+    this.copyData = data.itemInfo;
 }
 /**
  * @method paste 粘贴数据
@@ -115,13 +111,9 @@ const paste = function (this: any, activeIndex: any, itemList: any, currentPage:
     copyItem.index = data.pageData.item.count + 1;
     copyItem.style.position.x += 20;
     copyItem.style.position.y += 20;
-    data.pageData.item[this.copyData.type].push(copyItem);
-    data.pageData.item.count += 1;
+    this.addItem(copyItem.index, this.copyData.type, copyItem)
     itemList.value.push({ index: copyItem.index, type: this.copyData.type });
     activeIndex.value = copyItem.index;
-    console.log(activeIndex.value);
-
-    this.copyData = null;
 }
 
 /**

@@ -27,7 +27,12 @@ const getDefaultPageData = (): Type.Page => {
 import { addTextArea } from "@/modules/person/presentation/text/text";
 import { addImage } from "@/modules/person/presentation/image/image";
 import { keyInput } from "@/modules/person/presentation/utils/key_input";
-const initFn = [addTextArea, addImage, keyInput];
+import {
+    addItem,
+    deleteItem,
+    updateItem
+} from "@/modules/person/presentation/utils/event";
+const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem];
 class HandlePresentation {
     pageList: Map<number, Type.Page>;
     currentPage: number;
@@ -100,72 +105,6 @@ class HandlePresentation {
             action: "delete",
             data: pageData
         })
-        return true;
-    }
-
-    /**
-     * @method addItem 添加元素到页面中
-     * @param {PageItem} pageItem
-     * @param {number} page
-     */
-    addItem(pageItem: Type.PageItem, page: number) {
-        let pageData = this.pageList.get(page);
-        // pageData?.item.push(pageItem);
-        // this.actionStack.push({
-        //     type: ActionType.ITEM_ACTION,
-        //     page: page,
-        //     item_index: pageItem.index,
-        //     action: "add",
-        //     data: pageItem
-        // })
-        // return true;
-    }
-
-    /**
-     * @method updateItem 添加元素到页面中
-     * @param {PageItem} pageItem
-     * @param {number} page
-     */
-    updateItem(pageItem: Type.PageItem, page: number) {
-        let pageData = this.pageList.get(page);
-        // let index: number = pageData!.item?.findIndex(v => v.index == pageItem.index);
-        // if (index === -1) {
-        //     return false;
-        // }
-        // this.actionStack.push({
-        //     type: ActionType.ITEM_ACTION,
-        //     page: page,
-        //     item_index: pageItem.index,
-        //     action: "update",
-        //     data: {
-        //         pre: pageData!.item![index],
-        //         next: pageItem
-        //     }
-        // })
-        // pageData!.item![index] = pageItem;
-        return true;
-    }
-
-    /**
-     * @method deleteItem 移除元素
-     * @param {string} pageItemIndex
-     * @param {number} page
-     */
-    deleteItem(pageItemIndex: string, page: number) {
-        let pageData = this.pageList.get(page);
-        // let index: number = pageData!.item?.findIndex(v => v.index == pageItemIndex);
-        // if (index === -1) {
-        //     return false;
-        // }
-        // this.actionStack.push({
-        //     type: ActionType.ITEM_ACTION,
-        //     page: page,
-        //     item_index: pageItemIndex,
-        //     action: "delete",
-        //     data: pageData!.item![index]
-        // })
-        // pageData!.item!.splice(index, 1);
-
         return true;
     }
 

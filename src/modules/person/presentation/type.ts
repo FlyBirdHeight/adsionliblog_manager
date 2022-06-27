@@ -28,9 +28,9 @@ type PageItem = {
 type Action = {
     type: string,
     page?: number,
-    item_index?: string,
+    item_index?: string | number,
     action: string,
-    data?: Page | PageItem | { pre: Page | PageItem, next: Page | PageItem }
+    data?: Page | PageItem | { pre: Page | PageItem | null, next: Page | PageItem | null }
 }
 
 type Page = {

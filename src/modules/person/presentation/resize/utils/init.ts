@@ -75,9 +75,9 @@ const generateData = () => {
 const setResizeStyle = (child: any, childType: any, resizeData: any, containerLayout: DOMRect) => {
     let childStyle = child.value?.props?.info.style;
     let type = child.value?.props?.info.type;
-    resizeData.attribute = childStyle.attribute;
-    resizeData.offset = childStyle.position;
-    resizeData.scale = childStyle.scale;
+    resizeData.attribute = { width: childStyle.attribute.width, height: childStyle.attribute.height, angle: childStyle.attribute.angle };
+    resizeData.offset = { x: childStyle.position.x, y: childStyle.position.y };
+    resizeData.scale = { x: childStyle.scale.x, y: childStyle.scale.y };
     resizeData.layer = childStyle.layer;
     resizeData.containerOffset = { x: containerLayout.left, y: containerLayout.top }
     if (Reflect.has(childStyle, 'event')) {

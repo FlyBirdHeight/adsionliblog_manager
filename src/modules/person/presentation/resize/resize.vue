@@ -82,6 +82,7 @@ const parentDom = ref<any>(null)
 const resizeElement = ref<any>()
 const resizeData = reactive(generateData())
 const emit = defineEmits(['changeStatus'])
+const childPropsData = ref()
 const domStyle = reactive({
   element: {},
   controls: {},
@@ -90,6 +91,7 @@ onMounted(() => {
   child.value = slots.default?.()[0]
   setResizeStyle(child, childType, resizeData, resizeElement.value.parentElement.getBoundingClientRect())
   activeIndex.value = child.value.props.info.index
+  childPropsData.value = child.value.props.info
 })
 watch(
   resizeData,
@@ -118,6 +120,7 @@ const handleDrag = (event) => {
   const drag = dragDom(resizeData.offset, { x: event.pageX, y: event.pageY })
   onDrag(resizeElement.value, drag, (timestamp) => {
     emit('changeStatus', timestamp)
+    childPropsData.value.style.position = { x: resizeData.offset.x, y: resizeData.offset.y }
   })
 }
 const handleScale = (activeType: string, event: Event) => {
@@ -135,6 +138,8 @@ const handleScale = (activeType: string, event: Event) => {
   })
   onDrag(resizeElement.value.parentElement, scaleDom, (timestamp) => {
     emit('changeStatus', timestamp)
+    childPropsData.value.style.position = { x: resizeData.offset.x, y: resizeData.offset.y }
+    childPropsData.value.style.scale = { x: resizeData.scale.x, y: resizeData.scale.y }
   })
 }
 
@@ -146,89 +151,36 @@ const handleRotate = (event) => {
     { x: event.pageX, y: event.pageY },
     resizeData.containerOffset,
     (data) => {
-      resizeData.attribute.angle = data.angel
+      resizeData.attribute.angle = data.angle
     }
   )
 
   onDrag(resizeElement.value.parentElement, rotateDom, (timestamp) => {
     emit('changeStatus', timestamp)
+    childPropsData.value.style.attribute.angle = resizeData.attribute.angle
   })
 }
-
+const updateResizeData = (style: any) => {
+  resizeData.attribute = {
+    width: style.attribute.width,
+    height: style.attribute.height,
+    angle: style.attribute.angle,
+  }
+  resizeData.scale = { x: style.scale.x, y: style.scale.y }
+}
+watch(
+  childPropsData,
+  (newV, oldV) => {
+    updateResizeData(newV.style)
+  },
+  {
+    deep: true,
+  }
+)
 const getCursor = (type: string) => {
   return getCursorType(resizeData.attribute.angle, type)
 }
 </script>
 <style lang="scss" scoped>
-.resize-element {
-  position: absolute;
-  .content {
-    user-select: none;
-  }
-  .control {
-    border: 1px dashed rgba(0, 0, 0, 0.6);
-    .resize-point {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #409eff;
-      z-index: 999;
-    }
-    .rotate-button {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #409eff;
-      top: -45px;
-      left: calc(50% - 6px);
-      z-index: 999;
-      cursor: grabbing;
-    }
-    .right-top {
-      cursor: ne-resize;
-      top: -5px;
-      right: -5px;
-    }
-    .right-center {
-      top: calc(50% - 5px);
-      right: -5px;
-      cursor: e-resize;
-    }
-    .right-bottom {
-      top: calc(100% - 5px);
-      right: -5px;
-      cursor: se-resize;
-    }
-    .left-top {
-      cursor: nw-resize;
-      top: -5px;
-      left: -5px;
-    }
-    .left-center {
-      cursor: w-resize;
-      top: calc(50% - 5px);
-      left: -5px;
-    }
-    .left-bottom {
-      cursor: sw-resize;
-      top: calc(100% - 5px);
-      left: -5px;
-    }
-    .bottom-center {
-      bottom: -5px;
-      left: calc(50% - 5px);
-      cursor: s-resize;
-    }
-    .top-center {
-      top: -5px;
-      left: calc(50% - 5px);
-      cursor: n-resize;
-    }
-  }
-}
-.resize-element-border {
-  border: none;
-}
+@import './resize.scss';
 </style>

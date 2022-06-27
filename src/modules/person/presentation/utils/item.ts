@@ -76,7 +76,7 @@ const countChange: string[] = ['addImage', 'addTextArea']
 /**
  * @method handleToolAction 处理toolbar点击按钮事件
  */
-const handleToolAction = async (pageMap: any, handleObj: any, action: string, options: any) => {
+const handleToolAction = async (pageMap: any, handleObj: any, action: string, options: any, activeIndex: any) => {
     let fn = Reflect.get(handleObj, action)
     let count = pageMap.item.count;
     let activeItem, itemType;
@@ -87,17 +87,17 @@ const handleToolAction = async (pageMap: any, handleObj: any, action: string, op
     }
     if (action === 'addTextArea') {
         const text = fn(count + 1)
-        pageMap.item.text.push(text)
+        handleObj.addItem(activeItem, 'text', text)
         itemType = { index: activeItem, type: 'text' };
     }
     if (action === 'addImage') {
         const image = await fn(count + 1, options!.url);
-        pageMap.item.image.push(image)
+        handleObj.addItem(activeItem, 'image', image)
         itemType = { index: activeItem, type: 'image' };
     }
     if (editAction) {
+        activeIndex.value = activeItem;
         return {
-            activeItem,
             itemType
         }
     }

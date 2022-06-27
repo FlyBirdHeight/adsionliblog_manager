@@ -56,7 +56,7 @@
   ></edit-body-image-setting>
 </template>
 <script lang="ts">
-import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
+import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
 import { handleSetting, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
@@ -88,7 +88,7 @@ const pageInfo = reactive({
   pageCount: 1,
   pageMap: [],
 })
-const pageMap = reactive(handleObj.pageList.get(pageInfo.currentPage), { deep: true })
+const pageMap = reactive(handleObj.pageList.get(pageInfo.currentPage))
 const activeItem = ref<number>(-1)
 const itemTypeIndexList = ref<{ index: number; type: string }[]>([])
 const clickTime = ref<number>(0)
@@ -103,10 +103,8 @@ const handleAction = async (action: string, options: any) => {
     showUploadImage.value = true
     return
   }
-  let data = await handleToolAction(pageMap, handleObj, action, options)
+  let data = await handleToolAction(pageMap, handleObj, action, options, activeItem)
   if (data) {
-    activeItem.value = data.activeItem
-
     itemTypeIndexList.value.push(data.itemType)
   }
 }
@@ -164,6 +162,7 @@ const handleKey = (event: Event) => {
   })
 }
 </script>
+
 <style lang="scss" scoped>
 .presentation-container {
   height: 100%;

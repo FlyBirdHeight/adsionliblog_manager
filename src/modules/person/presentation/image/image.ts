@@ -157,7 +157,6 @@ const analysisCss = (styleData: any, url: string) => {
     returnCss.height = typeof (attribute.height) == 'number' ? attribute.height + 'px' : attribute.height;
     returnCss.objectFit = objectFit;
     returnCss.objectPosition = `${objectPosition.x}% ${objectPosition.y}%`;
-    console.log(returnCss.filter);
 
     return returnCss;
 }
