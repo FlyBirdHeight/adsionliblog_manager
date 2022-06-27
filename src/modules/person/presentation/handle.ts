@@ -1,61 +1,41 @@
-type Animation = {
-    join: {
-        type: string,
-        timer: number,
-        level: number
-    },
-    leave: {
-        type: string,
-        timer: number,
-        level: number
-    }
-}
-type PageItem = {
-    type: string,
-    position: {
-        x: number,
-        y: number
-    },
-    data: any,
-    layer: number,
-    animation: {
-        join: Animation,
-        leave: Animation,
-    },
-    index: string
-}
+import * as Type from "./type"
 const enum ActionType {
     PAGE_ACTION = "page",
     ITEM_ACTION = "item"
 }
-
-type Action = {
-    type: string,
-    page?: number,
-    item_index?: string,
-    action: string,
-    data?: Page | PageItem | { pre: Page | PageItem, next: Page | PageItem }
-}
-
-type Page = {
-    switch: string,
-    item_count: 0,
-    background: {
-        type: 'color',
-        data: 'rgba(255,255,255,1)'
-    },
-    item: PageItem[]
+const getDefaultPageData = (): Type.Page => {
+    return {
+        item: {
+            text: [],
+            image: [],
+            code: [],
+            count: 0,
+        },
+        setting: {
+            background: {
+                type: '',
+                data: '',
+                config: null,
+            },
+            resolution: {
+                x: 1600,
+                y: 900,
+            },
+        },
+    }
 }
 import { addTextArea } from "@/modules/person/presentation/text/text";
 import { addImage } from "@/modules/person/presentation/image/image";
-const initFn = [addTextArea, addImage];
+import { keyInput } from "@/modules/person/presentation/utils/key_input";
+const initFn = [addTextArea, addImage, keyInput];
 class HandlePresentation {
-    pageList: Map<number, Page>;
+    pageList: Map<number, Type.Page>;
     currentPage: number;
-    pickMember: null | PageItem;
-    actionStack: Action[];
-    undoStack: Action[];
-    recoveryStack: Action[];
+    pickMember: null | Type.PageItem;
+    actionStack: Type.Action[];
+    undoStack: Type.Action[];
+    recoveryStack: Type.Action[];
+    copyData: Type.CopyObj | null;
     constructor() {
         this.pageList = new Map();
         this.currentPage = 0;
@@ -63,15 +43,8 @@ class HandlePresentation {
         this.actionStack = [];
         this.undoStack = [];
         this.recoveryStack = [];
-        this.pageList.set(0, {
-            switch: '',
-            item_count: 0,
-            background: {
-                type: 'color',
-                data: 'rgba(255,255,255,1)'
-            },
-            item: []
-        });
+        this.copyData = null;
+        this.pageList.set(0, getDefaultPageData());
         this.registerFn();
     }
 
@@ -89,15 +62,7 @@ class HandlePresentation {
      * @method addPage 添加页面
      */
     addPage() {
-        let pageData: Page = {
-            switch: '',
-            item_count: 0,
-            background: {
-                type: 'color',
-                data: 'rgba(255,255,255,1)'
-            },
-            item: []
-        }
+        let pageData: Type.Page = getDefaultPageData()
         this.pageList.set(this.pageList.size, pageData);
 
         this.actionStack.push({
@@ -143,17 +108,17 @@ class HandlePresentation {
      * @param {PageItem} pageItem
      * @param {number} page
      */
-    addItem(pageItem: PageItem, page: number) {
+    addItem(pageItem: Type.PageItem, page: number) {
         let pageData = this.pageList.get(page);
-        pageData?.item.push(pageItem);
-        this.actionStack.push({
-            type: ActionType.ITEM_ACTION,
-            page: page,
-            item_index: pageItem.index,
-            action: "add",
-            data: pageItem
-        })
-        return true;
+        // pageData?.item.push(pageItem);
+        // this.actionStack.push({
+        //     type: ActionType.ITEM_ACTION,
+        //     page: page,
+        //     item_index: pageItem.index,
+        //     action: "add",
+        //     data: pageItem
+        // })
+        // return true;
     }
 
     /**
@@ -161,23 +126,23 @@ class HandlePresentation {
      * @param {PageItem} pageItem
      * @param {number} page
      */
-    updateItem(pageItem: PageItem, page: number) {
+    updateItem(pageItem: Type.PageItem, page: number) {
         let pageData = this.pageList.get(page);
-        let index: number = pageData!.item?.findIndex(v => v.index == pageItem.index);
-        if (index === -1) {
-            return false;
-        }
-        this.actionStack.push({
-            type: ActionType.ITEM_ACTION,
-            page: page,
-            item_index: pageItem.index,
-            action: "update",
-            data: {
-                pre: pageData!.item![index],
-                next: pageItem
-            }
-        })
-        pageData!.item![index] = pageItem;
+        // let index: number = pageData!.item?.findIndex(v => v.index == pageItem.index);
+        // if (index === -1) {
+        //     return false;
+        // }
+        // this.actionStack.push({
+        //     type: ActionType.ITEM_ACTION,
+        //     page: page,
+        //     item_index: pageItem.index,
+        //     action: "update",
+        //     data: {
+        //         pre: pageData!.item![index],
+        //         next: pageItem
+        //     }
+        // })
+        // pageData!.item![index] = pageItem;
         return true;
     }
 
@@ -188,18 +153,18 @@ class HandlePresentation {
      */
     deleteItem(pageItemIndex: string, page: number) {
         let pageData = this.pageList.get(page);
-        let index: number = pageData!.item?.findIndex(v => v.index == pageItemIndex);
-        if (index === -1) {
-            return false;
-        }
-        this.actionStack.push({
-            type: ActionType.ITEM_ACTION,
-            page: page,
-            item_index: pageItemIndex,
-            action: "delete",
-            data: pageData!.item![index]
-        })
-        pageData!.item!.splice(index, 1);
+        // let index: number = pageData!.item?.findIndex(v => v.index == pageItemIndex);
+        // if (index === -1) {
+        //     return false;
+        // }
+        // this.actionStack.push({
+        //     type: ActionType.ITEM_ACTION,
+        //     page: page,
+        //     item_index: pageItemIndex,
+        //     action: "delete",
+        //     data: pageData!.item![index]
+        // })
+        // pageData!.item!.splice(index, 1);
 
         return true;
     }
@@ -208,10 +173,10 @@ class HandlePresentation {
      * @method revokeAction 撤销动作
      */
     revokeAction() {
-        if (this.actionStack.length == 0) {
+        if (this.actionStack.length == 0 && this.recoveryStack.length == 0) {
             return;
         }
-        let action: Action | undefined = this.actionStack.length ? this.actionStack.pop() : undefined;
+        let action: Type.Action | undefined = this.recoveryStack.length ? this.recoveryStack.pop() : this.actionStack.pop();
         if (!action) {
             return;
         }
@@ -242,7 +207,7 @@ class HandlePresentation {
         if (this.recoveryStack.length == 0) {
             return;
         }
-        let action: Action | undefined = this.recoveryStack.length ? this.recoveryStack.pop() : undefined;
+        let action: Type.Action | undefined = this.recoveryStack.length ? this.recoveryStack.pop() : undefined;
         if (!action) {
             return;
         }

@@ -76,7 +76,7 @@ const countChange: string[] = ['addImage', 'addTextArea']
 /**
  * @method handleToolAction 处理toolbar点击按钮事件
  */
-const handleToolAction = async (pageMap: any, handleObj: any, action: string) => {
+const handleToolAction = async (pageMap: any, handleObj: any, action: string, options: any) => {
     let fn = Reflect.get(handleObj, action)
     let count = pageMap.item.count;
     let activeItem, itemType;
@@ -91,7 +91,7 @@ const handleToolAction = async (pageMap: any, handleObj: any, action: string) =>
         itemType = { index: activeItem, type: 'text' };
     }
     if (action === 'addImage') {
-        const image = await fn(count + 1, 'http://10.12.44.122:3000/file/link/images/pc/wallpapers/IMG_2647.JPG');
+        const image = await fn(count + 1, options!.url);
         pageMap.item.image.push(image)
         itemType = { index: activeItem, type: 'image' };
     }

@@ -1,6 +1,6 @@
 .edit-image {
     margin-bottom: 10px;
-
+    user-select: none;
     .general-config,
     .resolution-setting,
     .border-setting,
@@ -155,7 +155,7 @@
                 width: 100%;
                 display: flex;
                 justify-content: flex-start;
-                align: center;
+                align-items: center;
                 flex-wrap: wrap;
 
                 .shadow-member {

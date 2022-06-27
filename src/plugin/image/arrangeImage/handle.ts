@@ -223,7 +223,7 @@ const dragHandle = {
         node.data.index = prenode.value + '-' + newV.join('-');
         node.level = prenode.level + 1;
         node.value = prenode.value + '-' + newV.join('-');
-        console.log(prenode);
+        // console.log(prenode);
         // debugger
         node.pathLabels = [...prenode.pathLabels, node.label];
         node.pathValues = [...prenode.pathValues, node.value];

@@ -113,9 +113,10 @@
   </div>
   <edit-body-image-setting
     :show="showImageSetting"
+    :type="settingType"
+    :savePath="'/images/person-presentation/background-image'"
     @closeDialog="closeDialog"
     @setImagePath="setImagePath"
-    :type="settingType"
   ></edit-body-image-setting>
 </template>
 <script lang="ts">
@@ -178,112 +179,5 @@ watch(
 )
 </script>
 <style lang="scss" scoped>
-.presentation-body-setting {
-  margin-top: 10px;
-  .setting {
-    padding: 4px;
-    .bg-setting {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #dcdfe6;
-      .label {
-        @include header();
-      }
-      .bg-select {
-        width: 100%;
-        @include flexNormal();
-      }
-    }
-    .bg-image-setting {
-      margin-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #dcdfe6;
-      .label {
-        @include header();
-      }
-      .bg-image-setting-item {
-        .bg-image-size,
-        .bg-image-repeat,
-        .bg-image-position {
-          @include flexNormal();
-        }
-        .bg-image-button {
-          @include flexNormal();
-          justify-content: flex-end;
-          margin-top: 10px;
-          padding: 0 10px;
-        }
-        .sub-label {
-          @include subHeader();
-        }
-        .bg-image-size {
-          .bg-image-size-group {
-            width: 100%;
-            .bg-image-x-size {
-              @include flexNormal();
-              margin-bottom: 5px;
-            }
-            .bg-image-y-size {
-              @include flexNormal();
-            }
-          }
-        }
-        .bg-image-position {
-          .bg-image-position-group {
-            width: 100%;
-            .bg-image-x-position {
-              @include flexNormal();
-              margin-bottom: 5px;
-            }
-            .bg-image-y-position {
-              @include flexNormal();
-            }
-          }
-        }
-        .bg-image-repeat .bg-image-repeat-group {
-          width: 70%;
-          margin: auto;
-        }
-        .third-title {
-          @include thridHeader();
-        }
-      }
-    }
-  }
-  .item-list {
-    padding: 4px;
-    .label {
-      @include header();
-    }
-  }
-}
-
-.bg-image-setting-show-enter-from {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-.bg-image-setting-show-enter-to {
-  opacity: 1;
-  max-height: 600px;
-}
-.bg-image-setting-show-enter-active {
-  transition: all 0.4s linear;
-  overflow: hidden;
-}
-.bg-image-setting-show-leave-active {
-  transition: all 0.4s linear;
-  max-height: 600px;
-}
-.bg-image-setting-show-leave-to {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-.bg-image-setting-show-leave {
-  max-height: 600px;
-  opacity: 1;
-}
+@import "./body.scss"
 </style>

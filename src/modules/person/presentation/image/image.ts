@@ -98,6 +98,15 @@ const decorationStyle = [
     }
 ]
 const addImage = (index: number, url: string) => {
+    const setSize = (width: number, height: number) => {
+        while (width > 700 || height > 700) {
+            width = width * 0.3;
+            height = height * 0.3;
+        }
+        return {
+            width, height
+        };
+    }
     return new Promise(resolve => {
         let image = new Image();
         image.src = url;
@@ -110,10 +119,10 @@ const addImage = (index: number, url: string) => {
             let style = imageInfo();
             style.natural.width = imgWidth;
             style.natural.height = imgHeight;
-            if (imgWidth > 1000 || imgHeight > 1000) {
-                style.attribute.width = imgWidth * 0.3;
-                style.attribute.height = imgHeight * 0.3;
+            if (imgWidth > 700 || imgHeight > 700) {
+                ({ width: style.attribute.width, height: style.attribute.height } = setSize(imgWidth, imgHeight))
             }
+
             style.ratio = ratio;
             resolve({
                 style,

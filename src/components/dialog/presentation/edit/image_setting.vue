@@ -60,9 +60,11 @@ export default {
 <script lang="ts" setup>
 import DialogShow from '@/components/dialog/dialog.vue'
 import ImagePreview from '@/components/utils/image_preview.vue'
+import { getDirectoryInfo } from '@/modules/files/utils'
 const props = defineProps<{
   type: 'linkPath'
   show: false
+  savePath: '/images/person-presentation/background-image'
 }>()
 const emit = defineEmits(['closeDialog', 'setImagePath'])
 const showPreview = ref<boolean>(false)
@@ -111,14 +113,22 @@ const submitImage = async () => {
     formData.path = ''
     emit('closeDialog')
   } else {
+    const directoryInfo = await getDirectoryInfo({
+      select: "id",
+      where: {
+        relative_path: "/file/link" + props.savePath
+      }
+    })
+    const directoryId = directoryInfo[0].id
+
     let uploadFile = {
       file: formData.image.raw,
       name: formData.image.name,
       sliceFile: [],
-      path: '/images/person-presentation/background-image',
+      path: props.savePath,
       isExist: false,
       is_create: false,
-      directory_id: 184,
+      directory_id: directoryId,
       status: 'ready',
     }
     let data = await handleAndUpload([uploadFile], null)

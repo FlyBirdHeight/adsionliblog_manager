@@ -20,6 +20,10 @@ const apiList = {
             method: 'GET'
         }
     },
+    getDirectoryInfo: {
+        url: "/api/file/files/get/info",
+        method: "POST"
+    },
     deleteData: {
         file: {
             url: "/api/file/image/delete",
@@ -139,6 +143,25 @@ const getInfo = async (id: number, type: string) => {
 }
 
 /**
+ * @method getDirectoryInfo 获取文件目录详情
+ * @param {*} selectInfo 查询信息 
+ */
+const getDirectoryInfo = async (selectInfo: any) => {
+    try {
+        let apiInfo = apiList.getDirectoryInfo;
+        let responseData = await axios({
+            method: Reflect.get(apiInfo, 'method'),
+            url: apiInfo.url,
+            data: selectInfo
+        })
+        
+        return responseData.data.data
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
+}
+/**
  * @method verifyHasDirectory 验证当前目录下是否存在同名文件
  * @param {number} parent_id 父级Id
  * @param {string} name 文件夹名称
@@ -171,5 +194,6 @@ export {
     editPath,
     createDirectory,
     getInfo,
-    verifyHasDirectory
+    verifyHasDirectory,
+    getDirectoryInfo
 }

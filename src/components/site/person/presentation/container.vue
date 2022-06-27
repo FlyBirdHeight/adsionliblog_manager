@@ -11,7 +11,14 @@
       </div>
     </div>
     <div class="presentation-edit">
-      <div class="presentation_body" ref="presentationBody" id="presentation_body" @click="handleClick">
+      <div
+        class="presentation_body"
+        tabindex="-1"
+        @keyup.stop="handleKey"
+        ref="presentationBody"
+        id="presentation_body"
+        @click.stop="handleClick"
+      >
         <template v-if="pageMap.item.text.length != 0">
           <resize-element
             @changeStatus="changeStatus"
@@ -34,10 +41,17 @@
         </template>
       </div>
       <el-scrollbar :always="true" class="persentation_edit-tool">
-        <presentation-edit-tool @setItem="setItem" @setPage="setPage"></presentation-edit-tool>
+        <presentation-edit-tool @setPage="setPage"></presentation-edit-tool>
       </el-scrollbar>
     </div>
   </div>
+  <edit-body-image-setting
+    :show="showUploadImage"
+    :savePath="'/preventation'"
+    :type="'image'"
+    @closeDialog="closeDialog"
+    @setImagePath="setImage"
+  ></edit-body-image-setting>
 </template>
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, provide } from 'vue'
@@ -45,6 +59,7 @@ import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
 import { handleSetting, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
 import HandlePresentation from '@/modules/person/presentation/handle'
+import { getHandleKeyDownData } from '@/modules/person/presentation/utils/key_input'
 export default {
   name: 'PresentationContainer',
 }
@@ -54,49 +69,39 @@ import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
 import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
 import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
+import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
+
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
 /**
  * @property {any} pageMap 当前Page的配置内容
  * @property {any} pageInfo 当前播放页的所有页面信息集合
+ * @property {number} activeItem 选中内容的index
+ * @property {itemType: {index: number, type: string}[]} itemTypeIndexList item内容的index记录表
+ * @property {number} clickTime 鼠标抬起时的高精度事件记录，用于阻止相关事件执行
+ * @property {boolean} showUploadImage 显示上传图片框
  */
 const pageInfo = reactive({
   currentPage: 0,
   pageCount: 1,
   pageMap: [],
 })
-const pageMap = reactive(
-  {
-    item: {
-      text: [],
-      image: [],
-      code: [],
-      count: 0,
-    },
-    setting: {
-      background: {
-        type: '',
-        data: '',
-        config: null,
-      },
-      resolution: {
-        x: 1600,
-        y: 900,
-      },
-    },
-  },
-  { deep: true }
-)
+const pageMap = reactive(handleObj.pageList.get(pageInfo.currentPage), { deep: true })
 const activeItem = ref<number>(-1)
 const itemTypeIndexList = ref<{ index: number; type: string }[]>([])
 const clickTime = ref<number>(0)
 const presentationBody = ref()
+const showUploadImage = ref<boolean>(false)
 provide('itemList', pageMap.item)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
 
-const handleAction = async (action: string) => {
-  let data = await handleToolAction(pageMap, handleObj, action)
+const handleAction = async (action: string, options: any) => {
+  if (action === 'addImage' && !options) {
+    showUploadImage.value = true
+    return
+  }
+  let data = await handleToolAction(pageMap, handleObj, action, options)
   if (data) {
     activeItem.value = data.activeItem
     itemTypeIndexList.value.push(data.itemType)
@@ -127,8 +132,34 @@ const setPage = (val: any, type: string) => {
   handleSetting(presentationBody.value, val, type)
   setPageMap(pageMap, type, val)
 }
-
-const setItem = (val: any, type: string) => {}
+/**
+ * @method closeDialog 关闭弹窗
+ */
+const closeDialog = () => {
+  showUploadImage.value = false
+}
+/**
+ * @method setImage 添加图片Item，通过上传后的回调
+ * @param {string} url 图片Url
+ */
+const setImage = (url: string) => {
+  handleAction('addImage', { url })
+}
+/**
+ * @method handleKey 处理键盘按下事件
+ */
+const handleKey = (event: Event) => {
+  if (event.path[0].id !== 'presentation_body') {
+    return
+  }
+  let keyDownData = getHandleKeyDownData(event)
+  
+  handleObj.keyInput(keyDownData, {
+    activeIndex: activeItem,
+    itemList: itemTypeIndexList,
+    currentPage: pageInfo.currentPage,
+  })
+}
 </script>
 <style lang="scss" scoped>
 .presentation-container {
@@ -168,6 +199,7 @@ const setItem = (val: any, type: string) => {}
       overflow: hidden;
       height: 100%;
       position: relative;
+      outline: none;
     }
     .persentation_edit-tool {
       width: 300px;

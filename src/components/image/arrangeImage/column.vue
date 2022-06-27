@@ -94,6 +94,7 @@ const menuCheckedFileData = inject('menuFileChecked')
 const checkedValue = ref([])
 const currentData = ref<MenuDataList>(null)
 const fileListColumn = ref()
+
 const refreshCurrent = ref<boolean>(false)
 const emitPathList = ref<string[]>([])
 const previewList = ref<string[]>([])
@@ -106,7 +107,8 @@ const dragInfo = reactive<{
   dragData: MenuDataList | null
   dragNode: any
   dragMenuIdx: number
-  parent: string[]
+  parent: string[],
+  sameName: boolean
 }>({
   dragData: null,
   dragNode: null,
@@ -237,6 +239,7 @@ const checkedColumn = (value) => {
     }
     emit('setFilePath', emitData)
     emitPathList.value = emitData
+    
     if (!refreshCurrent.value) {
       let length = value.length
       let currentIndex = value[length - 1]

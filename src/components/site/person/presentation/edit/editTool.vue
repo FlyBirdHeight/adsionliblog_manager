@@ -39,7 +39,7 @@ export default {
 import PresentationBodySetting from '@/components/site/person/presentation/edit/body/body.vue'
 import EditPresentationText from '@/components/site/person/presentation/edit/text/edit_text.vue'
 import EditPresentationImage from '@/components/site/person/presentation/edit/image/edit_image.vue'
-const emit = defineEmits(['setItem', 'setPage'])
+const emit = defineEmits(['setPage'])
 const tabList = ref([
   {
     label: '绘板设置',

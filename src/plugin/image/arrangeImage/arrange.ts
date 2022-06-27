@@ -327,10 +327,6 @@ const getMenuData = async (parent: MenuDataList, first: boolean = false) => {
 
             return returnMenuData(parent.children || new Map<string, MenuDataList>());
         } else {
-            let handleData = {
-                directories: fileList[0].directories,
-                files: fileList[0].files
-            }
             let children = handleFileData(parent, [...fileList[0].directories, ...fileList[0].files], true);
 
             return children;

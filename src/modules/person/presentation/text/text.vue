@@ -10,6 +10,7 @@
     <textarea
       ref="presentationTextarea"
       rows="1"
+      @keydown="stopPropagation"
       v-show="showArea"
       :style="textAreaCss"
       v-model="props.info.data"
@@ -45,6 +46,9 @@ const textAreaCss = computed(() => {
     return null
   }
 })
+const stopPropagation = (event: Event) => {
+  event.stopPropagation()
+}
 const mouseDownEvent = (event: any) => {
   if (showArea.value) {
     event.stopPropagation()

@@ -17,9 +17,17 @@ const onDrag = (document: Document, drag: any, updateFunc: Function) => {
         document.removeEventListener('mouseup', up)
         updateFunc(e.timeStamp)
     }
+    const leave = (e: Event) => {
+        e.stopPropagation()
+        document.removeEventListener('mousemove', drag)
+        document.removeEventListener('mouseup', up)
+        document.removeEventListener('mouseleave', leave)
+        updateFunc(e.timeStamp)
+    }
 
     document.addEventListener('mousemove', drag)
     document.addEventListener('mouseup', up)
+    document.addEventListener('mouseleave', leave);
 }
 
 export {
