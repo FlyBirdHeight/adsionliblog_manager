@@ -33,7 +33,7 @@ const findItemInfo = (activeIndex: any, itemList: any) => {
  * @param type 
  */
 const getPageTypeData = function (this: any, currentPage: number, activeIndex: any, itemList: any) {
-    const itemData = findItemInfo(activeIndex, itemList.value);
+    const itemData = findItemInfo(activeIndex, itemList);
 
     if (!itemData || !this.pageList.has(currentPage)) {
         return null;
@@ -66,11 +66,11 @@ const backspace = function (this: any, activeIndex: any, itemList: any, currentP
     if (!status) {
         return;
     }
-    let itemIdx = itemList.value.findIndex((v: any) => {
+    let itemIdx = itemList.findIndex((v: any) => {
         return v.index == activeIndex.value
     })
     activeIndex.value = -1;
-    itemList.value.splice(itemIdx, 1);
+    itemList.splice(itemIdx, 1);
 }
 /**
  * @method copy 复制内容
@@ -79,7 +79,7 @@ const backspace = function (this: any, activeIndex: any, itemList: any, currentP
  * @param itemList item列表
  */
 const copy = function (this: any, activeIndex: any, itemList: any) {
-    const data = findItemInfo(activeIndex.value, itemList.value);
+    const data = findItemInfo(activeIndex.value, itemList);
     if (!data) {
         return;
     }
@@ -112,7 +112,7 @@ const paste = function (this: any, activeIndex: any, itemList: any, currentPage:
     copyItem.style.position.x += 20;
     copyItem.style.position.y += 20;
     this.addItem(copyItem.index, this.copyData.type, copyItem)
-    itemList.value.push({ index: copyItem.index, type: this.copyData.type });
+    itemList.push({ index: copyItem.index, type: this.copyData.type });
     activeIndex.value = copyItem.index;
 }
 

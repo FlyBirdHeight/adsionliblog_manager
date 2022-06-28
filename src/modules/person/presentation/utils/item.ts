@@ -1,77 +1,61 @@
-const handleSetting = (dom: any, data: any, type: string) => {
-    switch (type) {
-        case 'background':
-            handleBackground(dom, data, type)
-            break;
-        case 'backgroundEdit':
-            handleBackground(dom, data, type)
-            break;
-        case 'removeBackgroundImage':
-            handleBackground(dom, data, type)
-            break
-        default:
-            break;
-    }
-}
-/**
- * @method handleBackground 处理Page页面的背景内容
- * @param {*} dom dom标签数据
- * @param data 数据
- * @param {string} type 类型
- */
-const handleBackground = (dom: any, data: any, type: string) => {
-    if (type === 'background') {
-        if (data.defaultSetting) {
-            dom.style.backgroundImage = `url(${data.val})`;
-            setBackgroundConfig(dom, data.defaultSetting);
-        } else {
-            dom.style.backgroundColor = data.val;
-        }
-        return;
-    }
-    if (type === 'removeBackgroundImage') {
-        dom.style.backgroundColor = data.val;
-        clearBackgroundImage(dom);
-        return;
-    }
-    setBackgroundConfig(dom, data);
-}
-const setBackgroundConfig = (dom: any, data: any) => {
-    dom.style.backgroundSize = `${data.xSize}% ${data.ySize}%`;
-    dom.style.backgroundRepeat = `${data.bgRepeat}`;
-    dom.style.backgroundPosition = `${data.xPosition}% ${data.yPosition}%`
-}
 const clearBackgroundImage = (dom: any) => {
     dom.style.backgroundSize = null;
     dom.style.backgroundRepeat = null;
     dom.style.backgroundPosition = null;
     dom.style.backgroundImage = null;
 }
+
+const analysisBackground = (data: any, dom: any) => {
+    if (!data.config) {
+        if (data.type != '') {
+            dom.style.backgroundColor = data.data;
+        } else {
+            clearBackgroundImage(dom)
+        }
+    } else {
+        dom.style.backgroundImage = `url(${data.data})`;
+        dom.style.backgroundSize = `${data.config.xSize}% ${data.config.ySize}%`;
+        dom.style.backgroundRepeat = `${data.config.bgRepeat}`;
+        dom.style.backgroundPosition = `${data.config.xPosition}% ${data.config.yPosition}%`
+    }
+}
+
+
+
 /**
  * @method setPageMap 设置当前页保存数据
- * @param data 
+ * @param handleObj 
  * @param {string} type 类型
  * @param val 
  */
-const setPageMap = (data: any, type: string, val: any) => {
+const setPageMap = (handleObj: any, type: string, val: any, pageMap: any) => {
+    let updateData = {
+        data: '',
+        type: '',
+        config: null
+    }
     if (type === 'removeBackgroundImage') {
-        data.setting.background.data = val.val;
-        data.setting.background.type = 'color';
-        data.setting.background.config = null;
+        handleObj.updateBody(updateData);
         return;
     }
     if (type === 'background') {
         if (val.defaultSetting) {
-            data.setting.background.type = 'image';
-            data.setting.background.config = val.defaultSetting;
+            updateData.type = 'image';
+            updateData.config = val.defaultSetting;
         } else {
-            data.setting.background.type = 'color';
+            updateData.type = 'color';
         }
-        data.setting.background.data = val.val;
+        updateData.data = val.val;
+        handleObj.updateBody(updateData);
     } else {
-        data.setting.background.config = val;
+        updateData.config = val;
+        updateData.data = pageMap.setting.background.data;
+        updateData.type = 'image'
+        handleObj.updateBody(updateData);
     }
 }
+
+
 const countChange: string[] = ['addImage', 'addTextArea']
 /**
  * @method handleToolAction 处理toolbar点击按钮事件
@@ -98,13 +82,12 @@ const handleToolAction = async (pageMap: any, handleObj: any, action: string, op
     }
     if (editAction) {
         activeIndex.value = activeItem;
-        return {
-            itemType
-        }
+        handleObj.itemTypeIndexList.push(itemType)
     }
 }
+
 export {
-    handleSetting,
     setPageMap,
-    handleToolAction
+    handleToolAction,
+    analysisBackground
 }

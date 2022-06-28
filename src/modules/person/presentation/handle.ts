@@ -27,14 +27,10 @@ const getDefaultPageData = (): Type.Page => {
 import { addTextArea } from "@/modules/person/presentation/text/text";
 import { addImage } from "@/modules/person/presentation/image/image";
 import { keyInput } from "@/modules/person/presentation/utils/key_input";
-import {
-    addItem,
-    deleteItem,
-    updateItem
-} from "@/modules/person/presentation/utils/event";
+import { addItem, deleteItem, updateItem, updateBody } from "@/modules/person/presentation/utils/event";
 import { handleUndo } from '@/modules/person/presentation/utils/undo';
 import { handleRecovery } from '@/modules/person/presentation/utils/recovery';
-const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem];
+const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem, updateBody];
 class HandlePresentation {
     pageList: Map<number, Type.Page>;
     currentPage: number;
@@ -44,6 +40,7 @@ class HandlePresentation {
     recoveryStack: Type.Action[];
     copyData: Type.CopyObj | null;
     itemTypeIndexList: { index: number; type: string }[];
+    currentPageData: Type.Page | null;
     constructor() {
         this.pageList = new Map();
         this.currentPage = 0;
@@ -54,6 +51,7 @@ class HandlePresentation {
         this.copyData = null;
         this.pageList.set(0, getDefaultPageData());
         this.itemTypeIndexList = [];
+        this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.registerFn();
     }
 
@@ -73,7 +71,8 @@ class HandlePresentation {
     addPage() {
         let pageData: Type.Page = getDefaultPageData()
         this.pageList.set(this.pageList.size, pageData);
-
+        this.currentPage = this.pageList.size;
+        this.currentPageData = this.pageList.get(this.pageList.size) || null;
         this.actionStack.push({
             type: ActionType.PAGE_ACTION,
             page: this.pageList.size - 1,

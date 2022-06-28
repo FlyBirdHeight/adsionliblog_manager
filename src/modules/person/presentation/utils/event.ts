@@ -1,4 +1,4 @@
-import { Action } from '../type';
+import { Action, Page } from '../type';
 
 /**
  * @method addItem 添加item到页面中
@@ -18,7 +18,7 @@ const addItem = function (this: any, index: number, type: string, data: any) {
  * @param {number} index item标识
  * @param {string} type 类型
  */
-const deleteItem = function (this: any, index: number | string, type: string, record: boolean = true) {
+const deleteItem = function (this: any, index: any, type: string, record: boolean = true) {
     let pageData = this.pageList.get(this.currentPage);
     let typeList = pageData.item[type];
     let idx = typeList.findIndex((v: any) => {
@@ -41,16 +41,28 @@ const deleteItem = function (this: any, index: number | string, type: string, re
  * @param updateData 更新内容
  */
 const updateItem = function (this: any, index: number, type: string, updateData: any) {
-    recordAction.call(this, type, index, 'update', null, updateData)
+    // recordAction.call(this, type, index, 'update', null, updateData)
+}
+/**
+ * @method updateBody 更新页面内容
+ * @param this 
+ * @param updateData 更新数据
+ * @param {string} updateType 更新类型
+ */
+const updateBody = function (this: any, updateData: any) {
+    let pageData: Page = this.pageList.get(this.currentPage);
+    let data = JSON.parse(JSON.stringify(updateData));
+    recordAction.call(this, 'body', -1, 'body-edit', JSON.parse(JSON.stringify(pageData.setting.background)), data);
+    pageData.setting.background = data;
 }
 /**
  * @method recordAction 收集动作信息
  * @param {string} type 动作类型 
- * @param {number | string} index 动作执行的item标识
+ * @param {any} index 动作执行的item标识
  * @param oldV 
  */
-const recordAction = function (this: any, type: string, index: number | string, actionType: string, oldV: any, newV: any) {
-    this.actionStack.push({
+const recordAction = function (this: any, type: string, index: any, actionType: string, oldV: any, newV: any, options: any = null) {
+    let pushData = {
         type,
         page: this.currentPage,
         item_index: index,
@@ -60,12 +72,15 @@ const recordAction = function (this: any, type: string, index: number | string, 
             next: newV
         },
         timeStamp: +new Date()
-    })
+    };
+
+    this.actionStack.push(pushData)
 }
 
 
 export {
     addItem,
     deleteItem,
-    updateItem
+    updateItem,
+    updateBody
 }

@@ -83,6 +83,7 @@ const resizeElement = ref<any>()
 const resizeData = reactive(generateData())
 const emit = defineEmits(['changeStatus'])
 const childPropsData = ref()
+const handleObj = inject('handleObj')
 const domStyle = reactive({
   element: {},
   controls: {},
@@ -120,6 +121,7 @@ const handleDrag = (event) => {
   const drag = dragDom(resizeData.offset, { x: event.pageX, y: event.pageY })
   onDrag(resizeElement.value, drag, (timestamp) => {
     emit('changeStatus', timestamp)
+    // handleObj.updateItem()
     childPropsData.value.style.position = { x: resizeData.offset.x, y: resizeData.offset.y }
   })
 }

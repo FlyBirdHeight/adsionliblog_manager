@@ -45,7 +45,8 @@ const undoDelete = function (this: any, action: Action) {
  * @method undoBodyEdit 撤销背景更新操作操作
  */
 const undoBodyEdit = function (this: any, action: Action) {
-    console.log('undoBodyEdit:', action);
+    let pageData = this.pageList.get(this.currentPage);
+    pageData.setting.background = action!.data!.pre;
 }
 
 /**

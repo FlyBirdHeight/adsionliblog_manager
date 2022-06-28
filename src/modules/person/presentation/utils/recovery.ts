@@ -46,7 +46,10 @@ const recoveryDelete = function (this: any, action: Action) {
  * @method recoveryBodyEdit 恢复背景更新操作操作
  */
 const recoveryBodyEdit = function (this: any, action: Action) {
-    console.log('recoveryBodyEdit:', action);
+    let pageData = this.pageList.get(this.currentPage);
+    pageData.setting.background = action!.data!.next;
+    console.log(pageData);
+    
 }
 
 /**

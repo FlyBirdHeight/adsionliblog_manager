@@ -94,19 +94,18 @@ watch(activeIndex, (newV, oldV) => {
     activeInfo.value = 'main'
     return
   }
-  let index = itemTypeIndexList.value.findIndex((v) => v.index === newV)
-
+  let index = itemTypeIndexList.findIndex((v) => v.index === newV)
   if (index == -1) {
     activeInfo.value = 'main'
     return
   }
-  let tI = tabList.value.findIndex((v) => v.value === itemTypeIndexList.value[index].type)
+  let tI = tabList.value.findIndex((v) => v.value === itemTypeIndexList[index].type)
   if (tI == -1) {
     activeInfo.value = 'main'
     return
   }
   tabList.value[tI].show = true
-  activeInfo.value = itemTypeIndexList.value[index].type
+  activeInfo.value = itemTypeIndexList[index].type
 })
 </script>
 <style lang="scss" scoped>

@@ -110,10 +110,10 @@ const settingItem = (index: number, item: string, type: string) => {
     if (activeIndex.value === index) {
       activeIndex.value = -1
     }
-    let itemIdx = itemTypeIndexList.value.findIndex((v: any) => {
+    let itemIdx = itemTypeIndexList.findIndex((v: any) => {
       return Number(v.index) == Number(index)
     })
-    itemTypeIndexList.value.splice(itemIdx, 1)
+    itemTypeIndexList.splice(itemIdx, 1)
     return
   } else {
     activeIndex.value = index

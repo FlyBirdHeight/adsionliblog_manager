@@ -59,7 +59,7 @@
 import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
-import { handleSetting, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
+import { analysisBackground, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
 import HandlePresentation from '@/modules/person/presentation/handle'
 import { getHandleKeyDownData } from '@/modules/person/presentation/utils/key_input'
 export default {
@@ -90,7 +90,7 @@ const pageInfo = reactive({
 })
 const pageMap = reactive(handleObj.pageList.get(pageInfo.currentPage))
 const activeItem = ref<number>(-1)
-const itemTypeIndexList = ref<{ index: number; type: string }[]>(handleObj.itemTypeIndexList)
+const itemTypeIndexList = reactive<{ index: number; type: string }[]>(handleObj.itemTypeIndexList)
 const clickTime = ref<number>(0)
 const presentationBody = ref()
 const showUploadImage = ref<boolean>(false)
@@ -103,10 +103,7 @@ const handleAction = async (action: string, options: any) => {
     showUploadImage.value = true
     return
   }
-  let data = await handleToolAction(pageMap, handleObj, action, options, activeItem)
-  if (data) {
-    itemTypeIndexList.value.push(data.itemType)
-  }
+  await handleToolAction(pageMap, handleObj, action, options, activeItem)
 }
 /**
  * @method emitActive 设置选中项的index
@@ -130,8 +127,7 @@ const changeStatus = (val: number) => {
   clickTime.value = val
 }
 const setPage = (val: any, type: string) => {
-  handleSetting(presentationBody.value, val, type)
-  setPageMap(pageMap, type, val)
+  setPageMap(handleObj, type, val, pageMap)
 }
 /**
  * @method closeDialog 关闭弹窗
@@ -161,6 +157,12 @@ const handleKey = (event: Event) => {
     currentPage: pageInfo.currentPage,
   })
 }
+watch(
+  () => pageMap.setting.background,
+  (newV, oldV) => {
+    analysisBackground(newV, presentationBody.value)
+  }
+)
 </script>
 
 <style lang="scss" scoped>

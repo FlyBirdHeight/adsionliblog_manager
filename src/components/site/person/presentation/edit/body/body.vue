@@ -120,7 +120,7 @@
   ></edit-body-image-setting>
 </template>
 <script lang="ts">
-import { ref, reactive, defineEmits, watch } from 'vue'
+import { ref, reactive, defineEmits, watch, inject } from 'vue'
 export default {
   name: 'PresentationBodySetting',
 }
@@ -128,11 +128,13 @@ export default {
 <script lang="ts" setup>
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
 import BodyItemList from '@/components/site/person/presentation/edit/body/body_item_list.vue'
+
 const emit = defineEmits(['setBackground', 'editBackground', 'removeBackgroundImage'])
 const bgColor = ref('rgba(255,255,255, 1.0)')
 const bgImage = ref<string>('')
 const checkedImage = ref<boolean>(false)
 const showImageSetting = ref<boolean>(false)
+const handleObj = inject('handleObj')
 const hideStatus = reactive({
   bgSetting: true,
 })
@@ -168,16 +170,41 @@ const removeBgImage = () => {
   bgImage.value = ''
   emit('removeBackgroundImage', bgColor.value)
 }
+const updateTimer = ref<number>(0)
 watch(
   formData,
   (newV, oldV) => {
+    if (Math.floor(performance.now()) - Math.floor(updateTimer.value) < 10) {
+      return
+    }
     emit('editBackground', newV)
   },
   {
     deep: true,
   }
 )
+watch(
+  () => handleObj.currentPageData.setting.background,
+  (newV, oldV) => {
+    if (newV.type === '') {
+      bgImage.value = ''
+      updateTimer.value = performance.now()
+      Object.assign(formData, {
+        bgRepeat: 'repeat',
+        xSize: 100,
+        ySize: 100,
+        xPosition: 0,
+        yPosition: 0,
+      })
+    } else if (newV.type === 'image') {
+      bgImage.value = newV.data
+      updateTimer.value = performance.now()
+      Object.assign(formData, newV.config)
+    }
+  }
+)
 </script>
+
 <style lang="scss" scoped>
-@import "./body.scss"
+@import './body.scss';
 </style>
