@@ -91,8 +91,10 @@ export default {
 const props = defineProps()
 const emit = defineEmits(['setActiveIndex'])
 const itemList = inject('itemList')
+const itemTypeIndexList = inject('itemTypeIndexList')
 const activeIndex = inject('activeItem')
 const tabInfo = inject('tabInfo')
+const handleObj = inject('handleObj')
 const showLabel = reactive({
   label: true,
   code: true,
@@ -104,11 +106,14 @@ const checkedItem = (index: number) => {
 const labelItemList = ref()
 const settingItem = (index: number, item: string, type: string) => {
   if (type === 'delete') {
-    let idx = itemList[item].findIndex((v) => v.index === index)
+    handleObj.deleteItem(index, item)
     if (activeIndex.value === index) {
       activeIndex.value = -1
     }
-    itemList[item].splice(idx, 1)
+    let itemIdx = itemTypeIndexList.value.findIndex((v: any) => {
+      return Number(v.index) == Number(index)
+    })
+    itemTypeIndexList.value.splice(itemIdx, 1)
     return
   } else {
     activeIndex.value = index
@@ -117,73 +122,5 @@ const settingItem = (index: number, item: string, type: string) => {
 }
 </script>
 <style lang="scss" scoped>
-.body-item-member {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 40px;
-  color: #606266;
-  cursor: pointer;
-  padding: 0 10px;
-  .body-item-member_index {
-    font-size: 14px;
-    font-weight: 600;
-    flex-shrink: 0;
-    margin-right: 5px;
-  }
-  .body-item-member_info {
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .body-item-member_setting {
-    margin-left: 4px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 50px;
-  }
-}
-.body-item-member-active {
-  border-radius: 5px;
-  background-color: #409eff;
-  color: #fff;
-  padding: 0 5px;
-}
-.body-item-list_label {
-  margin: 5px 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: #606266;
-  cursor: pointer;
-  padding: 0 10px;
-}
-
-.label-item-show-enter-from {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-.label-item-show-enter-to {
-  opacity: 1;
-  max-height: 700px;
-}
-.label-item-show-enter-active {
-  transition: all 1s linear;
-  overflow: hidden;
-}
-.label-item-show-leave-active {
-  transition: all 0.5s linear;
-  max-height: 700px;
-}
-.label-item-show-leave {
-  max-height: 700px;
-  opacity: 1;
-}
-.label-item-show-leave-to {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
+@import './item_list.scss';
 </style>

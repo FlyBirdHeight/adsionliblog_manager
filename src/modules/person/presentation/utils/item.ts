@@ -77,22 +77,22 @@ const countChange: string[] = ['addImage', 'addTextArea']
  * @method handleToolAction 处理toolbar点击按钮事件
  */
 const handleToolAction = async (pageMap: any, handleObj: any, action: string, options: any, activeIndex: any) => {
-    let fn = Reflect.get(handleObj, action)
     let count = pageMap.item.count;
     let activeItem, itemType;
     const editAction: boolean = countChange.findIndex(v => v == action) != -1
     if (editAction) {
-        activeItem = count + 1
         pageMap.item.count += 1
     }
     if (action === 'addTextArea') {
-        const text = fn(count + 1)
-        handleObj.addItem(activeItem, 'text', text)
+        const text = handleObj.addTextArea()
+        handleObj.addItem(text.index, 'text', text)
+        activeItem = text.index;
         itemType = { index: activeItem, type: 'text' };
     }
     if (action === 'addImage') {
-        const image = await fn(count + 1, options!.url);
-        handleObj.addItem(activeItem, 'image', image)
+        const image = await handleObj.addImage(options!.url)
+        handleObj.addItem(image.index, 'image', image)
+        activeItem = image.index;
         itemType = { index: activeItem, type: 'image' };
     }
     if (editAction) {

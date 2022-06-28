@@ -113,7 +113,8 @@ const decorationStyle = [
     }
 ]
 
-const addTextArea = function (index: number) {
+const addTextArea = function (this: any) {
+    const index = this.guid();
     return {
         style: defaultStyle(),
         data: "添加文字",

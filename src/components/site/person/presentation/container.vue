@@ -97,7 +97,7 @@ const showUploadImage = ref<boolean>(false)
 provide('itemList', pageMap.item)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
-
+provide('handleObj', handleObj)
 const handleAction = async (action: string, options: any) => {
   if (action === 'addImage' && !options) {
     showUploadImage.value = true

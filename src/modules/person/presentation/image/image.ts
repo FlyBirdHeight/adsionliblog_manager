@@ -97,7 +97,7 @@ const decorationStyle = [
         value: "dashed"
     }
 ]
-const addImage = (index: number, url: string) => {
+const addImage = function (this: any, url: string) {
     const setSize = (width: number, height: number) => {
         while (width > 700 || height > 700) {
             width = width * 0.3;
@@ -107,6 +107,7 @@ const addImage = (index: number, url: string) => {
             width, height
         };
     }
+    const index = this.guid();
     return new Promise(resolve => {
         let image = new Image();
         image.src = url;

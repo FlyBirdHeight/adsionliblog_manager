@@ -67,7 +67,7 @@ const backspace = function (this: any, activeIndex: any, itemList: any, currentP
         return;
     }
     let itemIdx = itemList.value.findIndex((v: any) => {
-        return Number(v.index) == Number(activeIndex.value)
+        return v.index == activeIndex.value
     })
     activeIndex.value = -1;
     itemList.value.splice(itemIdx, 1);
@@ -108,7 +108,7 @@ const paste = function (this: any, activeIndex: any, itemList: any, currentPage:
     }
     let copyItem = JSON.parse(JSON.stringify(data.typeList[idx]));
 
-    copyItem.index = data.pageData.item.count + 1;
+    copyItem.index = this.guid();
     copyItem.style.position.x += 20;
     copyItem.style.position.y += 20;
     this.addItem(copyItem.index, this.copyData.type, copyItem)

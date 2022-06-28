@@ -20,14 +20,14 @@ const deleteItem = function (this: any, index: number | string, type: string) {
     let pageData = this.pageList.get(this.currentPage);
     let typeList = pageData.item[type];
     let idx = typeList.findIndex((v: any) => {
-        return Number(v.index) == Number(index)
+        return v.index == index
     })
     if (idx == -1) {
         return false
     }
     pageData.item.count -= 1;
     let preV = typeList.splice(idx, 1)
-    recordAction.call(this, type, Number(index), 'delete', preV, null)
+    recordAction.call(this, type, index, 'delete', preV, null)
     return true;
 }
 /**
@@ -45,7 +45,7 @@ const updateItem = function (this: any, index: number, type: string, updateData:
  * @param {number} index 动作执行的item标识
  * @param oldV 
  */
-const recordAction = function (this: any, type: string, index: number, actionType: string, oldV: any, newV: any) {
+const recordAction = function (this: any, type: string, index: number | string, actionType: string, oldV: any, newV: any) {
     this.actionStack.push({
         type,
         page: this.currentPage,
