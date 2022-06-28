@@ -1,4 +1,5 @@
 import { Action } from "../type"
+import { findTypeIdx, setItemData } from './utils';
 
 /**
  * @author adsionli
@@ -13,9 +14,7 @@ import { Action } from "../type"
 const undoAdd = function (this: any, action: Action) {
     let { item_index: index, type } = action;
     let { pageData, typeList } = this.getTypeList(type);
-    let idx = typeList.findIndex((v: any) => {
-        return v.index == index
-    })
+    let idx = findTypeIdx(index, typeList);
     pageData.item.count -= 1;
     typeList.splice(idx, 1);
 
@@ -53,7 +52,10 @@ const undoBodyEdit = function (this: any, action: Action) {
  * @method undoItemEdit 撤销item更新操作操作
  */
 const undoItemEdit = function (this: any, action: Action) {
-    console.log('undoItemEdit:', action);
+    let { typeList } = this.getTypeList(action.type);
+    let idx = findTypeIdx(action.item_index, typeList);
+    let style = typeList[idx].style;
+    setItemData(style, action.data?.pre);
 }
 
 const handleUndo = function (this: any, action: Action) {

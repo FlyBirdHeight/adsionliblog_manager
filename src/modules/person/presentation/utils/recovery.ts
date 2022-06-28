@@ -1,4 +1,5 @@
 import { Action } from "../type"
+import { findTypeIdx, setItemData } from './utils';
 
 /**
  * @author adsionli
@@ -48,8 +49,6 @@ const recoveryDelete = function (this: any, action: Action) {
 const recoveryBodyEdit = function (this: any, action: Action) {
     let pageData = this.pageList.get(this.currentPage);
     pageData.setting.background = action!.data!.next;
-    console.log(pageData);
-    
 }
 
 /**
@@ -57,6 +56,10 @@ const recoveryBodyEdit = function (this: any, action: Action) {
  */
 const recoveryItemEdit = function (this: any, action: Action) {
     console.log('recoveryItemEdit:', action);
+    let { typeList } = this.getTypeList(action.type);
+    let idx = findTypeIdx(action.item_index, typeList);
+    let style = typeList[idx].style;
+    setItemData(style, action.data?.next);
 }
 
 const handleRecovery = function (this: any, action: Action) {

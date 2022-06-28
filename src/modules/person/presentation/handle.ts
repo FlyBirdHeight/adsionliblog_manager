@@ -151,6 +151,18 @@ class HandlePresentation {
         if (this.undoStack.length == 0) {
             return;
         }
+        if (this.actionStack.length != 0) {
+            let aL = this.actionStack.length;
+            let uL = this.undoStack.length;
+            let newAS = this.actionStack[aL - 1];
+            let newUS = this.undoStack[uL - 1];
+            if (newAS.timeStamp > newUS.timeStamp) {
+                if (['scale', 'rotate'].indexOf(newAS.itemEditType || '') != -1 && ['scale', 'rotate'].indexOf(newAS.itemEditType || '') != -1) {
+                    this.undoStack.pop();
+                    return;
+                }
+            }
+        }
         let action: Type.Action | undefined = this.undoStack.length ? this.undoStack.pop() : undefined;
         if (!action) {
             return;

@@ -62,7 +62,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, defineEmits, computed, watch, reactive, inject, useSlots } from 'vue'
+import { ref, onMounted, defineEmits, computed, watch, reactive, inject, useSlots, watchEffect, nextTick } from 'vue'
 import { setResizeStyle, getCursorType, generateData } from './utils/init'
 import { onDrag, dragDom } from './utils/drag'
 import styler from './utils/style'
@@ -121,8 +121,8 @@ const handleDrag = (event) => {
   const drag = dragDom(resizeData.offset, { x: event.pageX, y: event.pageY })
   onDrag(resizeElement.value, drag, (timestamp) => {
     emit('changeStatus', timestamp)
-    // handleObj.updateItem()
-    childPropsData.value.style.position = { x: resizeData.offset.x, y: resizeData.offset.y }
+    const position = { x: resizeData.offset.x, y: resizeData.offset.y }
+    handleObj.updateItem(activeItem.value, childPropsData.value.type, { position })
   })
 }
 const handleScale = (activeType: string, event: Event) => {
@@ -140,8 +140,9 @@ const handleScale = (activeType: string, event: Event) => {
   })
   onDrag(resizeElement.value.parentElement, scaleDom, (timestamp) => {
     emit('changeStatus', timestamp)
-    childPropsData.value.style.position = { x: resizeData.offset.x, y: resizeData.offset.y }
-    childPropsData.value.style.scale = { x: resizeData.scale.x, y: resizeData.scale.y }
+    const position = { x: resizeData.offset.x, y: resizeData.offset.y }
+    const scale = { x: resizeData.scale.x, y: resizeData.scale.y }
+    handleObj.updateItem(activeItem.value, childPropsData.value.type, { position, scale }, 'scale')
   })
 }
 
@@ -159,10 +160,22 @@ const handleRotate = (event) => {
 
   onDrag(resizeElement.value.parentElement, rotateDom, (timestamp) => {
     emit('changeStatus', timestamp)
-    childPropsData.value.style.attribute.angle = resizeData.attribute.angle
+    handleObj.updateItem(
+      activeItem.value,
+      childPropsData.value.type,
+      {
+        attribute: { angle: resizeData.attribute.angle },
+      },
+      'rotate'
+    )
   })
 }
 const updateResizeData = (style: any) => {
+  if (resizeData.offset.x !== style.position.x || resizeData.offset.y !== style.position.y) {
+    resizeData.offset.x = style.position.x
+    resizeData.offset.y = style.position.y
+  }
+
   resizeData.attribute = {
     width: style.attribute.width,
     height: style.attribute.height,
@@ -179,6 +192,9 @@ watch(
     deep: true,
   }
 )
+watchEffect(() => {
+  console.log(childPropsData.value)
+})
 const getCursor = (type: string) => {
   return getCursorType(resizeData.attribute.angle, type)
 }

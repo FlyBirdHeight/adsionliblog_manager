@@ -21,7 +21,8 @@ type Action = {
     item_index?: string | number,
     action: string,
     data?: { pre: Page | PageItem | null, next: Page | PageItem | null },
-    timeStamp: number
+    timeStamp: number,
+    itemEditType?: string
 }
 
 type Page = {
