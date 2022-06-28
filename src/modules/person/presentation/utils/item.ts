@@ -77,12 +77,8 @@ const countChange: string[] = ['addImage', 'addTextArea']
  * @method handleToolAction 处理toolbar点击按钮事件
  */
 const handleToolAction = async (pageMap: any, handleObj: any, action: string, options: any, activeIndex: any) => {
-    let count = pageMap.item.count;
     let activeItem, itemType;
     const editAction: boolean = countChange.findIndex(v => v == action) != -1
-    if (editAction) {
-        pageMap.item.count += 1
-    }
     if (action === 'addTextArea') {
         const text = handleObj.addTextArea()
         handleObj.addItem(text.index, 'text', text)
@@ -94,6 +90,11 @@ const handleToolAction = async (pageMap: any, handleObj: any, action: string, op
         handleObj.addItem(image.index, 'image', image)
         activeItem = image.index;
         itemType = { index: activeItem, type: 'image' };
+    }
+    if (action === 'revokeAction') {
+        handleObj.revokeAction();
+    } else if (action === 'recoveryAction') {
+        handleObj.recoveryAction();
     }
     if (editAction) {
         activeIndex.value = activeItem;

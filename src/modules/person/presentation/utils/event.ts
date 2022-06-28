@@ -1,3 +1,5 @@
+import { Action } from '../type';
+
 /**
  * @method addItem 添加item到页面中
  * @param index 标识
@@ -9,14 +11,14 @@ const addItem = function (this: any, index: number, type: string, data: any) {
     let typeList = pageData.item[type];
     typeList.push(data);
     pageData.item.count += 1;
-    recordAction.call(this, type, index, 'add', null, data)
+    recordAction.call(this, type, index, 'add', null, JSON.parse(JSON.stringify(data)))
 }
 /**
  * @method deleteItem 从页面中删除item
  * @param {number} index item标识
  * @param {string} type 类型
  */
-const deleteItem = function (this: any, index: number | string, type: string) {
+const deleteItem = function (this: any, index: number | string, type: string, record: boolean = true) {
     let pageData = this.pageList.get(this.currentPage);
     let typeList = pageData.item[type];
     let idx = typeList.findIndex((v: any) => {
@@ -27,7 +29,9 @@ const deleteItem = function (this: any, index: number | string, type: string) {
     }
     pageData.item.count -= 1;
     let preV = typeList.splice(idx, 1)
-    recordAction.call(this, type, index, 'delete', preV, null)
+    if (record) {
+        recordAction.call(this, type, index, 'delete', JSON.parse(JSON.stringify(preV[0])), null)
+    }
     return true;
 }
 /**
@@ -42,7 +46,7 @@ const updateItem = function (this: any, index: number, type: string, updateData:
 /**
  * @method recordAction 收集动作信息
  * @param {string} type 动作类型 
- * @param {number} index 动作执行的item标识
+ * @param {number | string} index 动作执行的item标识
  * @param oldV 
  */
 const recordAction = function (this: any, type: string, index: number | string, actionType: string, oldV: any, newV: any) {
@@ -54,10 +58,11 @@ const recordAction = function (this: any, type: string, index: number | string, 
         data: {
             pre: oldV,
             next: newV
-        }
+        },
+        timeStamp: +new Date()
     })
-    console.log(this.actionStack);
 }
+
 
 export {
     addItem,

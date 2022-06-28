@@ -1,4 +1,6 @@
-const defaultStyle = () => {
+import { TextItem, TextStyle } from './type'
+
+const defaultStyle = (): TextStyle => {
     return {
         attribute: {
             width: 200,
@@ -113,7 +115,7 @@ const decorationStyle = [
     }
 ]
 
-const addTextArea = function (this: any) {
+const addTextArea = function (this: any): TextItem {
     const index = this.guid();
     return {
         style: defaultStyle(),
@@ -123,7 +125,7 @@ const addTextArea = function (this: any) {
     }
 }
 
-const analysisCss = function (textInfo: any) {
+const analysisCss = function (textInfo: TextStyle) {
     let returnCss: any = {};
     returnCss.backgroundColor = textInfo.backgroundColor;
     returnCss.border = textInfo.border.set == 'none' ? textInfo.border.set : `${textInfo.border.set} ${textInfo.border.color}`;

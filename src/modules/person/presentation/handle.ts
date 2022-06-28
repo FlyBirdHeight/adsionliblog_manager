@@ -32,6 +32,8 @@ import {
     deleteItem,
     updateItem
 } from "@/modules/person/presentation/utils/event";
+import { handleUndo } from '@/modules/person/presentation/utils/undo';
+import { handleRecovery } from '@/modules/person/presentation/utils/recovery';
 const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem];
 class HandlePresentation {
     pageList: Map<number, Type.Page>;
@@ -41,6 +43,7 @@ class HandlePresentation {
     undoStack: Type.Action[];
     recoveryStack: Type.Action[];
     copyData: Type.CopyObj | null;
+    itemTypeIndexList: { index: number; type: string }[];
     constructor() {
         this.pageList = new Map();
         this.currentPage = 0;
@@ -50,6 +53,7 @@ class HandlePresentation {
         this.recoveryStack = [];
         this.copyData = null;
         this.pageList.set(0, getDefaultPageData());
+        this.itemTypeIndexList = [];
         this.registerFn();
     }
 
@@ -74,7 +78,11 @@ class HandlePresentation {
             type: ActionType.PAGE_ACTION,
             page: this.pageList.size - 1,
             action: "add",
-            data: pageData
+            data: {
+                pre: null,
+                next: pageData
+            },
+            timeStamp: +new Date()
         })
     }
 
@@ -103,7 +111,11 @@ class HandlePresentation {
             type: ActionType.PAGE_ACTION,
             page: page,
             action: "delete",
-            data: pageData
+            data: {
+                pre: pageData || null,
+                next: null
+            },
+            timeStamp: +new Date()
         })
         return true;
     }
@@ -115,59 +127,37 @@ class HandlePresentation {
         if (this.actionStack.length == 0 && this.recoveryStack.length == 0) {
             return;
         }
-        let action: Type.Action | undefined = this.recoveryStack.length ? this.recoveryStack.pop() : this.actionStack.pop();
+        let actionLength = this.actionStack.length;
+        let recoveryLength = this.recoveryStack.length;
+        let action: Type.Action | undefined;
+        if (actionLength != 0 && recoveryLength == 0) {
+            action = this.actionStack.pop();
+        } else if (actionLength == 0 && recoveryLength != 0) {
+            action = this.recoveryStack.pop();
+        } else {
+            action = this.actionStack[actionLength - 1].timeStamp > this.recoveryStack[recoveryLength - 1].timeStamp ?
+                this.actionStack.pop() : this.recoveryStack.pop();
+        }
         if (!action) {
             return;
         }
-        this.recoveryStack.push(action);
-        if (action.type === ActionType.PAGE_ACTION) {
-            if (action.action === 'add') {
-
-            } else if (action.action === 'update') {
-
-            } else {
-
-            }
-        } else {
-            if (action.action === 'add') {
-
-            } else if (action.action === 'update') {
-
-            } else {
-
-            }
-        }
+        this.undoStack.push(action);
+        handleUndo.call(this, action);
     }
 
     /**
      * @method recoveryAction 恢复动作
      */
     recoveryAction() {
-        if (this.recoveryStack.length == 0) {
+        if (this.undoStack.length == 0) {
             return;
         }
-        let action: Type.Action | undefined = this.recoveryStack.length ? this.recoveryStack.pop() : undefined;
+        let action: Type.Action | undefined = this.undoStack.length ? this.undoStack.pop() : undefined;
         if (!action) {
             return;
         }
-        this.undoStack.push(action);
-        if (action.type === ActionType.PAGE_ACTION) {
-            if (action.action === 'add') {
-
-            } else if (action.action === 'update') {
-
-            } else {
-
-            }
-        } else {
-            if (action.action === 'add') {
-
-            } else if (action.action === 'update') {
-
-            } else {
-
-            }
-        }
+        this.recoveryStack.push(action);
+        handleRecovery.call(this, action);
     }
 
     /**
@@ -183,6 +173,15 @@ class HandlePresentation {
             return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
         }
         return _p8() + _p8(true) + _p8(true) + _p8();
+    }
+
+    getTypeList(type: string) {
+        let pageData: any = this.pageList.get(this.currentPage);
+        let typeList = pageData.item[type];
+
+        return {
+            pageData, typeList
+        }
     }
 }
 

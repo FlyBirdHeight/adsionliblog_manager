@@ -1,3 +1,6 @@
+import { ImageItem } from './image/type'
+import { TextItem } from './text/type'
+
 type Animation = {
     join: {
         type: string,
@@ -10,27 +13,15 @@ type Animation = {
         level: number
     }
 }
-type PageItem = {
-    type: string,
-    position: {
-        x: number,
-        y: number
-    },
-    data: any,
-    layer: number,
-    animation: {
-        join: Animation,
-        leave: Animation,
-    },
-    index: string
-}
+type PageItem = ImageItem | TextItem
 
 type Action = {
     type: string,
     page?: number,
     item_index?: string | number,
     action: string,
-    data?: Page | PageItem | { pre: Page | PageItem | null, next: Page | PageItem | null }
+    data?: { pre: Page | PageItem | null, next: Page | PageItem | null },
+    timeStamp: number
 }
 
 type Page = {

@@ -1,4 +1,5 @@
-const imageInfo = () => {
+import { ImageStyle, ImageItem } from './type';
+const imageInfo = (): ImageStyle => {
     return {
         attribute: {
             width: 200,
@@ -97,7 +98,7 @@ const decorationStyle = [
         value: "dashed"
     }
 ]
-const addImage = function (this: any, url: string) {
+const addImage = function (this: any, url: string): Promise<ImageItem> {
     const setSize = (width: number, height: number) => {
         while (width > 700 || height > 700) {
             width = width * 0.3;
