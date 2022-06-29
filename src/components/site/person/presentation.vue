@@ -3,7 +3,7 @@
     <div class="setting">
       <presentation-container></presentation-container>
     </div>
-    <div class="divider"></div>
+    <!-- <div class="divider"></div> -->
     <!-- <div class="show">show</div> -->
   </div>
 </template>
@@ -26,11 +26,11 @@ import PresentationContainer from '@/components/site/person/presentation/contain
   .setting {
     flex-shrink: 1;
     width: 100%;
-    height: 800px;
+    height: auto;
     box-shadow: 0px -15px 15px 3px rgba(0, 0, 0, 0.08);
-    margin-bottom: 5px;
+    margin-bottom: 50px;
     padding: 5px;
-    overflow: hidden;
+    // overflow: hidden;
   }
   .divider {
     border: 1px solid #f2f3f5;

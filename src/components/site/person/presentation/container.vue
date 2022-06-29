@@ -1,5 +1,6 @@
 <template>
   <div class="presentation-container">
+    <page-list-show></page-list-show>
     <div class="presentation-toolbar">
       <div class="toolbal_list" v-for="item of toolbar">
         <el-tooltip effect="light" :content="item.label" v-if="item.icon !== 'divide'" placement="top-start">
@@ -66,11 +67,13 @@ export default {
 }
 </script>
 <script lang="ts" setup>
+import PageListShow from '@/components/site/person/presentation/pageShow/page_list.vue'
 import ResizeElement from '@/modules/person/presentation/resize/resize.vue'
 import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
 import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
+import { generatePageImage } from '../../../../modules/person/presentation/utils/utils'
 
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
@@ -81,6 +84,7 @@ const handleObj = reactive(new HandlePresentation())
  * @property {itemType: {index: number, type: string}[]} itemTypeIndexList item内容的index记录表
  * @property {number} clickTime 鼠标抬起时的高精度事件记录，用于阻止相关事件执行
  * @property {boolean} showUploadImage 显示上传图片框
+ * @property {Array} pageImage 保存page的样子的Image列表
  */
 const pageInfo = reactive({
   currentPage: 1,
@@ -92,10 +96,12 @@ const itemTypeIndexList = ref<{ index: number; type: string }[]>(handleObj.itemT
 const clickTime = ref<number>(0)
 const presentationBody = ref()
 const showUploadImage = ref<boolean>(false)
+const pageImage = ref([])
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
 provide('handleObj', handleObj)
+provide('pageInfo', pageInfo)
 const handleAction = async (action: string, options: any) => {
   if (action === 'addImage' && !options) {
     showUploadImage.value = true
@@ -175,6 +181,7 @@ watch(
   () => pageInfo.currentPage,
   (newV, oldV) => {
     pageMap.value = handleObj.currentPageData
+    // generatePageImage(document.getElementById('presentation_body'))
     itemTypeIndexList.value = handleObj.itemTypeIndexList
   }
 )
@@ -212,7 +219,8 @@ watch(
     display: flex;
     width: 100%;
     justify-content: flex-start;
-    height: calc(100% - 41px);
+    height: 700px;
+    border-bottom: 1px solid #dcdfe6;
     .presentation_body {
       width: calc(100% - 300px);
       overflow: hidden;

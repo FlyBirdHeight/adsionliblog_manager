@@ -17,6 +17,7 @@
     "echarts": "^5.3.2",
     "element-plus": "^2.0.2",
     "highlight.js": "^11.3.1",
+    "html2canvas": "^1.4.1",
     "masonry-layout": "^4.2.2",
     "md-editor-v3": "^2.0.0",
     "spark-md5": "^3.0.2",
