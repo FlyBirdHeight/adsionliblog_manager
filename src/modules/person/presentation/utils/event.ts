@@ -1,6 +1,35 @@
 import { Page, PageItem, Action } from '../type';
 import { setItemData } from "./utils";
 /**
+ * @method findPosition 二分查找，寻找右边界，插入
+ * @param stack 
+ * @param timeStamp 
+ */
+const findPosition = (stack: Action[], timeStamp: number) => {
+    let l = 0, r = stack.length;
+    if (stack.length === 0) {
+        return 0;
+    }
+    while (r > l) {
+        let mid = Math.floor((l + r) / 2);
+        if (stack[mid].timeStamp == timeStamp) {
+            l = mid + 1;
+        } else if (stack[mid].timeStamp < timeStamp) {
+            l = mid + 1;
+        } else {
+            r = mid;
+        }
+    }
+
+    return l - 1;
+}
+const recoveryToAction = function (this: any) {
+    for (let recovery of this.recoveryStack) {
+        let idx = findPosition(this.actionStack, recovery.timeStamp)
+        this.actionStack.splice(idx, 0, recovery);
+    }
+}
+/**
  * @method addItem 添加item到页面中
  * @param index 标识
  * @param type 类型
@@ -94,8 +123,8 @@ const recordAction = function (this: any, type: string, index: any, actionType: 
     if (this.undoStack.length != 0) {
         this.undoStack = [];
     }
-    if (this.recoveryStack.length != 0) {
-        this.recoveryStack = [];
+    if (this.recoveryStack.length != 0 && this.undoStack.length == 0) {
+        recoveryToAction.call(this);
     }
 }
 
