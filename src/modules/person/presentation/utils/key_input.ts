@@ -5,6 +5,10 @@ const getHandleKeyDownData = (event: any) => {
         keyDownData = 'copy'
     } else if (event.key === 'v' && event.ctrlKey) {
         keyDownData = 'paste'
+    } else if (event.key === 'z' && event.ctrlKey) {
+        keyDownData = 'revoke'
+    } else if (event.key === 'y' && event.ctrlKey) {
+        keyDownData = 'recovery'
     }
 
     return keyDownData
@@ -116,6 +120,14 @@ const paste = function (this: any, activeIndex: any, itemList: any, currentPage:
     activeIndex.value = copyItem.index;
 }
 
+const revoke = function (this: any) {
+    this.revokeAction();
+}
+
+const recovery = function (this: any) {
+    this.recoveryAction();
+}
+
 /**
  * @method keyInput 键盘输入的处理
  * @param {string} key 键盘输入内容 
@@ -134,6 +146,12 @@ const keyInput = function (this: any, key: string, options: any) {
             break;
         case 'paste':
             paste.call(this, activeIndex, itemList, currentPage);
+            break;
+        case 'revoke':
+            revoke.call(this);
+            break;
+        case 'recovery':
+            recovery.call(this)
             break;
         default:
             break;

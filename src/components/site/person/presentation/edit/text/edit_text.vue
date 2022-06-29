@@ -22,8 +22,8 @@ import EditFont from './font.vue'
 const activeIndex = inject('activeItem')
 const itemList = inject('itemList')
 const itemObject = ref(null)
-const textStyle = ref(defaultStyle())
-provide('textStyle', textStyle)
+const textData = ref(defaultStyle())
+provide('textData', textData)
 const hideStatus = reactive({
   fontSet: true,
 })
@@ -35,7 +35,7 @@ watch(
         let idx = itemList.text.findIndex((v) => v.index === newV)
         if (idx !== -1) {
           itemObject.value = itemList.text[idx]
-          textStyle.value = itemObject.value.style
+          textData.value = itemObject.value
         }
       }
     }

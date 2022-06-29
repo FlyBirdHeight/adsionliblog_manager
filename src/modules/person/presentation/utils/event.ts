@@ -40,7 +40,7 @@ const deleteItem = function (this: any, index: any, type: string, record: boolea
  * @param type item类型
  * @param updateData 更新内容
  */
-const updateItem = function (this: any, index: any, type: string, updateData: any, itemEditType: string) {
+const updateItem = function (this: any, index: any, type: string, updateData: any, itemEditType: string = '') {
     let { pageData, typeList } = this.getTypeList(type);
     let idx = typeList.findIndex((v: PageItem) => {
         return v.index === index;
@@ -51,6 +51,11 @@ const updateItem = function (this: any, index: any, type: string, updateData: an
     }
     let style = item.style;
     let oldData: any = setItemData(style, updateData);
+    console.log(oldData, updateData);
+
+    if (JSON.stringify(oldData) == JSON.stringify(updateData)) {
+        return;
+    }
     recordAction.call(this, type, index, 'item-edit', oldData, updateData, itemEditType)
 }
 /**
@@ -86,8 +91,10 @@ const recordAction = function (this: any, type: string, index: any, actionType: 
     if (actionType === 'item-edit') {
         pushData.itemEditType = itemEditType;
     }
-
     this.actionStack.push(pushData)
+    if (this.undoStack.length != 0) {
+        this.undoStack = [];
+    }
 }
 
 

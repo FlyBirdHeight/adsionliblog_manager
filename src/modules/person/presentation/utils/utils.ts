@@ -1,6 +1,5 @@
 const setItemData = (style: any, updateData: any) => {
     let oldData: any = {}
-    // console.log(style, updateData);
     
     for (let key of Reflect.ownKeys(updateData)) {
         oldData[key] = {}

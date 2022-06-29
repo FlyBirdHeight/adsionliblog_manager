@@ -55,7 +55,6 @@ const recoveryBodyEdit = function (this: any, action: Action) {
  * @method recoveryItemEdit 恢复item更新操作操作
  */
 const recoveryItemEdit = function (this: any, action: Action) {
-    console.log('recoveryItemEdit:', action);
     let { typeList } = this.getTypeList(action.type);
     let idx = findTypeIdx(action.item_index, typeList);
     let style = typeList[idx].style;

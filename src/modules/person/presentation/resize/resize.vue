@@ -192,9 +192,6 @@ watch(
     deep: true,
   }
 )
-watchEffect(() => {
-  console.log(childPropsData.value)
-})
 const getCursor = (type: string) => {
   return getCursorType(resizeData.attribute.angle, type)
 }

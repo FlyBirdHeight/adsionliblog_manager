@@ -1,0 +1,99 @@
+.edit-font {
+    margin-bottom: 10px;
+
+    .font-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 5px;
+
+        .subLabel {
+            @include subHeader();
+        }
+
+        .radio-button-group {
+            margin-left: 5px;
+        }
+    }
+
+    .font-style {
+        margin-top: 5px;
+        padding: 5px;
+
+        .subLabel {
+            @include subHeader();
+        }
+
+        .select-family {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            .thridLabel {
+                @include thridHeader();
+                width: 80px;
+                margin: 0 20px 0 10px;
+            }
+        }
+
+        .font-size {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+
+            .thridLabel {
+                @include thridHeader();
+                width: 80px;
+                margin: 0 20px 0 10px;
+            }
+        }
+    }
+
+    .text-style {
+        margin-top: 5px;
+        padding: 5px;
+
+        .subLabel {
+            @include subHeader();
+        }
+
+        .decoration-setting {
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    }
+
+    .color-style {
+        margin-top: 5px;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+
+        .subLabel {
+            @include subHeader();
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .font-color,
+        .background-color,
+        .border-color,
+        .border-show {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            .thridLabel {
+                @include thridHeader();
+                margin: 0 20px;
+            }
+        }
+    }
+}

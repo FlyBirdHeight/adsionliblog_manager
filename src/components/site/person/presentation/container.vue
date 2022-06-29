@@ -10,11 +10,10 @@
         <div v-else class="toolbar-divide"></div>
       </div>
     </div>
-    <div class="presentation-edit">
+    <div class="presentation-edit" @keyup.stop="handleKey">
       <div
         class="presentation_body"
         tabindex="-1"
-        @keyup.stop="handleKey"
         ref="presentationBody"
         id="presentation_body"
         @click.stop="handleClick"
@@ -149,6 +148,8 @@ const handleKey = (event: Event) => {
   if (event.path[0].id !== 'presentation_body') {
     return
   }
+  console.log(event)
+
   let keyDownData = getHandleKeyDownData(event)
 
   handleObj.keyInput(keyDownData, {
