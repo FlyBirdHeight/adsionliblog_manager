@@ -163,6 +163,9 @@ watch(
     analysisBackground(newV, presentationBody.value)
   }
 )
+watch(itemTypeIndexList, (newV, oldV) => {
+  console.log(newV);
+})
 </script>
 
 <style lang="scss" scoped>

@@ -151,12 +151,15 @@ class HandlePresentation {
         if (this.undoStack.length == 0) {
             return;
         }
-        
+
         let action: Type.Action | undefined = this.undoStack.length ? this.undoStack.pop() : undefined;
         if (!action) {
             return;
         }
+        action.timeStamp = +new Date();
+
         this.recoveryStack.push(action);
+
         handleRecovery.call(this, action);
     }
 

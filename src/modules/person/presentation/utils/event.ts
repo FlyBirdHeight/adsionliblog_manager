@@ -24,10 +24,14 @@ const findPosition = (stack: Action[], timeStamp: number) => {
     return l - 1;
 }
 const recoveryToAction = function (this: any) {
+    this.actionStack.sort((a: Action, b: Action) => {
+        return a.timeStamp - b.timeStamp
+    })
     for (let recovery of this.recoveryStack) {
         let idx = findPosition(this.actionStack, recovery.timeStamp)
         this.actionStack.splice(idx, 0, recovery);
     }
+    this.recoveryStack = [];
 }
 /**
  * @method addItem 添加item到页面中

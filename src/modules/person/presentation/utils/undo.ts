@@ -52,6 +52,7 @@ const undoBodyEdit = function (this: any, action: Action) {
  * @method undoItemEdit 撤销item更新操作操作
  */
 const undoItemEdit = function (this: any, action: Action) {
+    console.log(action);
     let { typeList } = this.getTypeList(action.type);
     let idx = findTypeIdx(action.item_index, typeList);
     let style = typeList[idx].style;
