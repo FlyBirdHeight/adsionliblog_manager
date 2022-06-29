@@ -23,8 +23,8 @@ import EditImage from './image.vue'
 const activeIndex = inject('activeItem')
 const itemList = inject('itemList')
 const itemObject = ref(null)
-const imageStyle = ref(imageInfo())
-provide('imageStyle', imageStyle)
+const imageData = ref(imageInfo())
+provide('imageData', imageData)
 const hideStatus = reactive({
   fontSet: true,
 })
@@ -36,7 +36,7 @@ watch(
         let idx = itemList.image.findIndex((v) => v.index === newV)
         if (idx !== -1) {
           itemObject.value = itemList.image[idx]
-          imageStyle.value = itemObject.value.style
+          imageData.value = itemObject.value
         }
       }
     }

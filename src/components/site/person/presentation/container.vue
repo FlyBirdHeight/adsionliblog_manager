@@ -148,7 +148,6 @@ const handleKey = (event: Event) => {
   if (event.path[0].id !== 'presentation_body') {
     return
   }
-  console.log(event)
 
   let keyDownData = getHandleKeyDownData(event)
 

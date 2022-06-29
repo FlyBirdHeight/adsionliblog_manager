@@ -121,6 +121,7 @@
 <script lang="ts">
 import { ref, inject, watch, defineEmits, reactive } from 'vue'
 import { fontFamilyList, decorationStyle, defaultStyle } from '@/modules/person/presentation/text/text'
+import { setUpdateData } from '@/modules/person/presentation/utils/utils'
 export default {
   name: 'EditFont',
 }
@@ -130,15 +131,7 @@ const textData = inject('textData')
 const handleObj = inject('handleObj')
 const fontFamilyData = ref(fontFamilyList)
 const textStyle = reactive(defaultStyle())
-const setUpdateData = (keyList: string[], styleData: any) => {
-  let updateData = {}
-  if (keyList.length == 1) {
-    updateData[keyList[0]] = styleData[keyList[0]]
-  } else {
-    updateData[keyList[0]] = setUpdateData(keyList.slice(1), styleData[keyList[0]])
-  }
-  return updateData
-}
+
 const handleText = (type: string) => {
   let keyList = type.split('_')
   let updateData = setUpdateData(keyList, textStyle)
@@ -155,6 +148,26 @@ watch(
   },
   {
     immediate: true,
+    deep: true,
+  }
+)
+
+watch(
+  [
+    () => textData.value.style.border,
+    () => textData.value.style.color,
+    () => textData.value.style.backgroundColor,
+    () => textData.value.style.font,
+    () => textData.value.style.text,
+  ],
+  (newV, oldV) => {
+    Object.assign(textStyle.border, JSON.parse(JSON.stringify(newV[0])))
+    textStyle.color = newV[1]
+    textStyle.backgroundColor = newV[2]
+    Object.assign(textStyle.font, JSON.parse(JSON.stringify(newV[3])))
+    Object.assign(textStyle.text, JSON.parse(JSON.stringify(newV[4])))
+  },
+  {
     deep: true,
   }
 )

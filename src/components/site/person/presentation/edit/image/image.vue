@@ -37,6 +37,7 @@
           :max="100"
           label="%"
           controls-position="right"
+          @change="handleImage('border_radius')"
         />
       </div>
     </div>
@@ -84,6 +85,7 @@
           :false-label="0"
           border
           size="small"
+          @change="handleImage('border_line')"
         />
       </div>
       <div class="border-member">
@@ -93,6 +95,7 @@
           size="small"
           v-model="imageStyle.border.width"
           :disabled="imageStyle.border.line == 'none'"
+          @change="handleImage('border_width')"
         />
       </div>
       <div class="border-member">
@@ -101,6 +104,7 @@
           size="small"
           style="width: 60%"
           v-model="imageStyle.border.style"
+          @change="handleImage('border_style')"
           placeholder="选取边框"
         >
           <el-option v-for="decoration in decorationStyle" :value="decoration.value" :label="decoration.label">
@@ -112,7 +116,12 @@
       </div>
       <div class="border-member">
         <div class="thridLabel" style="margin-right: 5px">边框颜色:</div>
-        <el-color-picker :disabled="imageStyle.border.line == 'none'" v-model="imageStyle.border.color" show-alpha />
+        <el-color-picker
+          @change="handleImage('border_color')"
+          :disabled="imageStyle.border.line == 'none'"
+          v-model="imageStyle.border.color"
+          show-alpha
+        />
       </div>
     </div>
     <div class="filter-setting">
@@ -124,6 +133,7 @@
         collapse-tags-tooltip
         v-model="imageStyle.style.setStyle"
         placeholder="滤镜配置"
+        @change="handleImage('style_setStyle')"
       >
         <el-option
           v-for="(filter, index) in filterStyleList"
@@ -144,6 +154,7 @@
             :max="100"
             size="small"
             controls-position="right"
+            @change="handleImage('style_blur')"
           />
         </div>
         <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('brightness')">
@@ -157,6 +168,7 @@
             :max="6"
             size="small"
             controls-position="right"
+            @change="handleImage('style_brightness')"
           />
         </div>
         <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('contrast')">
@@ -170,6 +182,7 @@
             :max="20"
             size="small"
             controls-position="right"
+            @change="handleImage('style_contrast')"
           />
         </div>
         <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('opacity')">
@@ -183,6 +196,7 @@
             :max="1"
             size="small"
             controls-position="right"
+            @change="handleImage('style_opacity')"
           />
         </div>
         <div class="filter-member-item" v-show="imageStyle.style.setStyle.includes('drop-shadow')">
@@ -190,19 +204,39 @@
           <div class="shadow-set">
             <div class="shadow-member">
               <span class="forthLabel">x轴偏移:</span>
-              <el-input class="input-number" size="small" v-model="imageStyle.style.drop_shadow.x" />
+              <el-input
+                @change="handleImage('style_drop-shadow_x')"
+                class="input-number"
+                size="small"
+                v-model="imageStyle.style.drop_shadow.x"
+              />
             </div>
             <div class="shadow-member">
               <span class="forthLabel">y轴偏移:</span>
-              <el-input class="input-number" size="small" v-model="imageStyle.style.drop_shadow.y" />
+              <el-input
+                @change="handleImage('style_drop-shadow_y')"
+                class="input-number"
+                size="small"
+                v-model="imageStyle.style.drop_shadow.y"
+              />
             </div>
             <div class="shadow-member shadow-radius">
               <span class="forthLabel">阴影半径:</span>
-              <el-input class="input-number" size="small" v-model="imageStyle.style.drop_shadow.radius" />
+              <el-input
+                @change="handleImage('style_drop-shadow_radius')"
+                class="input-number"
+                size="small"
+                v-model="imageStyle.style.drop_shadow.radius"
+              />
             </div>
             <div class="shadow-member shadow-color">
               <span class="forthLabel">阴影颜色:</span>
-              <el-color-picker class="shadow-color-picker" v-model="imageStyle.style.drop_shadow.color" show-alpha />
+              <el-color-picker
+                @change="handleImage('style_drop-shadow_color')"
+                class="shadow-color-picker"
+                v-model="imageStyle.style.drop_shadow.color"
+                show-alpha
+              />
             </div>
           </div>
         </div>
@@ -216,6 +250,7 @@
             inactive-text="原色"
             :active-value="1"
             :inactive-value="0"
+            @change="handleImage('style_invert')"
           />
         </div>
       </div>
@@ -224,7 +259,8 @@
 </template>
 <script lang="ts">
 import { ref, watch, reactive, provide, inject } from 'vue'
-import { filterStyle, decorationStyle } from '@/modules/person/presentation/image/image'
+import { setUpdateData } from '@/modules/person/presentation/utils/utils'
+import { filterStyle, decorationStyle, imageInfo } from '@/modules/person/presentation/image/image'
 export default {
   name: 'EditImage',
 }
@@ -237,18 +273,22 @@ const sizeData = reactive({
   width: 0,
   ratio: 1,
 })
-const imageStyle = inject('imageStyle')
+const imageData = inject('imageData')
+const handleObj = inject('handleObj')
+const imageStyle = reactive(imageInfo())
 
 const handleRotateChange = () => {
-  imageStyle.value.attribute.angle =
-    imageStyle.value.attribute.angle > 360 ? imageStyle.value.attribute.angle % 360 : imageStyle.value.attribute.angle
+  imageStyle.attribute.angle =
+    imageStyle.attribute.angle > 360 ? imageStyle.attribute.angle % 360 : imageStyle.attribute.angle
+  handleImage('attribute_angle')
 }
 const rotateClick = () => {
-  if (imageStyle.value.attribute.angle + 90 >= 360) {
-    imageStyle.value.attribute.angle = (imageStyle.value.attribute.angle + 90) % 360
+  if (imageStyle.attribute.angle + 90 >= 360) {
+    imageStyle.attribute.angle = (imageStyle.attribute.angle + 90) % 360
   } else {
-    imageStyle.value.attribute.angle += 90
+    imageStyle.attribute.angle += 90
   }
+  handleImage('attribute_angle')
 }
 const handleSizeChange = (type: string) => {
   if (type === 'width') {
@@ -264,16 +304,50 @@ const handleSizeChange = (type: string) => {
       sizeData.ratio = sizeData.width / sizeData.height
     }
   }
-  imageStyle.value.scale.x = sizeData.width / imageStyle.value.attribute.width
-  imageStyle.value.scale.y = sizeData.height / imageStyle.value.attribute.height
+  imageStyle.scale.x = sizeData.width / imageStyle.attribute.width
+  imageStyle.scale.y = sizeData.height / imageStyle.attribute.height
+  handleImage('scale')
 }
+
 watch(
-  () => imageStyle.value.scale,
+  () => imageData.value.index,
   (newV, oldV) => {
-    const changedWidth = imageStyle.value.attribute.width * (1 - newV.x)
-    sizeData.width = imageStyle.value.attribute.width - changedWidth
-    const changedHeight = imageStyle.value.attribute.height * (1 - newV.y)
-    sizeData.height = imageStyle.value.attribute.height - changedHeight
+    //NOTE: 判断是否是新的内容，如果是新的内容，那么就需要重新设置一下imageStyle的值
+    if (newV !== oldV) {
+      Object.assign(imageStyle, JSON.parse(JSON.stringify(imageData.value.style)))
+    }
+  },
+  {
+    immediate: true,
+    deep: true,
+  }
+)
+
+watch(
+  [
+    () => imageData.value.style.attribute.angle,
+    () => imageData.value.style.scale,
+    () => imageData.value.style.border,
+    () => imageData.value.style.style,
+  ],
+  (newV, oldV) => {
+    imageStyle.attribute.angle = newV[0]
+    Object.assign(imageStyle.scale, JSON.parse(JSON.stringify(newV[1])))
+    Object.assign(imageStyle.border, JSON.parse(JSON.stringify(newV[2])))
+    Object.assign(imageStyle.style, JSON.parse(JSON.stringify(newV[3])))
+    console.log(imageStyle.style)
+  },
+  {
+    deep: true,
+  }
+)
+watch(
+  () => imageStyle.scale,
+  (newV, oldV) => {
+    const changedWidth = imageStyle.attribute.width * (1 - newV.x)
+    sizeData.width = imageStyle.attribute.width - changedWidth
+    const changedHeight = imageStyle.attribute.height * (1 - newV.y)
+    sizeData.height = imageStyle.attribute.height - changedHeight
     sizeData.ratio = sizeData.width / sizeData.height
   },
   {
@@ -281,6 +355,15 @@ watch(
     deep: true,
   }
 )
+
+const handleImage = (type: string) => {
+  let keyList = type.split('_')
+  if (keyList.indexOf('drop-shadow') != -1) {
+    keyList[1] = 'drop_shadow'
+  }
+  let updateData = setUpdateData(keyList, imageStyle)
+  handleObj.updateItem(imageData.value.index, imageData.value.type, updateData)
+}
 </script>
 <style lang="scss">
 .el-select .el-select__tags > span {
@@ -288,5 +371,5 @@ watch(
 }
 </style>
 <style lang="scss" scoped>
-@import "./image.scss"
+@import './image.scss';
 </style>

@@ -51,11 +51,10 @@ const updateItem = function (this: any, index: any, type: string, updateData: an
     }
     let style = item.style;
     let oldData: any = setItemData(style, updateData);
-    console.log(oldData, updateData);
-
     if (JSON.stringify(oldData) == JSON.stringify(updateData)) {
         return;
     }
+
     recordAction.call(this, type, index, 'item-edit', oldData, updateData, itemEditType)
 }
 /**
@@ -94,6 +93,9 @@ const recordAction = function (this: any, type: string, index: any, actionType: 
     this.actionStack.push(pushData)
     if (this.undoStack.length != 0) {
         this.undoStack = [];
+    }
+    if (this.recoveryStack.length != 0) {
+        this.recoveryStack = [];
     }
 }
 
