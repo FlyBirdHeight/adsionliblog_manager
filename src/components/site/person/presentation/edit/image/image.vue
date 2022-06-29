@@ -24,6 +24,7 @@
           size="small"
           active-text="开启"
           inactive-text="关闭"
+          @change="handleImage('event_aspectRatio')"
         />
       </div>
       <div class="border-radius-set">
@@ -329,13 +330,14 @@ watch(
     () => imageData.value.style.scale,
     () => imageData.value.style.border,
     () => imageData.value.style.style,
+    () => imageData.value.style.event.aspectRatio
   ],
   (newV, oldV) => {
     imageStyle.attribute.angle = newV[0]
     Object.assign(imageStyle.scale, JSON.parse(JSON.stringify(newV[1])))
     Object.assign(imageStyle.border, JSON.parse(JSON.stringify(newV[2])))
     Object.assign(imageStyle.style, JSON.parse(JSON.stringify(newV[3])))
-    console.log(imageStyle.style)
+    imageStyle.event.aspectRatio = newV[4]
   },
   {
     deep: true,

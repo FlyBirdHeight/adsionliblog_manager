@@ -54,13 +54,23 @@ const setPageMap = (handleObj: any, type: string, val: any, pageMap: any) => {
         handleObj.updateBody(updateData);
     }
 }
+/**
+ * @method setPage 设置page页面，主要在添加，删除页面，跳转页面使用
+ * @param pageInfo 响应式数据pageInfo
+ * @param pageMap 响应式数据pageMap
+ * @param handleObj 响应式数据handleObj
+ */
+const setPage = (pageInfo: any, handleObj: any) => {
+    pageInfo.pageCount = handleObj.pageList.size;
+    pageInfo.currentPage = handleObj.currentPage;
+}
 
 
 const countChange: string[] = ['addImage', 'addTextArea']
 /**
  * @method handleToolAction 处理toolbar点击按钮事件
  */
-const handleToolAction = async (pageMap: any, handleObj: any, action: string, options: any, activeIndex: any) => {
+const handleToolAction = async (handleObj: any, action: string, options: any, activeIndex: any, pageInfo: any) => {
     let activeItem, itemType;
     const editAction: boolean = countChange.findIndex(v => v == action) != -1
     if (action === 'addTextArea') {
@@ -80,6 +90,40 @@ const handleToolAction = async (pageMap: any, handleObj: any, action: string, op
     } else if (action === 'recoveryAction') {
         handleObj.recoveryAction();
     }
+
+    if (action === 'addPage') {
+        handleObj.addPage();
+        setPage(pageInfo, handleObj)
+    } else if (action === 'deletePage') {
+        handleObj.deletePage(handleObj.currentPage);
+        setPage(pageInfo, handleObj)
+    } else if (action === 'goFirst') {
+        if (handleObj.pageList.size == 1) {
+            return
+        }
+        handleObj.goFirst();
+        setPage(pageInfo, handleObj)
+    } else if (action === 'goEnd') {
+        if (handleObj.pageList.size == 1) {
+            return
+        }
+        handleObj.goEnd();
+        setPage(pageInfo, handleObj)
+    } else if (action === 'goPre') {
+        if (handleObj.pageList.size == 1) {
+            return
+        }
+        handleObj.goPre();
+        setPage(pageInfo, handleObj)
+    } else if (action === 'goNext') {
+        if (handleObj.pageList.size == 1) {
+            return
+        }
+        handleObj.goNext();
+        setPage(pageInfo, handleObj)
+    }
+
+
     if (editAction) {
         activeIndex.value = activeItem;
         handleObj.itemTypeIndexList.push(itemType)

@@ -2,7 +2,7 @@
   <el-scrollbar max-height="700px" style="padding: 0 10px; margin: 0 0 10px 0; user-select: none" :always="true">
     <div
       class="body-item-list_label"
-      v-if="itemList && itemList.text.length != 0"
+      v-if="itemList.item && itemList.item.text.length != 0"
       @click="showLabel.label = !showLabel.label"
     >
       <span>文字内容：</span>
@@ -11,12 +11,12 @@
       </span>
     </div>
     <transition name="label-item-show">
-      <template v-if="itemList && itemList.text.length != 0 && showLabel.label">
+      <template v-if="itemList.item && itemList.item.text.length != 0 && showLabel.label">
         <div ref="labelItemList">
           <div
             @click.stop="checkedItem(item.index)"
             class="body-item-member"
-            v-for="(item, index) in itemList.text"
+            v-for="(item, index) in itemList.item.text"
             :class="activeIndex == item.index ? 'body-item-member-active' : ''"
           >
             <div class="body-item-member_index">
@@ -43,7 +43,7 @@
 
     <div
       class="body-item-list_label"
-      v-if="itemList && itemList.image.length != 0"
+      v-if="itemList.item && itemList.item.image.length != 0"
       @click="showLabel.image = !showLabel.image"
     >
       <span>图片内容：</span>
@@ -51,11 +51,11 @@
         <open-icon :change="showLabel.image" />
       </span>
     </div>
-    <template v-if="itemList && itemList.image.length != 0 && showLabel.image">
+    <template v-if="itemList.item && itemList.item.image.length != 0 && showLabel.image">
       <div
         @click.stop="checkedItem(item.index)"
         class="body-item-member"
-        v-for="(item, index) in itemList.image"
+        v-for="(item, index) in itemList.item.image"
         :class="activeIndex == item.index ? 'body-item-member-active' : ''"
       >
         <div class="body-item-member_index">
@@ -110,10 +110,10 @@ const settingItem = (index: number, item: string, type: string) => {
     if (activeIndex.value === index) {
       activeIndex.value = -1
     }
-    let itemIdx = itemTypeIndexList.findIndex((v: any) => {
+    let itemIdx = itemTypeIndexList.value.findIndex((v: any) => {
       return Number(v.index) == Number(index)
     })
-    itemTypeIndexList.splice(itemIdx, 1)
+    itemTypeIndexList.value.splice(itemIdx, 1)
     return
   } else {
     activeIndex.value = index

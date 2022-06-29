@@ -31,10 +31,10 @@ watch(
   activeIndex,
   (newV, oldV) => {
     if (newV !== -1) {
-      if (itemList.text.length != 0) {
-        let idx = itemList.text.findIndex((v) => v.index === newV)
+      if (itemList.value.item.text.length != 0) {
+        let idx = itemList.value.item.text.findIndex((v) => v.index === newV)
         if (idx !== -1) {
-          itemObject.value = itemList.text[idx]
+          itemObject.value = itemList.value.item.text[idx]
           textData.value = itemObject.value
         }
       }

@@ -32,10 +32,10 @@ watch(
   activeIndex,
   (newV, oldV) => {
     if (newV !== -1) {
-      if (itemList.image.length != 0) {
-        let idx = itemList.image.findIndex((v) => v.index === newV)
+      if (itemList.value.item.image.length != 0) {
+        let idx = itemList.value.item.image.findIndex((v) => v.index === newV)
         if (idx !== -1) {
-          itemObject.value = itemList.image[idx]
+          itemObject.value = itemList.value.item.image[idx]
           imageData.value = itemObject.value
         }
       }

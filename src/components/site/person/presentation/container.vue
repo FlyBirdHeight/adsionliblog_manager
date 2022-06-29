@@ -83,17 +83,16 @@ const handleObj = reactive(new HandlePresentation())
  * @property {boolean} showUploadImage 显示上传图片框
  */
 const pageInfo = reactive({
-  currentPage: 0,
+  currentPage: 1,
   pageCount: 1,
-  pageMap: [],
 })
-const pageMap = reactive(handleObj.pageList.get(pageInfo.currentPage))
+const pageMap = ref(handleObj.currentPageData)
 const activeItem = ref<number>(-1)
-const itemTypeIndexList = reactive<{ index: number; type: string }[]>(handleObj.itemTypeIndexList)
+const itemTypeIndexList = ref<{ index: number; type: string }[]>(handleObj.itemTypeIndexList)
 const clickTime = ref<number>(0)
 const presentationBody = ref()
 const showUploadImage = ref<boolean>(false)
-provide('itemList', pageMap.item)
+provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
 provide('handleObj', handleObj)
@@ -102,7 +101,7 @@ const handleAction = async (action: string, options: any) => {
     showUploadImage.value = true
     return
   }
-  await handleToolAction(pageMap, handleObj, action, options, activeItem)
+  await handleToolAction(handleObj, action, options, activeItem, pageInfo)
 }
 /**
  * @method emitActive 设置选中项的index
@@ -126,7 +125,7 @@ const changeStatus = (val: number) => {
   clickTime.value = val
 }
 const setPage = (val: any, type: string) => {
-  setPageMap(handleObj, type, val, pageMap)
+  setPageMap(handleObj, type, val, pageMap.value)
 }
 /**
  * @method closeDialog 关闭弹窗
@@ -153,19 +152,32 @@ const handleKey = (event: Event) => {
 
   handleObj.keyInput(keyDownData, {
     activeIndex: activeItem,
-    itemList: itemTypeIndexList,
+    itemList: itemTypeIndexList.value,
     currentPage: pageInfo.currentPage,
   })
 }
 watch(
-  () => pageMap.setting.background,
+  () => pageMap.value.setting.background,
   (newV, oldV) => {
     analysisBackground(newV, presentationBody.value)
   }
 )
 watch(itemTypeIndexList, (newV, oldV) => {
-  console.log(newV);
+  if (
+    newV.findIndex((v) => {
+      return v.index === activeItem.value
+    }) === -1
+  ) {
+    activeItem.value = -1
+  }
 })
+watch(
+  () => pageInfo.currentPage,
+  (newV, oldV) => {
+    pageMap.value = handleObj.currentPageData
+    itemTypeIndexList.value = handleObj.itemTypeIndexList
+  }
+)
 </script>
 
 <style lang="scss" scoped>

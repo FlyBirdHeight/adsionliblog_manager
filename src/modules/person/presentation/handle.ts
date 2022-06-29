@@ -30,6 +30,7 @@ import { keyInput } from "@/modules/person/presentation/utils/key_input";
 import { addItem, deleteItem, updateItem, updateBody } from "@/modules/person/presentation/utils/event";
 import { handleUndo } from '@/modules/person/presentation/utils/undo';
 import { handleRecovery } from '@/modules/person/presentation/utils/recovery';
+import { setItemTypeIndexList } from './utils/utils';
 const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem, updateBody];
 class HandlePresentation {
     pageList: Map<number, Type.Page>;
@@ -39,17 +40,17 @@ class HandlePresentation {
     undoStack: Type.Action[];
     recoveryStack: Type.Action[];
     copyData: Type.CopyObj | null;
-    itemTypeIndexList: { index: number; type: string }[];
+    itemTypeIndexList: { index: string; type: string }[];
     currentPageData: Type.Page | null;
     constructor() {
         this.pageList = new Map();
-        this.currentPage = 0;
+        this.currentPage = 1;
         this.pickMember = null;
         this.actionStack = [];
         this.undoStack = [];
         this.recoveryStack = [];
         this.copyData = null;
-        this.pageList.set(0, getDefaultPageData());
+        this.pageList.set(1, getDefaultPageData());
         this.itemTypeIndexList = [];
         this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.registerFn();
@@ -64,25 +65,15 @@ class HandlePresentation {
         }
     }
 
-
     /**
      * @method addPage 添加页面
      */
     addPage() {
         let pageData: Type.Page = getDefaultPageData()
-        this.pageList.set(this.pageList.size, pageData);
+        let size = this.pageList.size + 1;
+        this.pageList.set(size, pageData);
         this.currentPage = this.pageList.size;
-        this.currentPageData = this.pageList.get(this.pageList.size) || null;
-        this.actionStack.push({
-            type: ActionType.PAGE_ACTION,
-            page: this.pageList.size - 1,
-            action: "add",
-            data: {
-                pre: null,
-                next: pageData
-            },
-            timeStamp: +new Date()
-        })
+        this.switchPageAction();
     }
 
     /**
@@ -93,9 +84,10 @@ class HandlePresentation {
         if (this.pageList.size === 1) {
             return false;
         }
-        let pageData = this.pageList.get(page);
-        if (page == this.pageList.size - 1) {
+        if (page == this.pageList.size) {
             this.pageList.delete(page);
+            this.currentPage = page - 1;
+            this.currentPageData = this.pageList.get(this.currentPage) || null;
             return true;
         }
         this.pageList.delete(page);
@@ -106,17 +98,59 @@ class HandlePresentation {
                 this.pageList.delete(i);
             }
         }
-        this.actionStack.push({
-            type: ActionType.PAGE_ACTION,
-            page: page,
-            action: "delete",
-            data: {
-                pre: pageData || null,
-                next: null
-            },
-            timeStamp: +new Date()
-        })
+        this.currentPage = page;
+        this.switchPageAction();
         return true;
+    }
+    /**
+     * @method goFirst 前往首页
+     */
+    goFirst() {
+        if (this.currentPage == 1) {
+            return;
+        }
+        this.currentPage = 1;
+        this.switchPageAction();
+    }
+
+    /**
+     * @method goEnd 前往最后一页
+     */
+    goEnd() {
+        if (this.currentPage == this.pageList.size) {
+            return;
+        }
+        this.currentPage = this.pageList.size;
+        this.switchPageAction();
+    }
+    /**
+     * @method goPre 前往上一页
+     */
+    goPre() {
+        if (this.pageList.size === 1) {
+            return;
+        }
+        if (this.currentPage == 1) {
+            this.currentPage = this.pageList.size;
+        } else {
+            this.currentPage -= 1;
+        }
+        this.switchPageAction();
+    }
+
+    /**
+     * @method goNext 前往下一页
+     */
+    goNext() {
+        if (this.pageList.size === 1) {
+            return;
+        }
+        if (this.currentPage == this.pageList.size) {
+            this.currentPage = 1
+        } else {
+            this.currentPage += 1
+        }
+        this.switchPageAction();
     }
 
     /**
@@ -162,7 +196,22 @@ class HandlePresentation {
 
         handleRecovery.call(this, action);
     }
-
+    /**
+     * @method switchPageAction 切换页面时，执行的内容
+     */
+    switchPageAction() {
+        this.currentPageData = this.pageList.get(this.currentPage) || null;
+        this.itemTypeIndexList = setItemTypeIndexList(this.currentPageData || null);
+        this.clearStack();
+    }
+    /**
+     * @method clearStack 切换页面时，清空栈
+     */
+    clearStack() {
+        this.actionStack = [];
+        this.undoStack = [];
+        this.recoveryStack = [];
+    }
     /**
      * Generates a GUID string.
      * @returns {string} The generated GUID.
@@ -179,7 +228,7 @@ class HandlePresentation {
     }
 
     getTypeList(type: string) {
-        let pageData: any = this.pageList.get(this.currentPage);
+        let pageData: any = this.currentPageData;
         let typeList = pageData.item[type];
 
         return {

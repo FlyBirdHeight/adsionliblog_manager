@@ -1,3 +1,5 @@
+import { Page } from '../type';
+
 const setItemData = (style: any, updateData: any) => {
     let oldData: any = {}
     for (let key of Reflect.ownKeys(updateData)) {
@@ -37,8 +39,40 @@ const findTypeIdx = (index: any, itemList: any[]) => {
     return idx;
 }
 
+const setItemTypeIndexList = (currentPage: Page | null): { index: string, type: string }[] => {
+    if (!currentPage) {
+        return []
+    }
+    let item = currentPage.item;
+    let returnData: { index: string, type: string }[] = [];
+    if (item.count === 0) {
+        return returnData;
+    }
+    for (let text of item.text) {
+        returnData.push({
+            index: text.index,
+            type: 'text'
+        })
+    }
+    for (let image of item.image) {
+        returnData.push({
+            index: image.index,
+            type: "image"
+        })
+    }
+    for (let code of item.code) {
+        returnData.push({
+            index: code.index,
+            type: "code"
+        })
+    }
+
+    return returnData;
+}
+
 export {
     setItemData,
     findTypeIdx,
-    setUpdateData
+    setUpdateData,
+    setItemTypeIndexList
 }
