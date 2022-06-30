@@ -84,7 +84,7 @@ const setItemTypeIndexList = (currentPage: Page | null): { index: string, type: 
 /**
  * @method generatePageImage 生成page的图片内容
  */
-const generatePageImage = (dom: any) => {
+const generatePageImage = async (dom: any, page: number, pageImageList: any[]) => {
     function changeToBlob(blob: any) {
         let arr = blob.split(','),
             type = arr[0].match(/:(.*?);/)[1],
@@ -98,15 +98,22 @@ const generatePageImage = (dom: any) => {
             type: type,
         })
     }
-    html2canvas(dom, {
-        height: dom.getBoundingClientRect().height,
+    let canvas = await html2canvas(dom, {
         windowHeight: dom.getBoundingClientRect().height,
-    }).then((canvas) => {
-        let dataURL = canvas.toDataURL('image/png')
-        let blob = changeToBlob(dataURL)
-        let url = URL.createObjectURL(blob)
-        window.open(url)
+        logging: false,
+        useCORS: true,
+        scale: 0.3,
+        width: dom.getBoundingClientRect().width,
+        height: dom.getBoundingClientRect().height
     })
+    let dataURL = canvas.toDataURL('image/png')
+    let blob = changeToBlob(dataURL)
+    let url = URL.createObjectURL(blob)
+    let idx = pageImageList.findIndex(v => {
+        return v.page == page;
+    })
+    idx == -1 ? pageImageList.push({ page, image: url }) : pageImageList[idx].image = url;
+    pageImageList.sort((a: any, b: any) => a.page - b.page);
 }
 
 

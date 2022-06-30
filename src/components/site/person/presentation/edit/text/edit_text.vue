@@ -51,8 +51,8 @@ watch(
   margin-top: 10px;
   .edit-text-font {
     padding: 3px;
-    border: 1px solid #e4e7ed;
-    border-radius: 5px;
+    // border: 1px solid #e4e7ed;
+    // border-radius: 5px;
     .text-font_header {
       @include header();
       line-height: 35px;

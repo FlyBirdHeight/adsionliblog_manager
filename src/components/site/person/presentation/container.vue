@@ -11,7 +11,7 @@
         <div v-else class="toolbar-divide"></div>
       </div>
     </div>
-    <div class="presentation-edit" @keyup.stop="handleKey">
+    <div class="presentation-edit" @keyup.stop="handleKey" v-load="changePage" element-loading-text="正在切换">
       <div
         class="presentation_body"
         tabindex="-1"
@@ -56,7 +56,7 @@
   ></edit-body-image-setting>
 </template>
 <script lang="ts">
-import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive } from 'vue'
+import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
 import { analysisBackground, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
@@ -73,7 +73,7 @@ import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
 import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
-import { generatePageImage } from '../../../../modules/person/presentation/utils/utils'
+import { generatePageImage } from '@/modules/person/presentation/utils/utils'
 
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
@@ -97,11 +97,17 @@ const clickTime = ref<number>(0)
 const presentationBody = ref()
 const showUploadImage = ref<boolean>(false)
 const pageImage = ref([])
+const changePage = ref<boolean>(false)
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
 provide('handleObj', handleObj)
 provide('pageInfo', pageInfo)
+provide('pageImage', pageImage)
+onMounted(() => {
+  generatePageImage(document.getElementById('presentation_body'), pageInfo.currentPage, pageImage.value)
+})
+
 const handleAction = async (action: string, options: any) => {
   if (action === 'addImage' && !options) {
     showUploadImage.value = true
@@ -180,9 +186,22 @@ watch(itemTypeIndexList, (newV, oldV) => {
 watch(
   () => pageInfo.currentPage,
   (newV, oldV) => {
-    pageMap.value = handleObj.currentPageData
-    // generatePageImage(document.getElementById('presentation_body'))
-    itemTypeIndexList.value = handleObj.itemTypeIndexList
+    changePage.value = true
+    activeItem.value = -1
+    nextTick(async () => {
+      pageMap.value = handleObj.currentPageData
+      if (handleObj.pageList.get(oldV).isEdit) {
+        await generatePageImage(document.getElementById('presentation_body'), oldV, pageImage.value)
+        handleObj.pageList.get(oldV).isEdit = false
+      }
+      itemTypeIndexList.value = handleObj.itemTypeIndexList
+      nextTick(async () => {
+        if (pageImage.value.findIndex((v) => v.page === newV) == -1 || handleObj.pageList.get(newV).isEdit) {
+          await generatePageImage(document.getElementById('presentation_body'), newV, pageImage.value)
+        }
+        changePage.value = false
+      })
+    })
   }
 )
 </script>
@@ -190,7 +209,7 @@ watch(
 <style lang="scss" scoped>
 .presentation-container {
   height: 100%;
-  width: 100%;
+  width: 1200px;
   .presentation-toolbar {
     height: 40px;
     width: 100%;
@@ -219,16 +238,18 @@ watch(
     display: flex;
     width: 100%;
     justify-content: flex-start;
-    height: 700px;
+    height: 600px;
     border-bottom: 1px solid #dcdfe6;
     .presentation_body {
-      width: calc(100% - 300px);
+      width: 900px;
       overflow: hidden;
       height: 100%;
       position: relative;
       outline: none;
+      flex-shrink: 0;
     }
     .persentation_edit-tool {
+      flex-shrink: 0;
       width: 300px;
       height: 100%;
       border-left: 1px solid #dcdfe6;

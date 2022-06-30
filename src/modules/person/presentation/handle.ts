@@ -18,10 +18,11 @@ const getDefaultPageData = (): Type.Page => {
                 config: null,
             },
             resolution: {
-                x: 1600,
-                y: 900,
+                x: 900,
+                y: 600,
             },
         },
+        isEdit: false
     }
 }
 import { addTextArea } from "@/modules/person/presentation/text/text";
@@ -152,6 +153,17 @@ class HandlePresentation {
         }
         this.switchPageAction();
     }
+    /**
+     * @method goPage 前往指定页数
+     * @param {number} page 页码
+     */
+    goPage(page: number) {
+        if (page < 0 || page > this.pageList.size) {
+            return
+        }
+        this.currentPage = page;
+        this.switchPageAction();
+    }
 
     /**
      * @method revokeAction 撤销动作
@@ -200,8 +212,14 @@ class HandlePresentation {
      * @method switchPageAction 切换页面时，执行的内容
      */
     switchPageAction() {
+        if ((this.actionStack.length == 0 && this.undoStack.length != 0 && this.recoveryStack.length != 0) || this.actionStack.length != 0) {
+            this.currentPageData!.isEdit = true;
+        } else {
+            this.currentPageData!.isEdit = false;
+        }
         this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.itemTypeIndexList = setItemTypeIndexList(this.currentPageData || null);
+
         this.clearStack();
     }
     /**

@@ -111,7 +111,7 @@ watch(activeIndex, (newV, oldV) => {
 <style lang="scss" scoped>
 .editTool {
   height: 100%;
-  padding: 5px;
+  // padding: 5px;
   .editTool-header {
     height: 45px;
     font-size: 13px;

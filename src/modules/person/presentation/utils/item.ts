@@ -133,5 +133,6 @@ const handleToolAction = async (handleObj: any, action: string, options: any, ac
 export {
     setPageMap,
     handleToolAction,
-    analysisBackground
+    analysisBackground,
+    setPage
 }

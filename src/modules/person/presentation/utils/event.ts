@@ -65,6 +65,7 @@ const deleteItem = function (this: any, index: any, type: string, record: boolea
     if (record) {
         recordAction.call(this, type, index, 'delete', JSON.parse(JSON.stringify(preV[0])), null)
     }
+
     return true;
 }
 /**

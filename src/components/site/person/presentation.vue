@@ -25,7 +25,7 @@ import PresentationContainer from '@/components/site/person/presentation/contain
   flex-direction: column;
   .setting {
     flex-shrink: 1;
-    width: 100%;
+    width: 1200px;
     height: auto;
     box-shadow: 0px -15px 15px 3px rgba(0, 0, 0, 0.08);
     margin-bottom: 50px;
