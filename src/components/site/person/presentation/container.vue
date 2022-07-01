@@ -113,6 +113,17 @@ const handleAction = async (action: string, options: any) => {
     showUploadImage.value = true
     return
   }
+  if (action === 'deletePage') {
+    let idx = pageImage.value.findIndex((v) => v.page === pageInfo.currentPage)
+    pageImage.value.splice(idx, 1)
+    pageImage.value.forEach((v) => {
+      if (v.page > pageInfo.currentPage) {
+        v.page -= 1
+      }
+    })
+  }
+  console.log(pageImage)
+
   await handleToolAction(handleObj, action, options, activeItem, pageInfo)
 }
 /**
@@ -190,7 +201,7 @@ watch(
     activeItem.value = -1
     nextTick(async () => {
       pageMap.value = handleObj.currentPageData
-      if (handleObj.pageList.get(oldV).isEdit) {
+      if (handleObj.pageList.has(oldV) && handleObj.pageList.get(oldV).isEdit) {
         await generatePageImage(document.getElementById('presentation_body'), oldV, pageImage.value)
         handleObj.pageList.get(oldV).isEdit = false
       }
@@ -209,7 +220,7 @@ watch(
 <style lang="scss" scoped>
 .presentation-container {
   height: 100%;
-  width: 1200px;
+  width: 1300px;
   .presentation-toolbar {
     height: 40px;
     width: 100%;
@@ -238,10 +249,10 @@ watch(
     display: flex;
     width: 100%;
     justify-content: flex-start;
-    height: 600px;
+    height: 750px;
     border-bottom: 1px solid #dcdfe6;
     .presentation_body {
-      width: 900px;
+      width: 1000px;
       overflow: hidden;
       height: 100%;
       position: relative;

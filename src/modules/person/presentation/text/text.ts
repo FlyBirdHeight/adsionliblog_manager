@@ -7,7 +7,7 @@ const defaultStyle = (): TextStyle => {
             height: 100,
             angle: 0,
         },
-        layer: 900,
+        layer: 1000,
         scale: {
             x: 1,
             y: 1

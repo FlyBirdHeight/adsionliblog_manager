@@ -46,6 +46,11 @@ type Page = {
     isEdit: boolean
 }
 
+type ItemInfo = {
+    index: string,
+    type: string
+}
+
 type CopyObj = {
     index: string | number,
     type: string
@@ -56,5 +61,6 @@ export {
     CopyObj,
     Page,
     Action,
-    PageItem
+    PageItem,
+    ItemInfo
 }

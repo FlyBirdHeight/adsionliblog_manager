@@ -6,7 +6,7 @@ const imageInfo = (): ImageStyle => {
             height: 200,
             angle: 0,
         },
-        layer: 900,
+        layer: 1000,
         position: {
             x: 200,
             y: 100

@@ -1,13 +1,13 @@
 type TextStyle = {
     attribute: {
-        width: 200,
-        height: 100,
-        angle: 0,
+        width: number,
+        height: number,
+        angle: number,
     },
-    layer: 900,
+    layer: number,
     scale: {
-        x: 1,
-        y: 1
+        x: number,
+        y: number
     },
     backgroundColor: "transparent",
     border: {
@@ -15,13 +15,13 @@ type TextStyle = {
         color: "rgba(0,0,0,1)"
     },
     position: {
-        x: 200,
-        y: 100
+        x: number,
+        y: number
     },
     color: "rgba(0,0,0,1)",
     font: {
         style: "normal",
-        size: 22,
+        size: number,
         weight: "400",
         align: "center",
         family: "monospace"
@@ -36,11 +36,11 @@ type TextStyle = {
     animate: {
         join: {
             type: "none",
-            time: 0
+            time: number
         },
         left: {
             type: "none",
-            time: 0
+            time: number
         }
     }
 }

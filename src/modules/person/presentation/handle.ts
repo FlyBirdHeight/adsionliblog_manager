@@ -31,7 +31,8 @@ import { keyInput } from "@/modules/person/presentation/utils/key_input";
 import { addItem, deleteItem, updateItem, updateBody } from "@/modules/person/presentation/utils/event";
 import { handleUndo } from '@/modules/person/presentation/utils/undo';
 import { handleRecovery } from '@/modules/person/presentation/utils/recovery';
-import { setItemTypeIndexList } from './utils/utils';
+import { setItemTypeIndexList, setItemDataToLayer } from './utils/utils';
+import LayerHandle from './layer/layer';
 const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem, updateBody];
 class HandlePresentation {
     pageList: Map<number, Type.Page>;
@@ -43,6 +44,7 @@ class HandlePresentation {
     copyData: Type.CopyObj | null;
     itemTypeIndexList: { index: string; type: string }[];
     currentPageData: Type.Page | null;
+    layerSetting: LayerHandle;
     constructor() {
         this.pageList = new Map();
         this.currentPage = 1;
@@ -54,6 +56,7 @@ class HandlePresentation {
         this.pageList.set(1, getDefaultPageData());
         this.itemTypeIndexList = [];
         this.currentPageData = this.pageList.get(this.currentPage) || null;
+        this.layerSetting = new LayerHandle();
         this.registerFn();
     }
 
@@ -214,13 +217,16 @@ class HandlePresentation {
     switchPageAction() {
         if ((this.actionStack.length == 0 && this.undoStack.length != 0 && this.recoveryStack.length != 0) || this.actionStack.length != 0) {
             this.currentPageData!.isEdit = true;
+        } else if (this.recoveryStack.length != 0) {
+            this.currentPageData!.isEdit = true;
         } else {
             this.currentPageData!.isEdit = false;
         }
+        this.layerSetting.resetData();
         this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.itemTypeIndexList = setItemTypeIndexList(this.currentPageData || null);
-
         this.clearStack();
+        this.layerSetting.setLayerList(setItemDataToLayer(this.currentPageData))
     }
     /**
      * @method clearStack 切换页面时，清空栈

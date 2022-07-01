@@ -81,6 +81,37 @@ const setItemTypeIndexList = (currentPage: Page | null): { index: string, type: 
 
     return returnData;
 }
+const setItemDataToLayer = (currentPage: Page | null) => {
+    if (!currentPage) {
+        return [];
+    }
+    let item = currentPage.item;
+    let returnData: { layer: number, itemInfo: { index: string, type: string } }[] = [];
+    if (item.count === 0) {
+        return returnData;
+    }
+    for (let text of item.text) {
+        returnData.push({
+            layer: text!.style!.layer,
+            itemInfo: {
+                index: text.index,
+                type: 'text'
+            }
+        })
+    }
+    for (let image of item.image) {
+        returnData.push({
+            layer: image!.style!.layer,
+            itemInfo: {
+                index: image.index,
+                type: "image"
+            }
+        })
+    }
+
+
+    return returnData;
+}
 /**
  * @method generatePageImage 生成page的图片内容
  */
@@ -122,5 +153,6 @@ export {
     findTypeIdx,
     setUpdateData,
     setItemTypeIndexList,
-    generatePageImage
+    generatePageImage,
+    setItemDataToLayer
 }
