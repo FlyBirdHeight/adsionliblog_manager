@@ -94,6 +94,7 @@ declare module 'vue' {
     Open: typeof import('./src/components/utils/icon/open.vue')['default']
     Overtime: typeof import('./src/components/dialog/daily/overtime.vue')['default']
     Page_info: typeof import('./src/components/pages/write/page_info.vue')['default']
+    Page_list: typeof import('./src/components/site/person/presentation/pageShow/page_list.vue')['default']
     Pagination: typeof import('./src/components/utils/pagination.vue')['default']
     Presentation: typeof import('./src/components/site/person/presentation.vue')['default']
     Question_list: typeof import('./src/components/pages/learning_card/question_list.vue')['default']

@@ -11,8 +11,7 @@ module.exports = {
 
     // eslint-loader 是否在保存的时候检查
     lintOnSave: false,
-
-    productionSourceMap: true,
+    productionSourceMap: /production$/.test(process.env.npm_lifecycle_script) ? false : true,
 
     // webpack-dev-server 相关配置
     devServer: {
