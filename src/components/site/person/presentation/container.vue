@@ -122,7 +122,19 @@ const handleAction = async (action: string, options: any) => {
       }
     })
   }
-  console.log(pageImage)
+
+  if (action === 'setBottom' || action === 'setTop') {
+    if (activeItem.value === -1) {
+      return
+    }
+    let idx = itemTypeIndexList.value.findIndex((v) => {
+      return v.index === activeItem.value
+    })
+    if (idx !== -1) {
+      options = {}
+      options.itemInfo = JSON.parse(JSON.stringify(itemTypeIndexList.value[idx]))
+    }
+  }
 
   await handleToolAction(handleObj, action, options, activeItem, pageInfo)
 }

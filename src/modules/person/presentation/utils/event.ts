@@ -42,6 +42,11 @@ const recoveryToAction = function (this: any) {
 const addItem = function (this: any, index: number, type: string, data: any) {
     let pageData = this.pageList.get(this.currentPage);
     let typeList = pageData.item[type];
+    let layer = this.layerSetting.setTopLayer({
+        index: index,
+        type: type
+    }, 0);
+    data.style.layer = layer;
     typeList.push(data);
     pageData.item.count += 1;
     recordAction.call(this, type, index, 'add', null, JSON.parse(JSON.stringify(data)))

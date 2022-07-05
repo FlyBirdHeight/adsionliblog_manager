@@ -6,6 +6,7 @@
     @mouseleave.stop="dragMouseLeave"
     @click.stop="activeItem = activeIndex"
     @mousedown.stop="handleDrag"
+    :style="{ zIndex: resizeLayer }"
   >
     <div class="content" :style="domStyle.element">
       <slot></slot>
@@ -84,6 +85,7 @@ const resizeData = reactive(generateData())
 const emit = defineEmits(['changeStatus'])
 const childPropsData = ref()
 const handleObj = inject('handleObj')
+const resizeLayer = ref<number>(0)
 const domStyle = reactive({
   element: {},
   controls: {},
@@ -91,6 +93,7 @@ const domStyle = reactive({
 onMounted(() => {
   child.value = slots.default?.()[0]
   setResizeStyle(child, childType, resizeData, resizeElement.value.parentElement.getBoundingClientRect())
+  resizeLayer.value = resizeData.layer
   activeIndex.value = child.value.props.info.index
   childPropsData.value = child.value.props.info
 })
@@ -119,10 +122,13 @@ const handleDrag = (event) => {
     activeItem.value = activeIndex.value
   }
   const drag = dragDom(resizeData.offset, { x: event.pageX, y: event.pageY })
+  resizeLayer.value = handleObj.layerSetting.resizeLayer
+
   onDrag(resizeElement.value, drag, (timestamp) => {
     emit('changeStatus', timestamp)
     const position = { x: resizeData.offset.x, y: resizeData.offset.y }
     handleObj.updateItem(activeItem.value, childPropsData.value.type, { position })
+    resizeLayer.value = resizeData.layer
   })
 }
 const handleScale = (activeType: string, event: Event) => {
@@ -138,11 +144,13 @@ const handleScale = (activeType: string, event: Event) => {
     resizeData.scale.x = currentData.scaleX
     resizeData.scale.y = currentData.scaleY
   })
+  resizeLayer.value = handleObj.layerSetting.resizeLayer
   onDrag(resizeElement.value.parentElement, scaleDom, (timestamp) => {
     emit('changeStatus', timestamp)
     const position = { x: resizeData.offset.x, y: resizeData.offset.y }
     const scale = { x: resizeData.scale.x, y: resizeData.scale.y }
     handleObj.updateItem(activeItem.value, childPropsData.value.type, { position, scale }, 'scale')
+    resizeLayer.value = resizeData.layer
   })
 }
 
@@ -157,7 +165,7 @@ const handleRotate = (event) => {
       resizeData.attribute.angle = data.angle
     }
   )
-
+  resizeLayer.value = handleObj.layerSetting.resizeLayer
   onDrag(resizeElement.value.parentElement, rotateDom, (timestamp) => {
     emit('changeStatus', timestamp)
     handleObj.updateItem(
@@ -168,6 +176,7 @@ const handleRotate = (event) => {
       },
       'rotate'
     )
+    resizeLayer.value = resizeData.layer
   })
 }
 const updateResizeData = (style: any) => {
@@ -182,7 +191,10 @@ const updateResizeData = (style: any) => {
     angle: style.attribute.angle,
   }
   resizeData.scale = { x: style.scale.x, y: style.scale.y }
+  resizeData.layer = style.layer
+  resizeLayer.value = style.layer
 }
+
 watch(
   childPropsData,
   (newV, oldV) => {

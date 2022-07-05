@@ -11,7 +11,8 @@ module.exports = {
 
     // eslint-loader 是否在保存的时候检查
     lintOnSave: false,
-    productionSourceMap: /production$/.test(process.env.npm_lifecycle_script) ? false : true,
+    // productionSourceMap: /production$/.test(process.env.npm_lifecycle_script) ? false : true,
+    productionSourceMap: true,
 
     // webpack-dev-server 相关配置
     devServer: {
@@ -23,7 +24,7 @@ module.exports = {
         historyApiFallback: true,
         proxy: {
             '/api': {
-                target: 'https://adsionli-back.xslease.com/',
+                target: 'http://127.0.0.1:3000/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': '/'

@@ -259,6 +259,14 @@ class HandlePresentation {
             pageData, typeList
         }
     }
+
+    getItemLayer(type: string, index: string) {
+        let { typeList } = this.getTypeList(type);
+        let itemDataIdx = typeList.findIndex((v: any) => {
+            return v.index === index;
+        })
+        return typeList[itemDataIdx].style.layer;
+    }
 }
 
 export default HandlePresentation;

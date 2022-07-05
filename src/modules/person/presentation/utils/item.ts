@@ -123,6 +123,24 @@ const handleToolAction = async (handleObj: any, action: string, options: any, ac
         setPage(pageInfo, handleObj)
     }
 
+    if (action === 'setBottom') {
+        let layer = handleObj.layerSetting.setBottomLayer(
+            options.itemInfo,
+            handleObj.getItemLayer(options.itemInfo.type, options.itemInfo.index)
+        )
+        handleObj.updateItem(options.itemInfo.index, options.itemInfo.type, {
+            layer
+        })
+    } else if (action === 'setTop') {
+        let layer = handleObj.layerSetting.setTopLayer(
+            options.itemInfo,
+            handleObj.getItemLayer(options.itemInfo.type, options.itemInfo.index)
+        )
+        handleObj.updateItem(options.itemInfo.index, options.itemInfo.type, {
+            layer
+        })
+    }
+
 
     if (editAction) {
         activeIndex.value = activeItem;

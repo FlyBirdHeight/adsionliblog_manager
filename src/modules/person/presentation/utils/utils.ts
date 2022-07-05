@@ -81,6 +81,10 @@ const setItemTypeIndexList = (currentPage: Page | null): { index: string, type: 
 
     return returnData;
 }
+/**
+ * @method setItemDataToLayer 设置当前页面的层级结构
+ * @param currentPage 
+ */
 const setItemDataToLayer = (currentPage: Page | null) => {
     if (!currentPage) {
         return [];

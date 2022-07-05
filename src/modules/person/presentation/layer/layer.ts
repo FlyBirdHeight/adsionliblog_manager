@@ -10,9 +10,11 @@ class LayerHandle {
     layerList: Map<number, Layer>;
     layerLimit: number;
     layerSave: number[];
+    resizeLayer: number;
     constructor() {
         this.startLayer = 1000;
         this.endLayer = Math.pow(2, 20);
+        this.resizeLayer = Math.pow(2, 20) + 1;
         this.layerList = new Map();
         this.currentMinLayer = Math.pow(2, 20) + 1;
         this.currentMaxLayer = 0;
@@ -43,6 +45,9 @@ class LayerHandle {
         if (layerData!.item.length === 0) {
             this.deleteLayer(layer);
         }
+        console.log(this.layerSave);
+        console.log(this.layerList);
+
     }
     /**
      * @method setItem 往对应层级下添加item
@@ -92,6 +97,8 @@ class LayerHandle {
             this.initLayer();
             let layer = this.layerList.get(this.currentMaxLayer);
             layer!.item.push(itemInfo);
+
+            return this.currentMaxLayer;
         } else if (layer != 0 && this.layerList.has(layer)) {
             this.removeItem(layer, itemInfo.index)
         }
@@ -149,11 +156,14 @@ class LayerHandle {
     setBottomLayer(itemInfo: { index: string, type: string }, layer: number) {
         if (this.layerList.size === 0) {
             this.initLayer();
-            let layer = this.layerList.get(this.currentMaxLayer);
+            let layer = this.layerList.get(this.currentMinLayer);
             layer!.item.push(itemInfo);
+
+            return this.currentMinLayer;
         } else if (layer != 0 && this.layerList.has(layer)) {
             this.removeItem(layer, itemInfo.index)
         }
+
         this.currentMinLayer = this.currentMinLayer - this.layerLimit;
         let newLayer = this.setLayer(this.currentMinLayer);
         newLayer!.item.push(itemInfo);
@@ -189,9 +199,6 @@ class LayerHandle {
                 this.currentMinLayer = item.layer
             }
         }
-
-        console.log(this.layerList, this.currentMinLayer, this.currentMaxLayer);
-        console.log(this.layerSave);
     }
 }
 
