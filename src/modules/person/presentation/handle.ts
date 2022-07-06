@@ -265,6 +265,7 @@ class HandlePresentation {
         let itemDataIdx = typeList.findIndex((v: any) => {
             return v.index === index;
         })
+
         return typeList[itemDataIdx].style.layer;
     }
 }

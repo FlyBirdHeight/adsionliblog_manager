@@ -45,6 +45,9 @@ class LayerHandle {
         if (layerData!.item.length === 0) {
             this.deleteLayer(layer);
         }
+        let len = this.layerSave.length;
+        this.currentMaxLayer = this.layerSave[len - 1];
+        this.currentMinLayer = this.layerSave[0];
     }
     /**
      * @method setItem 往对应层级下添加item
@@ -126,7 +129,6 @@ class LayerHandle {
      * @param {number} layer 当前层级 
      */
     moveUpLayer(itemInfo: { index: string, type: string }, layer: number) {
-        console.log('up', layer);
         if (layer === this.currentMaxLayer) {
             return this.setTopLayer(itemInfo, layer);
         } else {
@@ -134,14 +136,16 @@ class LayerHandle {
             if (idx == -1) {
                 return;
             }
+            if (this.layerSave.length > 1 && idx + 1 < this.layerSave.length) {
+                idx += 1;
+            }
+            let newLayer = this.layerSave[idx];
             this.removeItem(layer, itemInfo.index);
-            idx += 1;
-            console.log(idx, );
-            
-            this.setItem(itemInfo, idx);
-            console.log('up', this.layerSave[idx], idx);
 
-            return this.layerSave[idx];
+            let layerData = this.layerList.get(newLayer);
+            layerData?.item.push(itemInfo);
+
+            return newLayer;
         }
     }
     /**
@@ -150,19 +154,20 @@ class LayerHandle {
      * @param {number} layer 当前层级 
      */
     moveDownLayer(itemInfo: { index: string, type: string }, layer: number) {
-        console.log('down', layer);
         if (layer === this.currentMinLayer) {
             return this.setBottomLayer(itemInfo, layer);
         } else {
             let idx = findIdx.call(this, layer);
-            if (idx == -1) {
-                return;
+            if (idx <= 0) {
+                return layer;
             }
-            this.removeItem(layer, itemInfo.index);
             idx -= 1;
-            this.setItem(itemInfo, idx);
-            console.log('down', this.layerSave[idx]);
-            return this.layerSave[idx];
+            let newLayer = this.layerSave[idx];
+
+            this.removeItem(layer, itemInfo.index);
+            let layerData = this.layerList.get(newLayer);
+            layerData?.item.push(itemInfo);
+            return newLayer;
         }
     }
     /**

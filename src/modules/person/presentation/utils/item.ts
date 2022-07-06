@@ -21,12 +21,11 @@ const analysisBackground = (data: any, dom: any) => {
 }
 
 const handleLayerAction = function (action: string, options: any, handleObj: any) {
-    console.log(options);
-    
     let layer = handleObj.layerSetting[action](
         options.itemInfo,
         handleObj.getItemLayer(options.itemInfo.type, options.itemInfo.index)
     )
+    
     handleObj.updateItem(options.itemInfo.index, options.itemInfo.type, {
         layer
     })
