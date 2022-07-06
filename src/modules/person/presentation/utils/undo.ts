@@ -73,7 +73,14 @@ const undoItemEdit = function (this: any, action: Action) {
     let { typeList } = this.getTypeList(action.type);
     let idx = findTypeIdx(action.item_index, typeList);
     let style = typeList[idx].style;
-    setItemData(style, action.data?.pre);
+    let nextData: any = action.data?.next;
+    let preData: any = action.data?.pre;
+    if (Reflect.ownKeys(nextData).includes('layer')) {
+        this.layerSetting.removeItem(nextData.layer, action.item_index);
+        this.layerSetting.setItemLayer(preData.layer, { index: action.item_index, type: action.type })
+    }
+    console.log(this.layerSetting.layerList)
+    setItemData(style, preData);
 }
 
 const handleUndo = function (this: any, action: Action) {
