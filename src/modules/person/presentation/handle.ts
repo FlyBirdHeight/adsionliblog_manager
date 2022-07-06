@@ -94,10 +94,11 @@ class HandlePresentation {
             this.currentPageData = this.pageList.get(this.currentPage) || null;
             return true;
         }
-        this.pageList.delete(page);
+
         for (let i = page + 1; i < this.pageList.size + 1; i++) {
             let data = this.pageList.get(i);
             this.pageList.set(i - 1, data!);
+
             if (i == this.pageList.size) {
                 this.pageList.delete(i);
             }

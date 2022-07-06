@@ -79,7 +79,7 @@ const undoItemEdit = function (this: any, action: Action) {
         this.layerSetting.removeItem(nextData.layer, action.item_index);
         this.layerSetting.setItemLayer(preData.layer, { index: action.item_index, type: action.type })
     }
-    console.log(this.layerSetting.layerList)
+
     setItemData(style, preData);
 }
 

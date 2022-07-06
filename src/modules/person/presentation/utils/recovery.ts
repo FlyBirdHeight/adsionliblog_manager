@@ -83,7 +83,7 @@ const recoveryItemEdit = function (this: any, action: Action) {
         this.layerSetting.removeItem(preData.layer, action.item_index);
         this.layerSetting.setItemLayer(nextData.layer, { index: action.item_index, type: action.type })
     }
-    console.log(this.layerSetting.layerList)
+
     setItemData(style, nextData);
 }
 

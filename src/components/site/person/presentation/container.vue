@@ -197,6 +197,7 @@ watch(
     analysisBackground(newV, presentationBody.value)
   }
 )
+
 watch(itemTypeIndexList, (newV, oldV) => {
   if (
     newV.findIndex((v) => {
@@ -225,6 +226,14 @@ watch(
         changePage.value = false
       })
     })
+  }
+)
+watch(
+  () => handleObj.pageList.size,
+  (newV, oldV) => {
+    if (newV < oldV) {
+      pageMap.value = handleObj.currentPageData
+    }
   }
 )
 </script>

@@ -201,8 +201,12 @@ watch(
       updateTimer.value = performance.now()
       Object.assign(formData, newV.config)
     }
+  },
+  {
+    deep: true
   }
 )
+
 </script>
 
 <style lang="scss" scoped>
