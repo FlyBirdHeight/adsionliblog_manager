@@ -150,7 +150,20 @@ const generatePageImage = async (dom: any, page: number, pageImageList: any[]) =
     idx == -1 ? pageImageList.push({ page, image: url }) : pageImageList[idx].image = url;
     pageImageList.sort((a: any, b: any) => a.page - b.page);
 }
+/**
+ * @method setLayerToList 设置item的layer到layerSetting中，指定层级
+ * @param {itemInfo: {index: string, type: string}} itemInfo 控件信息
+ * @param {number} layer 层级
+ */
+const setLayerToList = function (this: any, itemInfo: { index: string, type: string }, layer: number, action: string = 'add') {
+    if (action == 'add') {
+        this.layerSetting.setItemLayer(layer, itemInfo);
+    } else {
+        this.layerSetting.removeItem(layer, itemInfo.index);
+    }
 
+    return true;
+}
 
 export {
     setItemData,
@@ -158,5 +171,6 @@ export {
     setUpdateData,
     setItemTypeIndexList,
     generatePageImage,
-    setItemDataToLayer
+    setItemDataToLayer,
+    setLayerToList
 }

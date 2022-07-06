@@ -45,9 +45,6 @@ class LayerHandle {
         if (layerData!.item.length === 0) {
             this.deleteLayer(layer);
         }
-        console.log(this.layerSave);
-        console.log(this.layerList);
-
     }
     /**
      * @method setItem 往对应层级下添加item
@@ -77,6 +74,21 @@ class LayerHandle {
         })
         this.setLayerSave(layer)
         return this.layerList.get(layer);
+    }
+    /**
+     * @method setItemLayer 设置item控件指定层级
+     * @param {number} layer 层级
+     * @param {itemInfo: {index: string, type: string}} itemInfo 控件详情 
+     */
+    setItemLayer(layer: number, itemInfo: { index: string, type: string }) {
+        if (this.layerList.has(layer)) {
+            let layerData = this.layerList.get(layer);
+            layerData?.item.push(itemInfo);
+            return;
+        }
+        let layerItem = this.setLayer(layer);
+        layerItem?.item.push(itemInfo);
+        return;
     }
     /**
      * @method deleteLayer 删除无效层级
@@ -114,6 +126,7 @@ class LayerHandle {
      * @param {number} layer 当前层级 
      */
     moveUpLayer(itemInfo: { index: string, type: string }, layer: number) {
+        console.log('up', layer);
         if (layer === this.currentMaxLayer) {
             return this.setTopLayer(itemInfo, layer);
         } else {
@@ -123,7 +136,10 @@ class LayerHandle {
             }
             this.removeItem(layer, itemInfo.index);
             idx += 1;
+            console.log(idx, );
+            
             this.setItem(itemInfo, idx);
+            console.log('up', this.layerSave[idx], idx);
 
             return this.layerSave[idx];
         }
@@ -134,6 +150,7 @@ class LayerHandle {
      * @param {number} layer 当前层级 
      */
     moveDownLayer(itemInfo: { index: string, type: string }, layer: number) {
+        console.log('down', layer);
         if (layer === this.currentMinLayer) {
             return this.setBottomLayer(itemInfo, layer);
         } else {
@@ -144,7 +161,7 @@ class LayerHandle {
             this.removeItem(layer, itemInfo.index);
             idx -= 1;
             this.setItem(itemInfo, idx);
-
+            console.log('down', this.layerSave[idx]);
             return this.layerSave[idx];
         }
     }

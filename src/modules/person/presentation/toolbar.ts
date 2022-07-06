@@ -37,13 +37,21 @@ const toolbarList: PresentationToolbar[] = [{
     handle: "",
     label: ""
 }, {
-    icon: "bringtobottom",
-    handle: "setBottom",
-    label: "置于底层"
-}, {
     icon: "bringtotop",
-    handle: "setTop",
+    handle: "setTopLayer",
     label: "置于顶层"
+}, {
+    icon: "shangyiyiceng1",
+    handle: "moveUpLayer",
+    label: "上移一层"
+}, {
+    icon: "xiayiyiceng1",
+    handle: "moveDownLayer",
+    label: "下移一层"
+}, {
+    icon: "bringtobottom",
+    handle: "setBottomLayer",
+    label: "置于底层"
 }, {
     icon: "fullscreen",
     handle: "fullScreen",
@@ -69,27 +77,27 @@ const toolbarList: PresentationToolbar[] = [{
     icon: "addpage",
     handle: "addPage",
     label: "新建页面"
-},{
+}, {
     icon: "delpage",
     handle: "deletePage",
     label: "删除页面"
-},{
+}, {
     icon: "jiantou_shangyiye",
     handle: "goFirst",
     label: "第一页"
-},{
+}, {
     icon: "shangyiye",
     handle: "goPre",
     label: "上一页"
-},{
+}, {
     icon: "xiayiye",
     handle: "goNext",
     label: "下一页"
-},{
+}, {
     icon: "jiantou_xiayiye",
     handle: "goEnd",
     label: "最后一页"
-},{
+}, {
     icon: "divide",
     handle: "",
     label: ""

@@ -123,7 +123,7 @@ const handleAction = async (action: string, options: any) => {
     })
   }
 
-  if (action === 'setBottom' || action === 'setTop') {
+  if (['setBottomLayer', 'setTopLayer', 'moveUpLayer', 'moveDownLayer'].includes(action)) {
     if (activeItem.value === -1) {
       return
     }

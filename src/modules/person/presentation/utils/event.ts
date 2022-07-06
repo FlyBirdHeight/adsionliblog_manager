@@ -67,6 +67,7 @@ const deleteItem = function (this: any, index: any, type: string, record: boolea
     }
     pageData.item.count -= 1;
     let preV = typeList.splice(idx, 1)
+    this.layerSetting.removeItem(preV[0].style.layer, preV[0].index)
     if (record) {
         recordAction.call(this, type, index, 'delete', JSON.parse(JSON.stringify(preV[0])), null)
     }

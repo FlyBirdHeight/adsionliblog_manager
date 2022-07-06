@@ -1,5 +1,5 @@
-import { Action } from "../type"
-import { findTypeIdx, setItemData } from './utils';
+import { Action, PageItem } from "../type"
+import { findTypeIdx, setItemData, setLayerToList } from './utils';
 
 /**
  * @author adsionli
@@ -20,6 +20,15 @@ const recoveryAdd = function (this: any, action: Action) {
         index: action.item_index,
         type
     });
+    if (['text', 'image'].includes(action.type)) {
+        let style = <PageItem>action.data?.next;
+        setLayerToList.call(
+            this,
+            { index: String(action!.item_index), type: action.type },
+            style.style.layer,
+            'add'
+        )
+    }
 }
 
 /**
@@ -40,6 +49,15 @@ const recoveryDelete = function (this: any, action: Action) {
     })
     if (itemTypeIdx != -1) {
         this.itemTypeIndexList.splice(itemTypeIdx, 1)
+    }
+    if (['text', 'image'].includes(action.type)) {
+        let style = <PageItem>action.data?.next;
+        setLayerToList.call(
+            this,
+            { index: String(action!.item_index), type: action.type },
+            style.style.layer,
+            'delete'
+        )
     }
 }
 

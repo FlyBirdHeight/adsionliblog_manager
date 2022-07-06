@@ -20,7 +20,17 @@ const analysisBackground = (data: any, dom: any) => {
     }
 }
 
-
+const handleLayerAction = function (action: string, options: any, handleObj: any) {
+    console.log(options);
+    
+    let layer = handleObj.layerSetting[action](
+        options.itemInfo,
+        handleObj.getItemLayer(options.itemInfo.type, options.itemInfo.index)
+    )
+    handleObj.updateItem(options.itemInfo.index, options.itemInfo.type, {
+        layer
+    })
+}
 
 /**
  * @method setPageMap 设置当前页保存数据
@@ -123,23 +133,10 @@ const handleToolAction = async (handleObj: any, action: string, options: any, ac
         setPage(pageInfo, handleObj)
     }
 
-    if (action === 'setBottom') {
-        let layer = handleObj.layerSetting.setBottomLayer(
-            options.itemInfo,
-            handleObj.getItemLayer(options.itemInfo.type, options.itemInfo.index)
-        )
-        handleObj.updateItem(options.itemInfo.index, options.itemInfo.type, {
-            layer
-        })
-    } else if (action === 'setTop') {
-        let layer = handleObj.layerSetting.setTopLayer(
-            options.itemInfo,
-            handleObj.getItemLayer(options.itemInfo.type, options.itemInfo.index)
-        )
-        handleObj.updateItem(options.itemInfo.index, options.itemInfo.type, {
-            layer
-        })
+    if (['setBottomLayer', 'setTopLayer', 'moveUpLayer', 'moveDownLayer'].includes(action)) {
+        handleLayerAction(action, options, handleObj);
     }
+
 
 
     if (editAction) {
