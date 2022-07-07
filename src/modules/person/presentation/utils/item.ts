@@ -19,18 +19,29 @@ const analysisBackground = (data: any, dom: any) => {
         dom.style.backgroundPosition = `${data.config.xPosition}% ${data.config.yPosition}%`
     }
 }
-
+/**
+ * @method handleLayerAction 处理层级相关的内容
+ * @param action 
+ * @param options 
+ * @param handleObj 
+ */
 const handleLayerAction = function (action: string, options: any, handleObj: any) {
     let layer = handleObj.layerSetting[action](
         options.itemInfo,
         handleObj.getItemLayer(options.itemInfo.type, options.itemInfo.index)
     )
-    
+
     handleObj.updateItem(options.itemInfo.index, options.itemInfo.type, {
         layer
     })
 }
-
+const handleChangePage = function (action: string, pageInfo: any, handleObj: any) {
+    if (handleObj.pageList.size == 1) {
+        return
+    }
+    handleObj[action]();
+    setPage(pageInfo, handleObj)
+}
 /**
  * @method setPageMap 设置当前页保存数据
  * @param handleObj 
@@ -81,7 +92,7 @@ const countChange: string[] = ['addImage', 'addTextArea']
  */
 const handleToolAction = async (handleObj: any, action: string, options: any, activeIndex: any, pageInfo: any) => {
     let activeItem, itemType;
-    const editAction: boolean = countChange.findIndex(v => v == action) != -1
+    const editAction: boolean = countChange.includes(action);
     if (action === 'addTextArea') {
         const text = handleObj.addTextArea()
         handleObj.addItem(text.index, 'text', text)
@@ -106,36 +117,30 @@ const handleToolAction = async (handleObj: any, action: string, options: any, ac
     } else if (action === 'deletePage') {
         handleObj.deletePage(handleObj.currentPage);
         setPage(pageInfo, handleObj)
-    } else if (action === 'goFirst') {
-        if (handleObj.pageList.size == 1) {
-            return
-        }
-        handleObj.goFirst();
-        setPage(pageInfo, handleObj)
-    } else if (action === 'goEnd') {
-        if (handleObj.pageList.size == 1) {
-            return
-        }
-        handleObj.goEnd();
-        setPage(pageInfo, handleObj)
-    } else if (action === 'goPre') {
-        if (handleObj.pageList.size == 1) {
-            return
-        }
-        handleObj.goPre();
-        setPage(pageInfo, handleObj)
-    } else if (action === 'goNext') {
-        if (handleObj.pageList.size == 1) {
-            return
-        }
-        handleObj.goNext();
-        setPage(pageInfo, handleObj)
+    }
+
+    if (['goFirst', 'goEnd', 'goPre', 'goNext'].includes(action)) {
+        handleChangePage(action, pageInfo, handleObj)
     }
 
     if (['setBottomLayer', 'setTopLayer', 'moveUpLayer', 'moveDownLayer'].includes(action)) {
         handleLayerAction(action, options, handleObj);
     }
 
+    if (action === 'fullScreen') {
+        handleObj.fullscreen.startup(options.dom)
+        let fullScreenChange = () => {
+            if (!handleObj.fullscreen.isFullscreen && handleObj.fullscreen.dom) {
+                console.log('closeFullScreen');
+                
+                handleObj.fullscreen.dom.style.flexDirection = 'column';
+                handleObj.fullscreen.dom.style.justifyContent = '';
+                handleObj.fullscreen.off('change', fullScreenChange)
+            }
+        }
+        handleObj.fullscreen.on('change', fullScreenChange)
+
+    }
 
 
     if (editAction) {

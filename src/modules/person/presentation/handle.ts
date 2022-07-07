@@ -33,6 +33,8 @@ import { handleUndo } from '@/modules/person/presentation/utils/undo';
 import { handleRecovery } from '@/modules/person/presentation/utils/recovery';
 import { setItemTypeIndexList, setItemDataToLayer } from './utils/utils';
 import LayerHandle from './layer/layer';
+import { default as FullScreen } from "./utils/full_screen";
+
 const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem, updateBody];
 class HandlePresentation {
     pageList: Map<number, Type.Page>;
@@ -45,6 +47,7 @@ class HandlePresentation {
     itemTypeIndexList: { index: string; type: string }[];
     currentPageData: Type.Page | null;
     layerSetting: LayerHandle;
+    fullscreen: FullScreen;
     constructor() {
         this.pageList = new Map();
         this.currentPage = 1;
@@ -57,6 +60,7 @@ class HandlePresentation {
         this.itemTypeIndexList = [];
         this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.layerSetting = new LayerHandle();
+        this.fullscreen = new FullScreen();
         this.registerFn();
     }
 

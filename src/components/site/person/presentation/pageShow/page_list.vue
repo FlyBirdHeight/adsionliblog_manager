@@ -1,20 +1,27 @@
 <template>
-  <el-scrollbar ref="pageShowScroll" :always="true" :height="210">
-    <div class="page-show" ref="pageShowList">
-      <div
-        class="page-show_item"
-        :class="pageInfo.currentPage === index + 1 ? 'page-show_item-active' : ''"
-        v-for="(item, index) of pageInfo.pageCount"
-        @click="changePage(index + 1)"
-        :ref="(el) => pageItemList.push(el)"
-      >
-        <div class="page-show_item-viewer">
-          <el-image v-if="pageImage.length != 0" style="width: 100%; height: 100%" :src="imageList[index]" fit="fill" />
+  <div style="max-height: 210px">
+    <el-scrollbar ref="pageShowScroll" :always="true" :height="210">
+      <div class="page-show" ref="pageShowList">
+        <div
+          class="page-show_item"
+          :class="pageInfo.currentPage === index + 1 ? 'page-show_item-active' : ''"
+          v-for="(item, index) of pageInfo.pageCount"
+          @click="changePage(index + 1)"
+          :ref="(el) => pageItemList.push(el)"
+        >
+          <div class="page-show_item-viewer">
+            <el-image
+              v-if="pageImage.length != 0"
+              style="width: 100%; height: 100%"
+              :src="imageList[index]"
+              fit="fill"
+            />
+          </div>
+          <div class="page-show_item-number">{{ index + 1 }}</div>
         </div>
-        <div class="page-show_item-number">{{ index + 1 }}</div>
       </div>
-    </div>
-  </el-scrollbar>
+    </el-scrollbar>
+  </div>
 </template>
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, inject, nextTick } from 'vue'

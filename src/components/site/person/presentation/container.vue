@@ -46,17 +46,17 @@
         <presentation-edit-tool @setPage="setPage"></presentation-edit-tool>
       </el-scrollbar>
     </div>
+    <edit-body-image-setting
+      :show="showUploadImage"
+      :savePath="'/preventation'"
+      :type="'image'"
+      @closeDialog="closeDialog"
+      @setImagePath="setImage"
+    ></edit-body-image-setting>
   </div>
-  <edit-body-image-setting
-    :show="showUploadImage"
-    :savePath="'/preventation'"
-    :type="'image'"
-    @closeDialog="closeDialog"
-    @setImagePath="setImage"
-  ></edit-body-image-setting>
 </template>
 <script lang="ts">
-import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted } from 'vue'
+import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted, inject } from 'vue';
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
 import { analysisBackground, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
@@ -77,6 +77,7 @@ import { generatePageImage } from '@/modules/person/presentation/utils/utils'
 
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
+const presentationContainer = inject('personPresentation')
 /**
  * @property {any} pageMap 当前Page的配置内容
  * @property {any} pageInfo 当前播放页的所有页面信息集合
@@ -135,7 +136,10 @@ const handleAction = async (action: string, options: any) => {
       options.itemInfo = JSON.parse(JSON.stringify(itemTypeIndexList.value[idx]))
     }
   }
-
+  if (action === 'fullScreen') {
+    options = {}
+    options.dom = presentationContainer.value
+  }
   await handleToolAction(handleObj, action, options, activeItem, pageInfo)
 }
 /**
@@ -242,6 +246,7 @@ watch(
 .presentation-container {
   height: 100%;
   width: 1300px;
+  background-color: #ffffff;
   .presentation-toolbar {
     height: 40px;
     width: 100%;
