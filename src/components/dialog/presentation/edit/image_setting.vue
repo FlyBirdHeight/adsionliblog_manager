@@ -6,6 +6,7 @@
     :title="title"
     :width="'400px'"
     :show="props.show"
+    :toBody="false"
     @closeDialog="closeDialog"
   >
     <template #mainBody>

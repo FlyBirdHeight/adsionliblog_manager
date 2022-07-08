@@ -88,11 +88,23 @@ const closeDialog = (type: string = '') => {
  */
 const learningCardContainer = ref()
 const buildGridLayout = () => {
+  let status = totalCount.value > pagination.page * pagination.size
   nextTick(() => {
     var msnry = new Masonery(learningCardContainer.value, {
       itemSelector: '.cardAbbreviation',
       horizontalOrder: true,
     })
+    let dom = cardScrollbar.value.wrap$
+    const height = dom.children[0].getBoundingClientRect().height
+    if (dom.clientHeight + dom.scrollTop < height) {
+      if (height - (dom.clientHeight + dom.scrollTop) < 50 && !showMore.value) {
+        showMore.value = status ? true : false
+      } else {
+        showMore.value = false
+      }
+    } else {
+      showMore.value = status ? true : false
+    }
   })
 }
 onMounted(async () => {

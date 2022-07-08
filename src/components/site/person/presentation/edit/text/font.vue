@@ -47,6 +47,7 @@
           size="small"
           style="width: 100px"
           v-model="textStyle.font.family"
+          :teleported="false"
           placeholder="选取字体"
           @change="handleText('font_family')"
         >
@@ -77,6 +78,7 @@
           v-if="textStyle.text.decoration.line == 'underline'"
           style="width: 100px"
           v-model="textStyle.text.decoration.style"
+          :teleported="false"
           @change="handleText('text_decoration_style')"
           placeholder="选取划线方式"
         >

@@ -116,7 +116,6 @@ class FullScreen {
                 return;
             }
             const exitFullScreen = () => {
-                
                 this.off('change', exitFullScreen);
                 resolve();
             }

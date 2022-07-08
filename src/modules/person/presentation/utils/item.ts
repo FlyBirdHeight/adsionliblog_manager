@@ -131,8 +131,6 @@ const handleToolAction = async (handleObj: any, action: string, options: any, ac
         handleObj.fullscreen.startup(options.dom)
         let fullScreenChange = () => {
             if (!handleObj.fullscreen.isFullscreen && handleObj.fullscreen.dom) {
-                console.log('closeFullScreen');
-                
                 handleObj.fullscreen.dom.style.flexDirection = 'column';
                 handleObj.fullscreen.dom.style.justifyContent = '';
                 handleObj.fullscreen.off('change', fullScreenChange)

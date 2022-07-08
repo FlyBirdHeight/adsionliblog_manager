@@ -102,6 +102,7 @@
       <div class="border-member">
         <div class="thridLabel">边框样式:</div>
         <el-select
+          :teleported="false"
           size="small"
           style="width: 60%"
           v-model="imageStyle.border.style"
@@ -130,6 +131,7 @@
       <el-select
         style="margin-top: 10px; width: 80%"
         multiple
+        :teleported="false"
         collapse-tags
         collapse-tags-tooltip
         v-model="imageStyle.style.setStyle"

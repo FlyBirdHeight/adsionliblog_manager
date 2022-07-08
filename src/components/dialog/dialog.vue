@@ -3,7 +3,7 @@
     v-model="showDialog"
     @close="closeDialog"
     :modal="props.modal"
-    :append-to-body="true"
+    :append-to-body="props.toBody"
     :title="props.title"
     :width="props.width"
     :draggable="props.draggable"
@@ -56,6 +56,10 @@ const props = defineProps({
   loadingText: {
     type: String,
     default: '正在请求',
+  },
+  toBody: {
+    type: Boolean,
+    default: true,
   },
 })
 const showDialog = ref<boolean>(false)

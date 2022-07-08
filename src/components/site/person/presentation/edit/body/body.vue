@@ -4,7 +4,7 @@
       <div class="bg-setting">
         <div class="label">背景设置：</div>
         <div class="bg-select">
-          <el-popover v-model:visible="checkedImage" placement="top" :width="160">
+          <el-popover v-model:visible="checkedImage" placement="top" :width="160" :teleported="false">
             <p style="font-size: 13px; font-weight: 500">选择添加背景图方式：</p>
             <div style="display: flex; justify-content: flex-start; align-items: center">
               <el-button size="small" type="primary" @click="setImageData('linkPath')">外链添加</el-button>
@@ -14,7 +14,7 @@
               <el-button size="small" @click="checkedImage = true">选择图片</el-button>
             </template>
           </el-popover>
-          <el-color-picker v-model="bgColor" show-alpha @change="changeBgColor" />
+          <el-color-picker :teleported="false" v-model="bgColor" show-alpha @change="changeBgColor" />
         </div>
       </div>
       <div class="bg-image-setting" v-show="bgImage !== ''">
