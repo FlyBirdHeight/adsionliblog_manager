@@ -23,6 +23,13 @@ module.exports = {
         hotOnly: true,
         historyApiFallback: true,
         proxy: {
+            // '/api': {
+            //     target: 'https://adsionli-back.xslease.com/',
+            //     changeOrigin: true,
+            //     pathRewrite: {
+            //         '^/api': '/'
+            //     }
+            // }
             '/api': {
                 target: 'http://127.0.0.1:3000/',
                 changeOrigin: true,

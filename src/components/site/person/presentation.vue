@@ -17,11 +17,7 @@ export default {
 import PresentationContainer from '@/components/site/person/presentation/container'
 const personPresentation = ref()
 provide('personPresentation', personPresentation)
-nextTick(() => {
-  personPresentation.value.addEventListener('keydown', (e) => {
-    console.log(e)
-  })
-})
+
 </script>
 <style lang="scss" scoped>
 .person-presentation {

@@ -98,6 +98,7 @@ const decorationStyle = [
         value: "dashed"
     }
 ]
+
 const addImage = function (this: any, url: string): Promise<ImageItem> {
     const setSize = (width: number, height: number) => {
         while (width > 700 || height > 700) {
@@ -110,30 +111,50 @@ const addImage = function (this: any, url: string): Promise<ImageItem> {
     }
     const index = this.guid();
     return new Promise(resolve => {
-        let image = new Image();
-        image.src = url;
-        let imgHeight = 0, imgWidth = 0;
-        let ratio = 1;
-        image.onload = function (e: any) {
-            imgHeight = e.path[0].naturalHeight;
-            imgWidth = e.path[0].naturalWidth;
-            ratio = Number((imgWidth / imgHeight).toFixed(3));
-            let style = imageInfo();
-            style.natural.width = imgWidth;
-            style.natural.height = imgHeight;
-            if (imgWidth > 700 || imgHeight > 700) {
-                ({ width: style.attribute.width, height: style.attribute.height } = setSize(imgWidth, imgHeight))
-            }
+        let xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.responseType = "blob";
+        xhr.onload = function () {
+            if (this.status === 200) {
+                let blob = this.response;
+                let localUrl = URL.createObjectURL(blob)
+                let image = new Image();
+                image.src = localUrl;
+                let imgHeight = 0, imgWidth = 0;
+                let ratio = 1;
+                image.onload = function (e: any) {
+                    imgHeight = e.path[0].naturalHeight;
+                    imgWidth = e.path[0].naturalWidth;
+                    ratio = Number((imgWidth / imgHeight).toFixed(3));
+                    let style = imageInfo();
+                    style.natural.width = imgWidth;
+                    style.natural.height = imgHeight;
+                    if (imgWidth > 700 || imgHeight > 700) {
+                        ({ width: style.attribute.width, height: style.attribute.height } = setSize(imgWidth, imgHeight))
+                    }
 
-            style.ratio = ratio;
-            resolve({
-                style,
-                url,
-                index: index,
-                ratio: true,
-                type: "image"
-            })
+                    style.ratio = ratio;
+                    console.log({
+                        style,
+                        url,
+                        localUrl,
+                        index: index,
+                        ratio: true,
+                        type: "image"
+                    });
+
+                    resolve({
+                        style,
+                        url,
+                        localUrl,
+                        index: index,
+                        ratio: true,
+                        type: "image"
+                    })
+                }
+            }
         }
+        xhr.send()
     })
 }
 

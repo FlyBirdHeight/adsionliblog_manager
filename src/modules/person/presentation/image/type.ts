@@ -56,6 +56,7 @@ type ImageItem = {
     index: string,
     url: string,
     ratio: true,
+    localUrl?: string,
     type: "image"
 }
 
