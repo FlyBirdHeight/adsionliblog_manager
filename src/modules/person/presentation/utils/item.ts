@@ -1,3 +1,5 @@
+import { localImage } from './utils';
+
 const clearBackgroundImage = (dom: any) => {
     dom.style.backgroundSize = null;
     dom.style.backgroundRepeat = null;
@@ -48,11 +50,15 @@ const handleChangePage = function (action: string, pageInfo: any, handleObj: any
  * @param {string} type 类型
  * @param val 
  */
-const setPageMap = (handleObj: any, type: string, val: any, pageMap: any) => {
+const setPageMap = async (handleObj: any, type: string, val: any, pageMap: any) => {
     let updateData = {
         data: '',
         type: '',
-        config: null
+        config: null,
+        image: {
+            url: "",
+            localUrl: ""
+        }
     }
     if (type === 'removeBackgroundImage') {
         handleObj.updateBody(updateData);
@@ -65,14 +71,19 @@ const setPageMap = (handleObj: any, type: string, val: any, pageMap: any) => {
         } else {
             updateData.type = 'color';
         }
-        updateData.data = val.val;
+        let localUrl: any = await localImage(val.val);
+        updateData.data = localUrl || val.val;
+        updateData.image = { url: val.val, localUrl };
         handleObj.updateBody(updateData);
     } else {
         updateData.config = val;
         updateData.data = pageMap.setting.background.data;
+        updateData.image = { url: pageMap.setting.background.image.url, localUrl: pageMap.setting.background.image.localUrl }
         updateData.type = 'image'
         handleObj.updateBody(updateData);
     }
+    console.log(updateData);
+
 }
 /**
  * @method setPage 设置page页面，主要在添加，删除页面，跳转页面使用

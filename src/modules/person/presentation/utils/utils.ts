@@ -164,7 +164,27 @@ const setLayerToList = function (this: any, itemInfo: { index: string, type: str
 
     return true;
 }
-
+/**
+ * @method localImage 本地化图片
+ * @param {string} url
+ */
+const localImage = (url: string) => {
+    return new Promise(resolve => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.responseType = "blob";
+        xhr.onload = function () {
+            if (this.status === 200) {
+                let blob = this.response;
+                let localUrl = URL.createObjectURL(blob)
+                resolve(localUrl);
+            } else {
+                resolve("")
+            }
+        }
+        xhr.send()
+    })
+}
 export {
     setItemData,
     findTypeIdx,
@@ -172,5 +192,6 @@ export {
     setItemTypeIndexList,
     generatePageImage,
     setItemDataToLayer,
-    setLayerToList
+    setLayerToList,
+    localImage
 }

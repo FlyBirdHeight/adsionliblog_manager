@@ -16,11 +16,25 @@ const getDefaultPageData = (): Type.Page => {
                 type: '',
                 data: '',
                 config: null,
+                image: {
+                    url: '',
+                    localUrl: ''
+                }
             },
             resolution: {
                 x: 900,
                 y: 600,
             },
+        },
+        animate: {
+            changePage: {
+                duration: 1500,
+                type: ''
+            },
+            item: {
+                enter: [],
+                leave: []
+            }
         },
         isEdit: false
     }

@@ -24,6 +24,23 @@ type Action = {
     timeStamp: number,
     itemEditType?: string
 }
+/**
+ * @type ItemAnimateList
+ * @property {number} duration 动画时长
+ * @property {string} itemIndex item标识
+ * @property {string} itemType item类型
+ * @property {string} action 进入还是出去
+ * @property {string} type 动画类型
+ * @property {number} index 执行顺序编号
+ */
+type ItemAnimateList = {
+    duration: number,
+    itemIndex: string,
+    itemType: string,
+    action: string,
+    type: string,
+    index: number
+}
 
 type Page = {
     item: {
@@ -34,15 +51,29 @@ type Page = {
     },
     setting: {
         background: {
-            type: '',
-            data: '',
+            type: string,
+            data: string,
             config: null,
+            image?: {
+                url: string,
+                localUrl: string
+            }
         },
         resolution: {
             x: number,
             y: number,
         },
     },
+    animate: {
+        changePage: {
+            duration: number,
+            type: string
+        },
+        item: {
+            enter: ItemAnimateList[],
+            leave: ItemAnimateList[]
+        }
+    }
     isEdit: boolean
 }
 

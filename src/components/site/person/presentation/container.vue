@@ -19,16 +19,12 @@
         id="presentation_body"
         @click.stop="handleClick"
       >
-        <template v-if="pageMap.item.text.length != 0">
-          <resize-element
-            @changeStatus="changeStatus"
-            @emitActive="emitActive"
-            :parent="'presentation_body'"
-            v-for="(text, index) of pageMap.item.text"
-            :key="text.index"
-          >
-            <presentation-text :info="text"></presentation-text>
-          </resize-element>
+        <template v-if="pageMap.item.text.length != 0" v-for="(text, index) of pageMap.item.text" :key="text.index">
+          <item-animation :play="runningItem">
+            <resize-element @changeStatus="changeStatus" @emitActive="emitActive" :parent="'presentation_body'">
+              <presentation-text :info="text"></presentation-text>
+            </resize-element>
+          </item-animation>
         </template>
         <template v-if="pageMap.item.image.length != 0">
           <resize-element
@@ -56,11 +52,12 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted, inject } from 'vue';
+import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted, inject } from 'vue'
 import { PresentationToolbar } from '@/modules/type/site/person/person'
 import { toolbarList } from '@/modules/person/presentation/toolbar'
 import { analysisBackground, setPageMap, handleToolAction } from '@/modules/person/presentation/utils/item'
 import HandlePresentation from '@/modules/person/presentation/handle'
+import { generatePageImage } from '@/modules/person/presentation/utils/utils'
 import { getHandleKeyDownData } from '@/modules/person/presentation/utils/key_input'
 export default {
   name: 'PresentationContainer',
@@ -73,8 +70,7 @@ import PresentationText from '@/modules/person/presentation/text/text.vue'
 import PresentationImage from '@/modules/person/presentation/image/image.vue'
 import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
-import { generatePageImage } from '@/modules/person/presentation/utils/utils'
-
+import ItemAnimation from '@/modules/person/presentation/animation/item_animation.vue'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
 const presentationContainer = inject('personPresentation')
@@ -99,6 +95,7 @@ const presentationBody = ref()
 const showUploadImage = ref<boolean>(false)
 const pageImage = ref([])
 const changePage = ref<boolean>(false)
+const runningItem = ref<boolean>(false)
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)

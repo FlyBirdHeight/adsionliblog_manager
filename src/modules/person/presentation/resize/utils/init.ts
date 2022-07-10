@@ -85,24 +85,24 @@ const setResizeStyle = (child: any, childType: any, resizeData: any, containerLa
     }
     childType.value = type;
 }
-/**
- * @method handleRotatePosition 处理旋转下的位置定位
- * @param {number} rotate 旋转角度
- * @param {number} actionType 动作
- */
-const handleRotatePosition = (rotate: number, actionType: number) => {
-    if (rotate > 337) {
-        return actionType;
-    }
-    let returnAction = actionType;
-    rotateType.forEach((v, i) => {
-        if (rotate >= v.min && rotate < v.max) {
-            returnAction += i;
-        }
-    })
+// /**
+//  * @method handleRotatePosition 处理旋转下的位置定位
+//  * @param {number} rotate 旋转角度
+//  * @param {number} actionType 动作
+//  */
+// const handleRotatePosition = (rotate: number, actionType: number) => {
+//     if (rotate > 337) {
+//         return actionType;
+//     }
+//     let returnAction = actionType;
+//     rotateType.forEach((v, i) => {
+//         if (rotate >= v.min && rotate < v.max) {
+//             returnAction += i;
+//         }
+//     })
 
-    return returnAction > 8 ? (returnAction - 8) : returnAction;
-}
+//     return returnAction > 8 ? (returnAction - 8) : returnAction;
+// }
 /**
  * @method getCursorType 获取cursor的鼠标按钮
  * @param {number} rotate
