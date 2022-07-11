@@ -1,24 +1,15 @@
 # adsionli_manager
+本项目主要是用于自己的一些内容管理和一些小功能的集合，大家随意使用，不过需要配合adsionli_back这个项目一起，因为还要有后端的接口
 
-## Project setup
-```
-npm install
-```
+## 主要内容(已完成)
+1. 学习闪卡
+2. 日程设置
+3. 图床文件可视化及文件上传
+4. 可视化简易PPT(未全部完成)
+5. 文章创建
+6. 标签分类创建
+7. 动态Menu加载
+8. 路由KeepAlive
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 备注
+后期会慢慢完善全部内容
