@@ -113,7 +113,6 @@ const setItemDataToLayer = (currentPage: Page | null) => {
         })
     }
 
-
     return returnData;
 }
 /**
@@ -151,20 +150,6 @@ const generatePageImage = async (dom: any, page: number, pageImageList: any[]) =
     pageImageList.sort((a: any, b: any) => a.page - b.page);
 }
 /**
- * @method setLayerToList 设置item的layer到layerSetting中，指定层级
- * @param {itemInfo: {index: string, type: string}} itemInfo 控件信息
- * @param {number} layer 层级
- */
-const setLayerToList = function (this: any, itemInfo: { index: string, type: string }, layer: number, action: string = 'add') {
-    if (action == 'add') {
-        this.layerSetting.setItemLayer(layer, itemInfo);
-    } else {
-        this.layerSetting.removeItem(layer, itemInfo.index);
-    }
-
-    return true;
-}
-/**
  * @method localImage 本地化图片
  * @param {string} url
  */
@@ -185,6 +170,21 @@ const localImage = (url: string) => {
         xhr.send()
     })
 }
+/**
+ * @method setLayerToList 设置item的layer到layerSetting中，指定层级
+ * @param {itemInfo: {index: string, type: string}} itemInfo 控件信息
+ * @param {number} layer 层级
+ */
+const setLayerToList = function (this: any, itemInfo: { index: string, type: string }, layer: number, action: string = 'add') {
+    if (action == 'add') {
+        this.layerSetting.setItemLayer(layer, itemInfo);
+    } else {
+        this.layerSetting.removeItem(layer, itemInfo.index);
+    }
+
+    return true;
+}
+
 export {
     setItemData,
     findTypeIdx,

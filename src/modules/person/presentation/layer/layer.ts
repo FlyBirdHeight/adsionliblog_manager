@@ -158,9 +158,7 @@ class LayerHandle {
             return this.setBottomLayer(itemInfo, layer);
         } else {
             let idx = findIdx.call(this, layer);
-            if (idx <= 0) {
-                return layer;
-            }
+
             idx -= 1;
             let newLayer = this.layerSave[idx];
 

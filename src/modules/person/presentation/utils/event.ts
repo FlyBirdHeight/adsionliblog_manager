@@ -33,6 +33,7 @@ const recoveryToAction = function (this: any) {
     }
     this.recoveryStack = [];
 }
+
 /**
  * @method addItem 添加item到页面中
  * @param index 标识
