@@ -1,6 +1,12 @@
 const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+const WorkboxPlugin = require('workbox-webpack-plugin')
+const workbox = new WorkboxPlugin.InjectManifest({
+    swSrc: "./src/modules/person/presentation_show/cache/cache.js",
+    swDest: "sw.js"
+})
+console.log(workbox);
 
 module.exports = {
     // 基本路径  3.6之前的版本时 baseUrl
@@ -23,20 +29,20 @@ module.exports = {
         hotOnly: true,
         historyApiFallback: true,
         proxy: {
-            '/api': {
-                target: 'https://adsionli-back.xslease.com/',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api': '/'
-                }
-            }
             // '/api': {
-            //     target: 'http://127.0.0.1:3000/',
+            //     target: 'https://adsionli-back.xslease.com/',
             //     changeOrigin: true,
             //     pathRewrite: {
             //         '^/api': '/'
             //     }
             // }
+            '/api': {
+                target: 'http://127.0.0.1:3000/',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            }
         },
     },
 
@@ -48,6 +54,7 @@ module.exports = {
             Components({
                 resolvers: [ElementPlusResolver()],
             }),
+            workbox
         ]
     },
 
