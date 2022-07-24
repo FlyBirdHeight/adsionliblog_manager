@@ -40,10 +40,12 @@ registerRoute(/^https:\/\/adsionli-back.xslease.com\/file\//, new CacheFirst({
         credentials: "omit"
     }
 }));
+
+precacheAndRoute(self.__WB_MANIFEST);
 // 更新时自动生效
 clientsClaim();
 
-// precacheAndRoute(self.__WB_MANIFEST);
+
 
 // 接口数据使用服务端数据
 // registerRoute(/^api/, new NetworkOnly());

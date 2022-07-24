@@ -5,6 +5,7 @@ const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 const workbox = new WorkboxPlugin.InjectManifest({
     swSrc: "./src/modules/person/presentation_show/cache/cache.js",
+    maximumFileSizeToCacheInBytes: 512 * 1024 * 1024,
     swDest: "sw.js"
 })
 
