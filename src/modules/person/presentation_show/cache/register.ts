@@ -10,6 +10,7 @@ export default function () {
             console.log('Service worker has been registered.')
         },
         cached(registration) {
+            console.log(registration)
             console.log('Content has been cached for offline use.')
         },
         updatefound(registration) {
