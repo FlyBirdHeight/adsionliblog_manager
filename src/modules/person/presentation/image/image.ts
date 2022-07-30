@@ -134,14 +134,6 @@ const addImage = function (this: any, url: string): Promise<ImageItem> {
                     }
 
                     style.ratio = ratio;
-                    console.log({
-                        style,
-                        url,
-                        localUrl,
-                        index: index,
-                        ratio: true,
-                        type: "image"
-                    });
 
                     resolve({
                         style,

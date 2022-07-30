@@ -72,6 +72,7 @@ import PresentationEditTool from '@/components/site/person/presentation/edit/edi
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
 import ItemAnimation from '@/modules/person/presentation/animation/item_animation.vue'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
+
 const handleObj = reactive(new HandlePresentation())
 const presentationContainer = inject('personPresentation')
 /**

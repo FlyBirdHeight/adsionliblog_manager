@@ -74,7 +74,8 @@ type Page = {
             leave: ItemAnimateList[]
         }
     }
-    isEdit: boolean
+    isEdit: boolean,
+    page_key?: string
 }
 
 type ItemInfo = {

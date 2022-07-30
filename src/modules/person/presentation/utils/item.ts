@@ -96,7 +96,6 @@ const setPage = (pageInfo: any, handleObj: any) => {
     pageInfo.currentPage = handleObj.currentPage;
 }
 
-
 const countChange: string[] = ['addImage', 'addTextArea']
 /**
  * @method handleToolAction 处理toolbar点击按钮事件
@@ -151,11 +150,16 @@ const handleToolAction = async (handleObj: any, action: string, options: any, ac
 
     }
 
+    if (action === 'save') {
+        handleObj.save();
+    }
 
     if (editAction) {
         activeIndex.value = activeItem;
         handleObj.itemTypeIndexList.push(itemType)
     }
+
+
 }
 
 export {

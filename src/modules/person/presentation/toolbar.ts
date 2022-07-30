@@ -101,6 +101,10 @@ const toolbarList: PresentationToolbar[] = [{
     icon: "divide",
     handle: "",
     label: ""
+},{
+    icon: "save1",
+    handle: "save",
+    label: "保存"
 }, {
     icon: "configure",
     handle: "setting",
