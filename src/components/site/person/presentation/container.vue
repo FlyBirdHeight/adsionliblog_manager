@@ -1,5 +1,5 @@
 <template>
-  <div class="presentation-container">
+  <div class="presentation-container" v-load="saveOrUpdateData" element-loading-text="正在保存/更新，请稍后">
     <page-list-show></page-list-show>
     <div class="presentation-toolbar">
       <div class="toolbal_list" v-for="item of toolbar">
@@ -83,6 +83,7 @@ const presentationContainer = inject('personPresentation')
  * @property {number} clickTime 鼠标抬起时的高精度事件记录，用于阻止相关事件执行
  * @property {boolean} showUploadImage 显示上传图片框
  * @property {Array} pageImage 保存page的样子的Image列表
+ * @property {boolean} saveOrUpdateData 用于控制保存或更新时的loading
  */
 const pageInfo = reactive({
   currentPage: 1,
@@ -97,13 +98,17 @@ const showUploadImage = ref<boolean>(false)
 const pageImage = ref([])
 const changePage = ref<boolean>(false)
 const runningItem = ref<boolean>(false)
+const saveOrUpdateData = ref<boolean>(false)
+const isSave = ref<boolean>(true)
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
 provide('handleObj', handleObj)
 provide('pageInfo', pageInfo)
 provide('pageImage', pageImage)
-onMounted(() => {
+onMounted(async () => {
+  await handleObj.getPresentationData()
+  pageMap.value = handleObj.currentPageData;
   generatePageImage(document.getElementById('presentation_body'), pageInfo.currentPage, pageImage.value)
 })
 
@@ -111,8 +116,7 @@ const handleAction = async (action: string, options: any) => {
   if (action === 'addImage' && !options) {
     showUploadImage.value = true
     return
-  }
-  if (action === 'deletePage') {
+  } else if (action === 'deletePage') {
     let idx = pageImage.value.findIndex((v) => v.page === pageInfo.currentPage)
     pageImage.value.splice(idx, 1)
     pageImage.value.forEach((v) => {
@@ -120,9 +124,7 @@ const handleAction = async (action: string, options: any) => {
         v.page -= 1
       }
     })
-  }
-
-  if (['setBottomLayer', 'setTopLayer', 'moveUpLayer', 'moveDownLayer'].includes(action)) {
+  } else if (['setBottomLayer', 'setTopLayer', 'moveUpLayer', 'moveDownLayer'].includes(action)) {
     if (activeItem.value === -1) {
       return
     }
@@ -133,12 +135,14 @@ const handleAction = async (action: string, options: any) => {
       options = {}
       options.itemInfo = JSON.parse(JSON.stringify(itemTypeIndexList.value[idx]))
     }
-  }
-  if (action === 'fullScreen') {
+  } else if (action === 'fullScreen') {
     options = {}
     options.dom = presentationContainer.value
+  } else if (action === 'save') {
+    saveOrUpdateData.value = true
   }
   await handleToolAction(handleObj, action, options, activeItem, pageInfo)
+  saveOrUpdateData.value = false
 }
 /**
  * @method emitActive 设置选中项的index

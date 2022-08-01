@@ -46,11 +46,12 @@ import { addItem, deleteItem, updateItem, updateBody } from "@/modules/person/pr
 import { handleUndo } from '@/modules/person/presentation/utils/undo';
 import { handleRecovery } from '@/modules/person/presentation/utils/recovery';
 import { setItemTypeIndexList, setItemDataToLayer } from './utils/utils';
+import getPresentationData from "./utils/get";
 import save from "@/modules/person/presentation/utils/save";
 import LayerHandle from './layer/layer';
 import { default as FullScreen } from "./utils/full_screen";
 
-const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem, updateBody, save];
+const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem, updateBody, save, getPresentationData];
 class HandlePresentation {
     pageList: Map<number, Type.Page>;
     currentPage: number;

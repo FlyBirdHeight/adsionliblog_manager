@@ -75,7 +75,8 @@ type Page = {
         }
     }
     isEdit: boolean,
-    page_key?: string
+    page_key?: string,
+    id?:number
 }
 
 type ItemInfo = {

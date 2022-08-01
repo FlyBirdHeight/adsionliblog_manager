@@ -41,8 +41,8 @@ const save = async function (this: any) {
     }
 
     let status = await axios.post("/api/setting/presentation/create/presentation", requestData);
-    console.log(status);
-    
+
+    return status;
 }
 
 

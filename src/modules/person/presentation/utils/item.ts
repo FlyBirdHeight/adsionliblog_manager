@@ -151,7 +151,7 @@ const handleToolAction = async (handleObj: any, action: string, options: any, ac
     }
 
     if (action === 'save') {
-        handleObj.save();
+        await handleObj.save();
     }
 
     if (editAction) {

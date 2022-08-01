@@ -139,10 +139,24 @@ const analysisCss = function (textInfo: TextStyle) {
     return returnCss;
 }
 
+const convertTextData = (textData: any): TextItem => {
+    let style = textData.config;
+    let data = textData.data;
+    let index = textData.item_index;
+    let type = textData.type;
+    return {
+        style,
+        data,
+        index,
+        type
+    }
+}
+
 export {
     addTextArea,
     analysisCss,
     defaultStyle,
     fontFamilyList,
-    decorationStyle
+    decorationStyle,
+    convertTextData
 }

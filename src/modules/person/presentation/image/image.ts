@@ -1,4 +1,5 @@
 import { ImageStyle, ImageItem } from './type';
+import { localImage } from '../utils/utils';
 const imageInfo = (): ImageStyle => {
     return {
         attribute: {
@@ -176,10 +177,27 @@ const analysisCss = (styleData: any, url: string) => {
     return returnCss;
 }
 
+const convertImageData = async (imageData: any) => {
+    let style = imageData.config;
+    let url = imageData.url;
+    let index = imageData.item_index;
+    let type = imageData.type;
+    let localUrl = await localImage(url);
+    return {
+        style,
+        url,
+        index,
+        ratio: true,
+        localUrl,
+        type
+    }
+}
+
 export {
     addImage,
     imageInfo,
     filterStyle,
     analysisCss,
-    decorationStyle
+    decorationStyle,
+    convertImageData
 }
