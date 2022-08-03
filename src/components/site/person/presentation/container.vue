@@ -1,5 +1,5 @@
 <template>
-  <div class="presentation-container" v-load="saveOrUpdateData" element-loading-text="正在保存/更新，请稍后">
+  <div class="presentation-container" v-load="saveOrUpdateData" :element-loading-text="loadingText">
     <page-list-show></page-list-show>
     <div class="presentation-toolbar">
       <div class="toolbal_list" v-for="item of toolbar">
@@ -100,6 +100,7 @@ const changePage = ref<boolean>(false)
 const runningItem = ref<boolean>(false)
 const saveOrUpdateData = ref<boolean>(false)
 const isSave = ref<boolean>(true)
+const loadingText = ref<string>('正在保存/更新，请稍后');
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
@@ -107,9 +108,16 @@ provide('handleObj', handleObj)
 provide('pageInfo', pageInfo)
 provide('pageImage', pageImage)
 onMounted(async () => {
-  await handleObj.getPresentationData()
-  pageMap.value = handleObj.currentPageData;
-  generatePageImage(document.getElementById('presentation_body'), pageInfo.currentPage, pageImage.value)
+  loadingText.value = '正在加载，请稍后'
+  saveOrUpdateData.value = true;
+  await handleObj.getPresentationData();
+  isSave.value = handleObj.save;
+  pageMap.value = handleObj.currentPageData
+  nextTick(async () => {
+    await generatePageImage(document.getElementById('presentation_body'), pageInfo.currentPage, pageImage.value)
+    saveOrUpdateData.value = false;
+    loadingText.value = '正在保存/更新，请稍后'
+  })
 })
 
 const handleAction = async (action: string, options: any) => {
@@ -197,6 +205,7 @@ const handleKey = (event: Event) => {
     currentPage: pageInfo.currentPage,
   })
 }
+
 watch(
   () => pageMap.value.setting.background,
   (newV, oldV) => {
@@ -245,54 +254,5 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.presentation-container {
-  height: 100%;
-  width: 1300px;
-  background-color: #ffffff;
-  .presentation-toolbar {
-    height: 40px;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    border-bottom: 1px solid #f2f3f5;
-    .toolbal_list span {
-      padding: 5px 10px;
-      margin: 0 3px;
-      cursor: pointer;
-    }
-    .toolbal_list span:hover {
-      border-radius: 5px;
-      color: #fff;
-      fill: #fff !important;
-      background-color: #409eff;
-    }
-    .toolbal_list .toolbar-divide {
-      border: 1px solid #f2f3f5;
-      height: 20px;
-      margin: auto;
-    }
-  }
-  .presentation-edit {
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
-    height: 750px;
-    border-bottom: 1px solid #dcdfe6;
-    .presentation_body {
-      width: 1000px;
-      overflow: hidden;
-      height: 100%;
-      position: relative;
-      outline: none;
-      flex-shrink: 0;
-    }
-    .persentation_edit-tool {
-      flex-shrink: 0;
-      width: 300px;
-      height: 100%;
-      border-left: 1px solid #dcdfe6;
-    }
-  }
-}
+@import './container.scss';
 </style>

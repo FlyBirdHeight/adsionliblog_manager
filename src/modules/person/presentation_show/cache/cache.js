@@ -4,6 +4,7 @@ import { setCacheNameDetails, clientsClaim } from 'workbox-core';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate, NetworkOnly, CacheFirst } from 'workbox-strategies';
 import { ExpirationPlugin } from "workbox-expiration"
+import PresnetationCache from "./hanldePresentation"
 
 setCacheNameDetails({
     prefix: "adsionli-back-manager",
@@ -40,6 +41,20 @@ registerRoute(/^https:\/\/adsionli-back.xslease.com\/file\//, new CacheFirst({
         credentials: "omit"
     }
 }));
+registerRoute(/^http:\/\/localhost:8854\/api\/setting\/presentation\/get\/presentation/, new PresnetationCache({
+    cacheName: "presentation",
+    plugins: [
+        //NOTE: 配置过期时间
+        new ExpirationPlugin({
+            maxAgeSeconds: 10 * 24 * 60 * 60,
+            purgeOnQuotaError: true
+        })
+    ],
+    fetchOptions: {
+        mode: "cors",
+        credentials: "omit"
+    },
+}))
 
 precacheAndRoute(self.__WB_MANIFEST);
 // 更新时自动生效

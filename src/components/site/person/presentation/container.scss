@@ -1,0 +1,50 @@
+.presentation-container {
+    height: 100%;
+    width: 1300px;
+    background-color: #ffffff;
+    .presentation-toolbar {
+      height: 40px;
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      border-bottom: 1px solid #f2f3f5;
+      .toolbal_list span {
+        padding: 5px 10px;
+        margin: 0 3px;
+        cursor: pointer;
+      }
+      .toolbal_list span:hover {
+        border-radius: 5px;
+        color: #fff;
+        fill: #fff !important;
+        background-color: #409eff;
+      }
+      .toolbal_list .toolbar-divide {
+        border: 1px solid #f2f3f5;
+        height: 20px;
+        margin: auto;
+      }
+    }
+    .presentation-edit {
+      display: flex;
+      width: 100%;
+      justify-content: flex-start;
+      height: 750px;
+      border-bottom: 1px solid #dcdfe6;
+      .presentation_body {
+        width: 1000px;
+        overflow: hidden;
+        height: 100%;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .persentation_edit-tool {
+        flex-shrink: 0;
+        width: 300px;
+        height: 100%;
+        border-left: 1px solid #dcdfe6;
+      }
+    }
+  }

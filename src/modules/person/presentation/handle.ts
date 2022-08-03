@@ -64,6 +64,7 @@ class HandlePresentation {
     currentPageData: Type.Page | null;
     layerSetting: LayerHandle;
     fullscreen: FullScreen;
+    save: boolean;
     constructor() {
         this.pageList = new Map();
         this.currentPage = 1;
@@ -77,6 +78,7 @@ class HandlePresentation {
         this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.layerSetting = new LayerHandle();
         this.fullscreen = new FullScreen();
+        this.save = true;
         this.registerFn();
     }
 

@@ -7,7 +7,7 @@ import { convertImageData } from '../image/image';
 /**
  * @module 本模块用于获取后端数据
  */
-const defaultPresentationName = '首页展示'
+const defaultPresentationName = 'default'
 const getDefaultPageData = (): Page => {
     return {
         item: {
@@ -65,7 +65,7 @@ const generatePageData = async function (this: any, pageData: any) {
             page.page_config.style.background.data = await localImage(page.page_config.style.background.image.url);
             page.page_config.style.background.image.localUrl = page.page_config.style.background.data;
         }
-        resPage.isEdit = false;
+        resPage.isEdit = true;
         resPage.page_key = page.page_key;
         resPage.id = page.id;
         resPage.animate = page.page_config.animate;
@@ -89,6 +89,7 @@ const generatePageData = async function (this: any, pageData: any) {
     }
     this.currentPageData = this.pageList.get(this.currentPage)
     this.switchPageAction();
+    this.save = false;
 }
 
 
