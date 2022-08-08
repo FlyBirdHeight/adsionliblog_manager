@@ -41,7 +41,9 @@
       <el-scrollbar :always="true" class="persentation_edit-tool">
         <presentation-edit-tool @setPage="setPage"></presentation-edit-tool>
       </el-scrollbar>
+      <!-- <pre-render-container></pre-render-container> -->
     </div>
+
     <edit-body-image-setting
       :show="showUploadImage"
       :savePath="'/preventation'"
@@ -71,8 +73,8 @@ import PresentationImage from '@/modules/person/presentation/image/image.vue'
 import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
 import ItemAnimation from '@/modules/person/presentation/animation/item_animation.vue'
+import PreRenderContainer from '@/components/site/person/presentation/preRender.tsx'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
-
 const handleObj = reactive(new HandlePresentation())
 const presentationContainer = inject('personPresentation')
 /**
@@ -100,7 +102,7 @@ const changePage = ref<boolean>(false)
 const runningItem = ref<boolean>(false)
 const saveOrUpdateData = ref<boolean>(false)
 const isSave = ref<boolean>(true)
-const loadingText = ref<string>('正在保存/更新，请稍后');
+const loadingText = ref<string>('正在保存/更新，请稍后')
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
@@ -109,13 +111,13 @@ provide('pageInfo', pageInfo)
 provide('pageImage', pageImage)
 onMounted(async () => {
   loadingText.value = '正在加载，请稍后'
-  saveOrUpdateData.value = true;
-  await handleObj.getPresentationData();
-  isSave.value = handleObj.save;
+  saveOrUpdateData.value = true
+  await handleObj.getPresentationData()
+  isSave.value = handleObj.save
   pageMap.value = handleObj.currentPageData
   nextTick(async () => {
     await generatePageImage(document.getElementById('presentation_body'), pageInfo.currentPage, pageImage.value)
-    saveOrUpdateData.value = false;
+    saveOrUpdateData.value = false
     loadingText.value = '正在保存/更新，请稍后'
   })
 })
