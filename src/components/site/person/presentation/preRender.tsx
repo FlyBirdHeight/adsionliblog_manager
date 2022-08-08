@@ -1,12 +1,12 @@
 import { defineComponent, inject, ref, watch } from 'vue'
-import PresentationText from '@/modules/person/presentation/text/text.vue'
-import PresentationImage from '@/modules/person/presentation/image/image.vue'
+import ShowText from '@/modules/person/presentation_show/component/text.tsx'
+import ShowImage from '@/modules/person/presentation_show/component/image.tsx'
 
 function renderText(data: any[]) {
   if (data.length == 0) {
     return
   }
-  const tag: any = PresentationText;
+  const tag: any = ShowText
   return data.map((text: any) => {
     return <tag info={text} />
   })
@@ -15,9 +15,8 @@ function renderImage(data: any[]) {
   if (data.length == 0) {
     return
   }
-  const tag: any = PresentationImage;
+  const tag: any = ShowImage
   return data.map((image: any) => {
-      console.log(image)
     return <tag info={image} />
   })
 }
@@ -34,7 +33,7 @@ export default defineComponent({
       }
     )
     return () => (
-      <div class="presentation_body" tabindex="-1">
+      <div class="presentation_body" style="position:relative; width: 1000px; height: 750px" tabindex="-1">
         {renderText(pageMap.value.item.text)}
         {renderImage(pageMap.value.item.image)}
       </div>

@@ -41,9 +41,8 @@
       <el-scrollbar :always="true" class="persentation_edit-tool">
         <presentation-edit-tool @setPage="setPage"></presentation-edit-tool>
       </el-scrollbar>
-      <!-- <pre-render-container></pre-render-container> -->
     </div>
-
+    <pre-render-container style="height: 750px; width: 1000px"></pre-render-container>
     <edit-body-image-setting
       :show="showUploadImage"
       :savePath="'/preventation'"
@@ -255,6 +254,6 @@ watch(
 )
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import './container.scss';
 </style>
