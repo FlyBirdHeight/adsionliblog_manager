@@ -1,4 +1,4 @@
-import { defineComponent, defineProps } from 'vue'
+import { defineComponent, watch, ref } from 'vue'
 import { ImageItem } from '../../presentation/image/type'
 import { analysisCss } from '../../presentation/image/image'
 import getPositionStyle from '../../utils/style'
@@ -21,6 +21,11 @@ const analysisImage = (data: any) => {
   }
 }
 
+function getImage(analysisData: any) {
+  if (!analysisData) return
+  return <img draggable="false" src={analysisData.url} style={analysisData.style} class="preventationImage" />
+}
+
 export default defineComponent({
   name: 'ShowImage',
   props: {
@@ -30,8 +35,15 @@ export default defineComponent({
     },
   },
   setup(props, { emit, slots }) {
-    let analysisData: any = analysisImage(props.info)
-    console.log(analysisData.style.width)
-    return () => <img draggable="false" src={analysisData.url} style={analysisData.style} class="preventationImage" />
+    watch(
+      () => props.info,
+      (newV: any, oldV: any) => {
+        if (newV) {
+          analysisData.value = analysisImage(props.info)
+        }
+      }
+    )
+    const analysisData: any = ref(analysisImage(props.info))
+    return () => getImage(analysisData.value)
   },
 })

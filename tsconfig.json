@@ -25,7 +25,8 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "plugins": [{"name": "typescript-plugin-css-modules"}]
   },
   "include": [
     "src/**/*.ts",

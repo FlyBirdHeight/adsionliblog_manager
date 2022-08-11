@@ -42,7 +42,6 @@
         <presentation-edit-tool @setPage="setPage"></presentation-edit-tool>
       </el-scrollbar>
     </div>
-    <pre-render-container style="height: 750px; width: 1000px"></pre-render-container>
     <edit-body-image-setting
       :show="showUploadImage"
       :savePath="'/preventation'"
@@ -51,6 +50,7 @@
       @setImagePath="setImage"
     ></edit-body-image-setting>
   </div>
+  <pre-render-container></pre-render-container>
 </template>
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted, inject } from 'vue'
@@ -72,7 +72,7 @@ import PresentationImage from '@/modules/person/presentation/image/image.vue'
 import PresentationEditTool from '@/components/site/person/presentation/edit/editTool.vue'
 import EditBodyImageSetting from '@/components/dialog/presentation/edit/image_setting.vue'
 import ItemAnimation from '@/modules/person/presentation/animation/item_animation.vue'
-import PreRenderContainer from '@/components/site/person/presentation/preRender.tsx'
+import PreRenderContainer from '@/modules/person/presentation_show/render/preRender.tsx'
 const toolbar = reactive<PresentationToolbar>(toolbarList)
 const handleObj = reactive(new HandlePresentation())
 const presentationContainer = inject('personPresentation')

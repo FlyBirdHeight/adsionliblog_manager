@@ -42,6 +42,22 @@ type ItemAnimateList = {
     index: number
 }
 
+type PageBack = {
+    background: {
+        type: string,
+        data: string,
+        config: null,
+        image?: {
+            url: string,
+            localUrl: string
+        }
+    },
+    resolution: {
+        x: number,
+        y: number,
+    },
+}
+
 type Page = {
     item: {
         text: any[],
@@ -49,21 +65,7 @@ type Page = {
         code: any[],
         count: 0
     },
-    setting: {
-        background: {
-            type: string,
-            data: string,
-            config: null,
-            image?: {
-                url: string,
-                localUrl: string
-            }
-        },
-        resolution: {
-            x: number,
-            y: number,
-        },
-    },
+    setting: PageBack,
     animate: {
         changePage: {
             duration: number,
@@ -95,5 +97,6 @@ export {
     Page,
     Action,
     PageItem,
-    ItemInfo
+    ItemInfo,
+    PageBack
 }
