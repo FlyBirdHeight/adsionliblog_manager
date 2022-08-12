@@ -1,4 +1,4 @@
-import { defineComponent, inject, ref, watch } from 'vue'
+import { defineComponent, inject, ref, watch } from 'vue';
 import styles from './preRender.module.scss'
 import ShowText from '@/modules/person/presentation_show/component/text.tsx'
 import ShowImage from '@/modules/person/presentation_show/component/image.tsx'
@@ -37,23 +37,29 @@ function renderBackground(backgroundData: PageBack, preRenderContainer: any) {
 
 export default defineComponent({
   name: 'PreRenderContainer',
+  props: {
+    display: {
+      type: Boolean,
+      default: true,
+    },
+  },
   setup(props, cxt) {
     const handleObj: any = inject('handleObj')
     const pageMap: any = ref(handleObj.currentPageData)
     const preRenderContainer: any = ref()
+    const display: boolean = props.display
     watch(
       () => handleObj.currentPageData,
       (newV: any, oldV: any) => {
         pageMap.value = newV
-        renderBackground(pageMap.value.setting, preRenderContainer.value);
+        renderBackground(pageMap.value.setting, preRenderContainer.value)
       }
     )
-
     return () => (
-      <div class={styles.preRender} tabindex="-1" ref={preRenderContainer}>
+      <div v-show={display} class={styles.preRender} tabindex="-1" ref={preRenderContainer}>
         {renderText(pageMap.value.item.text)}
         {renderImage(pageMap.value.item.image)}
       </div>
     )
-  },
+  }
 })

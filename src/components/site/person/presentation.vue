@@ -1,6 +1,6 @@
 <template>
   <div class="person-presentation" ref="personPresentation">
-    <div class="setting">
+    <div class="setting" style="position: relative">
       <presentation-container></presentation-container>
     </div>
     <!-- <div class="divider"></div> -->
@@ -17,7 +17,6 @@ export default {
 import PresentationContainer from '@/components/site/person/presentation/container'
 const personPresentation = ref()
 provide('personPresentation', personPresentation)
-
 </script>
 <style lang="scss" scoped>
 .person-presentation {

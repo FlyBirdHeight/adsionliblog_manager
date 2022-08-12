@@ -141,6 +141,7 @@ const generatePageImage = async (dom: any, page: number, pageImageList: any[]) =
         height: dom.getBoundingClientRect().height
     })
     let dataURL = canvas.toDataURL('image/png')
+    console.log(dataURL)
     let blob = changeToBlob(dataURL)
     let url = URL.createObjectURL(blob)
     let idx = pageImageList.findIndex(v => {
