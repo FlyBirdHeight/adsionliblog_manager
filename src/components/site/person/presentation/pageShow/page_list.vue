@@ -60,16 +60,19 @@ const getPageImage = (page: number) => {
     return pageImage.value[idx].image
   }
 }
-watchEffect(() => {
-  let length = pageInfo.pageCount
-  if (length > 0) {
-    nextTick(() => {
-      let children = pageShowList.value.children
-      pageShowScroll.value!.setScrollLeft(children[children.length - 1].getBoundingClientRect().x)
-      pageShowScroll.value.update()
-    })
+watch(
+  () => pageInfo.pageCount,
+  (newV, oldV) => {
+    let length = newV
+    if (length > 0) {
+      nextTick(() => {
+        let children = pageShowList.value.children
+        pageShowScroll.value!.setScrollLeft(children[children.length - 1].getBoundingClientRect().x)
+        pageShowScroll.value.update()
+      })
+    }
   }
-})
+)
 watch(
   pageImage,
   (newV, oldV) => {

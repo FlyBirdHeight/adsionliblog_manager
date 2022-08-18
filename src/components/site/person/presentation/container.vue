@@ -50,7 +50,8 @@
       @setImagePath="setImage"
     ></edit-body-image-setting>
   </div>
-  <pre-render-container ref="preRender" :display="true"></pre-render-container>
+
+  <pre-render-container @getPage="getPreRenderPage" ref="preRender" :display="true"></pre-render-container>
 </template>
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted, inject } from 'vue'
@@ -95,7 +96,7 @@ const activeItem = ref<number>(-1)
 const itemTypeIndexList = ref<{ index: number; type: string }[]>(handleObj.itemTypeIndexList)
 const clickTime = ref<number>(0)
 const presentationBody = ref()
-const preRender = ref(null);
+const preRender = ref(null)
 const showUploadImage = ref<boolean>(false)
 const pageImage = ref([])
 const changePage = ref<boolean>(false)
@@ -115,12 +116,7 @@ onMounted(async () => {
   await handleObj.getPresentationData()
   isSave.value = handleObj.save
   pageMap.value = handleObj.currentPageData
-  nextTick(async () => {
-    preRender.value = preRender.value.$.ctx.$el;
-    await generatePageImage(preRender.value, pageInfo.currentPage, pageImage.value)
-    saveOrUpdateData.value = false
-    loadingText.value = '正在保存/更新，请稍后'
-  })
+  pageInfo.pageCount = handleObj.pageList.size
 })
 
 const handleAction = async (action: string, options: any) => {
@@ -207,6 +203,11 @@ const handleKey = (event: Event) => {
     itemList: itemTypeIndexList.value,
     currentPage: pageInfo.currentPage,
   })
+}
+
+const getPreRenderPage = (val) => {
+  pageImage.value = val
+  saveOrUpdateData.value = false
 }
 
 watch(

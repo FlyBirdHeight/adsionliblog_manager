@@ -21,6 +21,33 @@ const analysisBackground = (data: any, dom: any) => {
         dom.style.backgroundPosition = `${data.config.xPosition}% ${data.config.yPosition}%`
     }
 }
+
+const getAnalysisBackgroundStyle = (data: any) => {
+    let style: any = {};
+    if (!data.config) {
+        if (data.type != '') {
+            style.backgroundColor = data.data;
+        } else {
+            style = {
+                backgroundSize: null,
+                backgroundRepeat: null,
+                backgroundPosition: null,
+                backgroundImage: null
+            }
+        }
+    } else {
+        style = {
+            backgroundImage: `url(${data.data})`,
+            backgroundSize: `${data.config.xSize}% ${data.config.ySize}%`,
+            backgroundRepeat: `${data.config.bgRepeat}`,
+            backgroundPosition: `${data.config.xPosition}% ${data.config.yPosition}%`
+        }
+    }
+
+    return style;
+}
+
+
 /**
  * @method handleLayerAction 处理层级相关的内容
  * @param action 
@@ -82,8 +109,6 @@ const setPageMap = async (handleObj: any, type: string, val: any, pageMap: any) 
         updateData.type = 'image'
         handleObj.updateBody(updateData);
     }
-    console.log(updateData);
-
 }
 /**
  * @method setPage 设置page页面，主要在添加，删除页面，跳转页面使用
@@ -166,5 +191,6 @@ export {
     setPageMap,
     handleToolAction,
     analysisBackground,
-    setPage
+    setPage,
+    getAnalysisBackgroundStyle
 }

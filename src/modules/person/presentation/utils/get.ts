@@ -65,7 +65,7 @@ const generatePageData = async function (this: any, pageData: any) {
             page.page_config.style.background.data = await localImage(page.page_config.style.background.image.url);
             page.page_config.style.background.image.localUrl = page.page_config.style.background.data;
         }
-        resPage.isEdit = true;
+        resPage.isEdit = false;
         resPage.page_key = page.page_key;
         resPage.id = page.id;
         resPage.animate = page.page_config.animate;
