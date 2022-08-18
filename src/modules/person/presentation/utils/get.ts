@@ -92,8 +92,4 @@ const generatePageData = async function (this: any, pageData: any) {
     this.save = false;
 }
 
-
-
-
-
 export default getPresentationData;
