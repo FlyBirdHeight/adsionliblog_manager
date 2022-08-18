@@ -51,7 +51,11 @@
     ></edit-body-image-setting>
   </div>
 
-  <pre-render-container @getPage="getPreRenderPage" ref="preRender" :display="true"></pre-render-container>
+  <pre-render-container
+    @getPage="getPreRenderPage"
+    @getRef="getPreRenderPageRef"
+    :display="true"
+  ></pre-render-container>
 </template>
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted, inject } from 'vue'
@@ -61,6 +65,7 @@ import { analysisBackground, setPageMap, handleToolAction } from '@/modules/pers
 import HandlePresentation from '@/modules/person/presentation/handle'
 import { generatePageImage } from '@/modules/person/presentation/utils/utils'
 import { getHandleKeyDownData } from '@/modules/person/presentation/utils/key_input'
+import useProjection from './hooks/show'
 export default {
   name: 'PresentationContainer',
 }
@@ -104,6 +109,7 @@ const runningItem = ref<boolean>(false)
 const saveOrUpdateData = ref<boolean>(false)
 const isSave = ref<boolean>(true)
 const loadingText = ref<string>('正在保存/更新，请稍后')
+const projection = useProjection(preRender)
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
@@ -147,6 +153,8 @@ const handleAction = async (action: string, options: any) => {
     options.dom = presentationContainer.value
   } else if (action === 'save') {
     saveOrUpdateData.value = true
+  } else if (action === 'show') {
+    projection.value = true
   }
   await handleToolAction(handleObj, action, options, activeItem, pageInfo)
   saveOrUpdateData.value = false
@@ -208,6 +216,10 @@ const handleKey = (event: Event) => {
 const getPreRenderPage = (val) => {
   pageImage.value = val
   saveOrUpdateData.value = false
+}
+
+const getPreRenderPageRef = (val) => {
+  preRender.value = val
 }
 
 watch(

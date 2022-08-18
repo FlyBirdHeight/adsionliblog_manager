@@ -65,7 +65,6 @@ function firstRenderPage(pageList: Map<number, any>, refList: any) {
     )
   })
 }
-
 export default defineComponent({
   name: 'PreRenderContainer',
   props: {
@@ -94,6 +93,7 @@ export default defineComponent({
       async (newV: any, oldV: any) => {
         pageMap.value = newV
         renderBackground(pageMap.value.setting, preRenderContainer.value, false)
+        emit('getRef', preRenderContainer.value)
         if (firstRender.value) {
           pageCount.value = handleObj.pageList.size
           pageList.value = handleObj.pageList

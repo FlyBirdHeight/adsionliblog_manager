@@ -102,6 +102,10 @@ const toolbarList: PresentationToolbar[] = [{
     handle: "",
     label: ""
 },{
+    icon: "line-slideshowhuandengpianfangying-03",
+    handle: "show",
+    label: "放映"
+},{
     icon: "save1",
     handle: "save",
     label: "保存"
