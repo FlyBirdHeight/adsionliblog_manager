@@ -1,4 +1,4 @@
-import { defineComponent, inject, ref, watch, nextTick } from 'vue'
+import { defineComponent, inject, ref, watch, nextTick, Teleport, withModifiers, getCurrentInstance } from 'vue'
 import styles from './preRender.module.scss'
 import ShowText from '@/modules/person/presentation_show/component/text.tsx'
 import ShowImage from '@/modules/person/presentation_show/component/image.tsx'
@@ -7,6 +7,8 @@ import { TextItem } from '../../presentation/text/type'
 import { PageBack } from '../../presentation/type'
 import { analysisBackground, getAnalysisBackgroundStyle } from '@/modules/person/presentation/utils/item'
 import { generatePageImage } from '../../presentation/utils/utils'
+import { ElButton } from 'element-plus'
+import useGlobeData from '../../../../components/hooks/useGlobeData'
 
 function renderText(data: any[]) {
   if (data.length == 0) {
@@ -65,29 +67,31 @@ function firstRenderPage(pageList: Map<number, any>, refList: any) {
     )
   })
 }
+
 export default defineComponent({
   name: 'PreRenderContainer',
+  emits: ['getRef', 'getPage', 'clostProjection'],
   props: {
     display: {
       type: Boolean,
       default: true,
     },
+    flyToBody: {
+      type: Boolean,
+      default: true,
+    },
   },
-  setup(props, cxt) {
+  setup(props, { emit }) {
+    const globalData: any = useGlobeData(getCurrentInstance())
     const handleObj: any = inject('handleObj')
     const pageMap: any = ref(handleObj.currentPageData)
     const preRenderContainer: any = ref()
     const preRenderList = ref([])
-    const display: boolean = props.display
-
     const pageImage = ref([])
     const pageCount = ref(handleObj.pageList.size)
-
     const pageList = ref(null)
-
     const firstRender = ref(true)
 
-    const emit = cxt.emit
     watch(
       () => handleObj.currentPageData,
       async (newV: any, oldV: any) => {
@@ -108,14 +112,24 @@ export default defineComponent({
         }
       }
     )
+    console.log(styles)
     return () => (
-      <div>
-        <div v-show={display} class={styles.preRender} tabindex="-1" ref={preRenderContainer}>
-          {renderText(pageMap.value.item.text)}
-          {renderImage(pageMap.value.item.image)}
+      <Teleport to="body" disabled={props.flyToBody}>
+        <div
+          class={styles.renderContainer}
+          id="positionShowBack"
+          onClick={withModifiers(() => {
+            emit('clostProjection')
+          }, ['stop'])}
+        >
+          {props.flyToBody ? '' : <ElButton class={styles.closeBtn} circle icon={globalData.$icon['Close']} />}
+          <div class={styles.preRender} tabindex="-1" ref={preRenderContainer}>
+            {renderText(pageMap.value.item.text)}
+            {renderImage(pageMap.value.item.image)}
+          </div>
+          {firstRender.value === true ? firstRenderPage(handleObj.pageList, preRenderList) : false}
         </div>
-        {firstRender.value === true ? firstRenderPage(handleObj.pageList, preRenderList) : false}
-      </div>
+      </Teleport>
     )
   },
 })

@@ -55,6 +55,8 @@
     @getPage="getPreRenderPage"
     @getRef="getPreRenderPageRef"
     :display="true"
+    :flyToBody="!projection"
+    @clostProjection="projection=false"
   ></pre-render-container>
 </template>
 <script lang="ts">
@@ -109,7 +111,7 @@ const runningItem = ref<boolean>(false)
 const saveOrUpdateData = ref<boolean>(false)
 const isSave = ref<boolean>(true)
 const loadingText = ref<string>('正在保存/更新，请稍后')
-const projection = useProjection(preRender)
+const projection = useProjection(preRender, handleObj)
 provide('itemList', pageMap)
 provide('activeItem', activeItem)
 provide('itemTypeIndexList', itemTypeIndexList)
