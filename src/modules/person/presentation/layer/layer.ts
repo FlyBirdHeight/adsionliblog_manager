@@ -12,11 +12,11 @@ class LayerHandle {
     layerSave: number[];
     resizeLayer: number;
     constructor() {
-        this.startLayer = 1000;
-        this.endLayer = Math.pow(2, 20);
-        this.resizeLayer = Math.pow(2, 20) + 1;
+        this.startLayer = 500;
+        this.endLayer = Math.pow(2, 12);
+        this.resizeLayer = Math.pow(2, 12) + 1;
         this.layerList = new Map();
-        this.currentMinLayer = Math.pow(2, 20) + 1;
+        this.currentMinLayer = Math.pow(2, 12) + 1;
         this.currentMaxLayer = 0;
         this.layerLimit = 1;
         //NOTE: 这是一个有序数组，且永远不存在相同项

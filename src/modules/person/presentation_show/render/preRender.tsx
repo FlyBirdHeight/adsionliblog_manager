@@ -1,13 +1,18 @@
 import { defineComponent, inject, ref, watch, nextTick, Teleport, withModifiers, getCurrentInstance } from 'vue'
+//NOTE: css
 import styles from './preRender.module.scss'
+//NOTE: components
+import { ElButton } from 'element-plus'
 import ShowText from '@/modules/person/presentation_show/component/text.tsx'
 import ShowImage from '@/modules/person/presentation_show/component/image.tsx'
+import PreViewToolbar from '@/modules/person/presentation_show/component/toolbar.tsx'
+//NOTE: utils
 import { ImageItem } from '../../presentation/image/type'
 import { TextItem } from '../../presentation/text/type'
 import { PageBack } from '../../presentation/type'
 import { analysisBackground, getAnalysisBackgroundStyle } from '@/modules/person/presentation/utils/item'
 import { generatePageImage } from '../../presentation/utils/utils'
-import { ElButton } from 'element-plus'
+//NOTE: hooks
 import useGlobeData from '../../../../components/hooks/useGlobeData'
 
 function renderText(data: any[]) {
@@ -112,22 +117,27 @@ export default defineComponent({
         }
       }
     )
-    console.log(styles)
     return () => (
       <Teleport to="body" disabled={props.flyToBody}>
         <div
-          class={styles.renderContainer}
+          class={styles.renderContainer + ' renderContainer'}
           id="positionShowBack"
           onClick={withModifiers(() => {
             emit('clostProjection')
           }, ['stop'])}
         >
           {props.flyToBody ? '' : <ElButton class={styles.closeBtn} circle icon={globalData.$icon['Close']} />}
-          <div class={styles.preRender} tabindex="-1" ref={preRenderContainer}>
+          <div
+            class={styles.preRender}
+            tabindex="-1"
+            ref={preRenderContainer}
+            onClick={withModifiers(() => {}, ['stop'])}
+          >
             {renderText(pageMap.value.item.text)}
             {renderImage(pageMap.value.item.image)}
           </div>
           {firstRender.value === true ? firstRenderPage(handleObj.pageList, preRenderList) : false}
+          <PreViewToolbar position={[1, 2]} />
         </div>
       </Teleport>
     )
