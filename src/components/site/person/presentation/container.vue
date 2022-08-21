@@ -125,6 +125,7 @@ onMounted(async () => {
   isSave.value = handleObj.save
   pageMap.value = handleObj.currentPageData
   pageInfo.pageCount = handleObj.pageList.size
+  itemTypeIndexList.value = handleObj.itemTypeIndexList
 })
 
 const handleAction = async (action: string, options: any) => {
@@ -205,9 +206,7 @@ const handleKey = (event: Event) => {
   if (event.path[0].id !== 'presentation_body') {
     return
   }
-
   let keyDownData = getHandleKeyDownData(event)
-
   handleObj.keyInput(keyDownData, {
     activeIndex: activeItem,
     itemList: itemTypeIndexList.value,

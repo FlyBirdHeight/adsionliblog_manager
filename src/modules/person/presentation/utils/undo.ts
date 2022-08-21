@@ -49,6 +49,9 @@ const undoDelete = function (this: any, action: Action) {
     });
     if (['text', 'image'].includes(action.type)) {
         let style = <PageItem>action.data?.next;
+        if (!style) {
+            style = <PageItem>action.data?.pre;
+        }
         setLayerToList.call(
             this,
             { index: String(action!.item_index), type: action.type },

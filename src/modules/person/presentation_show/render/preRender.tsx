@@ -120,11 +120,6 @@ export default defineComponent({
         }
       }
     )
-    watch(teleportFullScreen, (newV: any, oldV: any) => {
-      console.log(newV, props.flyToBody, props.flyToBody && newV)
-    }, {
-      immediate: true
-    })
     return () => (
       <Teleport to={'body'} disabled={teleportFullScreen.value}>
         <div

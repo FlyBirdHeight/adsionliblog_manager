@@ -3,6 +3,7 @@ import { localImage } from './utils';
 import { Page } from '../type';
 import { convertTextData } from '../text/text';
 import { convertImageData } from '../image/image';
+import { setItemTypeIndexList } from './utils';
 
 /**
  * @module 本模块用于获取后端数据
@@ -88,6 +89,8 @@ const generatePageData = async function (this: any, pageData: any) {
         this.pageList.set(i + 1, resPage);
     }
     this.currentPageData = this.pageList.get(this.currentPage)
+    this.itemTypeIndexList = setItemTypeIndexList(this.currentPageData || null);
+    console.log(this.itemTypeIndexList)
     this.switchPageAction();
     this.save = false;
 }
