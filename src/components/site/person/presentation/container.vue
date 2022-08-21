@@ -56,7 +56,7 @@
     @getRef="getPreRenderPageRef"
     :display="true"
     :flyToBody="!projection"
-    @clostProjection="projection=false"
+    @clostProjection="projection = false"
   ></pre-render-container>
 </template>
 <script lang="ts">

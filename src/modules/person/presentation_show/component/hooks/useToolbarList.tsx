@@ -29,9 +29,7 @@ export default function ToolbarList(pageInfo: any, globalData: any) {
       label: '下一页',
     },
   ]
-  const preViewToolList = ref(null)
   const handleClick = (action: string) => {
-    console.log(action)
     switch (action) {
       case 'pre':
         break
@@ -63,8 +61,7 @@ export default function ToolbarList(pageInfo: any, globalData: any) {
 
     return (
       <ElButtonGroup class="preViewtoolList" ref="preViewToolList">
-        {' '}
-        {arr.map((v) => v)}{' '}
+        {arr.map((v) => v)}
       </ElButtonGroup>
     )
   }

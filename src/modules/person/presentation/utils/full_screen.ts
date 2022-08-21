@@ -76,8 +76,10 @@ const eventNameMap: any = {
 
 class FullScreen {
     dom: any;
+    fullStatus: boolean;
     constructor() {
         this.dom = null;
+        this.fullStatus = false;
     }
     /**
      * @method startup 开启全屏模式
@@ -90,10 +92,12 @@ class FullScreen {
                 return false;
             }
             this.dom = dom;
+            this.fullStatus = true;
             const enterFullScreen = () => {
                 dom.style.flexDirection = 'row';
                 dom.style.justifyContent = 'center';
                 this.off('change', enterFullScreen);
+                this.fullStatus = false;
                 resolve();
             }
             //NOTE: 添加在开启fullscreen模式时的事件监听

@@ -14,6 +14,7 @@ import { analysisBackground, getAnalysisBackgroundStyle } from '@/modules/person
 import { generatePageImage } from '../../presentation/utils/utils'
 //NOTE: hooks
 import useGlobeData from '../../../../components/hooks/useGlobeData'
+import useFullScreenTeleport from './hooks/useFullScreenTeleport'
 
 function renderText(data: any[]) {
   if (data.length == 0) {
@@ -87,7 +88,8 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const globalData: any = useGlobeData(getCurrentInstance())
+    const instance = getCurrentInstance()
+    const globalData: any = useGlobeData(instance)
     const handleObj: any = inject('handleObj')
     const pageMap: any = ref(handleObj.currentPageData)
     const preRenderContainer: any = ref()
@@ -95,7 +97,8 @@ export default defineComponent({
     const pageImage = ref([])
     const pageCount = ref(handleObj.pageList.size)
     const pageList = ref(null)
-    const firstRender = ref(true)
+    const firstRender = ref<boolean>(true)
+    const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
 
     watch(
       () => handleObj.currentPageData,
@@ -117,8 +120,13 @@ export default defineComponent({
         }
       }
     )
+    watch(teleportFullScreen, (newV: any, oldV: any) => {
+      console.log(newV, props.flyToBody, props.flyToBody && newV)
+    }, {
+      immediate: true
+    })
     return () => (
-      <Teleport to="body" disabled={props.flyToBody}>
+      <Teleport to={'body'} disabled={teleportFullScreen.value}>
         <div
           class={styles.renderContainer + ' renderContainer'}
           id="positionShowBack"

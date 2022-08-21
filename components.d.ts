@@ -7,7 +7,6 @@ declare module 'vue' {
     Arrange_upload: typeof import('./src/components/form/image/arrange_upload.vue')['default']
     Body: typeof import('./src/components/site/person/presentation/edit/body/body.vue')['default']
     Body_item_list: typeof import('./src/components/site/person/presentation/edit/body/body_item_list.vue')['default']
-    Bottom: typeof import('./src/components/layout/bottom.vue')['default']
     Card: typeof import('./src/components/pages/learning_card/card.vue')['default']
     Card_fold: typeof import('./src/components/pages/learning_card/card_fold.vue')['default']
     Category: typeof import('./src/components/pages/category_tag/category.vue')['default']
