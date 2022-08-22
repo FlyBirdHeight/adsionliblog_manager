@@ -6,12 +6,11 @@ export default function useControl() {
     const play = ref<boolean>(false);
     let timer: any = null;
     watch(play, (newV: boolean, oldV: boolean) => {
-        console.log(newV)
         if (newV) {
             if (!timer) {
                 timer = setTimeout(() => {
                     play.value = false;
-                    clearTimeout(timer);
+                    timer = null;
                 }, 1000)
             }
         }

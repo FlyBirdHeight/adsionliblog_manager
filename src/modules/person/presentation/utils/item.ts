@@ -32,7 +32,8 @@ const getAnalysisBackgroundStyle = (data: any) => {
                 backgroundSize: null,
                 backgroundRepeat: null,
                 backgroundPosition: null,
-                backgroundImage: null
+                backgroundImage: null,
+                backgroundColor: 'rgb(255,255,255)'
             }
         }
     } else {

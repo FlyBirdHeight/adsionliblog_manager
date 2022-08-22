@@ -1,6 +1,20 @@
-import { defineComponent, inject, ref, watch, nextTick, Teleport, withModifiers, getCurrentInstance, provide } from 'vue';
+import {
+  defineComponent,
+  inject,
+  ref,
+  watch,
+  nextTick,
+  Teleport,
+  withModifiers,
+  getCurrentInstance,
+  provide,
+  Transition,
+  vShow,
+  withDirectives,
+} from 'vue'
+import BackIn from '@/modules/person/presentation/animation/content_lib/backIn'
 //NOTE: css
-import styles from './preRender.module.scss'
+import styles from './scss/preRender.module.scss'
 //NOTE: components
 import { ElButton } from 'element-plus'
 import ShowText from '@/modules/person/presentation_show/component/text.tsx'
@@ -102,12 +116,10 @@ export default defineComponent({
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
     const playPosition = useControl()
     provide('playPosition', playPosition)
-
     watch(
       () => handleObj.currentPageData,
       async (newV: any, oldV: any) => {
         pageMap.value = newV
-        renderBackground(pageMap.value.setting, preRenderContainer.value, false)
         emit('getRef', preRenderContainer.value)
         if (firstRender.value) {
           pageCount.value = handleObj.pageList.size
@@ -131,17 +143,30 @@ export default defineComponent({
           onClick={withModifiers(() => {
             emit('clostProjection')
           }, ['stop'])}
+          ref={preRenderContainer}
         >
           {props.flyToBody ? '' : <ElButton class={styles.closeBtn} circle icon={globalData.$icon['Close']} />}
-          <div
-            class={styles.preRender}
-            tabindex="-1"
-            ref={preRenderContainer}
-            onClick={withModifiers(() => {}, ['stop'])}
+          <Transition
+            onBeforeEnter={BackIn.onBeforeEnter}
+            onEnter={BackIn.onEnter}
+            onAfterEnter={BackIn.onAfterEnter}
+            onBeforeLeave={BackIn.onBeforeLeave}
+            onLeave={BackIn.onLeave}
+            onAfterLeave={BackIn.onAfterLeave}
           >
-            {renderText(pageMap.value.item.text)}
-            {renderImage(pageMap.value.item.image)}
-          </div>
+            {withDirectives(
+              <div
+                class={styles.preRender}
+                tabindex="-1"
+                onClick={withModifiers(() => {}, ['stop'])}
+                style={renderBackground(pageMap.value.setting, null, true)}
+              >
+                {renderText(pageMap.value.item.text)}
+                {renderImage(pageMap.value.item.image)}
+              </div>,
+              [[vShow, props.display && !playPosition.value]]
+            )}
+          </Transition>
           {firstRender.value === true ? firstRenderPage(handleObj.pageList, preRenderList) : false}
           <PreViewToolbar position={[1, 2]} />
         </div>
