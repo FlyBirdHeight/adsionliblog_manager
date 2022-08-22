@@ -2,13 +2,12 @@
   <transition
     :appear="runningItem"
     :type="props.type"
-    @beforeEnter="props.animate.onBeforeEnter"
-    @enter="props.animate.onEnter"
-    @after-enter="props.animate.onAfterEnter"
-    @enter-cancelled="props.animate.onEnterCancelled"
-    @before-leave="props.animate.onBeforeLeave"
-    @leave="props.animate.onLeave"
-    @after-leave="props.animate.onAfterLeave"
+    @beforeEnter="props.animate.beforeEnter"
+    @enter="props.animate.enter"
+    @after-enter="props.animate.afterEnter"
+    @before-leave="props.animate.beforeLeave"
+    @leave="props.animate.leave"
+    @after-leave="props.animate.afterLeave"
     :css="false"
   >
     <slot></slot>
@@ -33,13 +32,13 @@ const props = defineProps({
   },
   animate: {
     default: () => {
-      return BackIn
+      return new BackIn()
     },
   },
   runningItem: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 onMounted(() => {
   console.log(props.animate)

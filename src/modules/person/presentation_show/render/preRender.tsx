@@ -115,6 +115,7 @@ export default defineComponent({
     const firstRender = ref<boolean>(true)
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
     const playPosition = useControl()
+    const animate = new BackIn(1000)
     provide('playPosition', playPosition)
     watch(
       () => handleObj.currentPageData,
@@ -147,12 +148,12 @@ export default defineComponent({
         >
           {props.flyToBody ? '' : <ElButton class={styles.closeBtn} circle icon={globalData.$icon['Close']} />}
           <Transition
-            onBeforeEnter={BackIn.onBeforeEnter}
-            onEnter={BackIn.onEnter}
-            onAfterEnter={BackIn.onAfterEnter}
-            onBeforeLeave={BackIn.onBeforeLeave}
-            onLeave={BackIn.onLeave}
-            onAfterLeave={BackIn.onAfterLeave}
+            onBeforeEnter={animate.beforeEnter}
+            onEnter={animate.enter}
+            onAfterEnter={animate.afterEenter}
+            onBeforeLeave={animate.beforeLeave}
+            onLeave={animate.leave}
+            onAfterLeave={animate.afterLeave}
           >
             {withDirectives(
               <div

@@ -1,3 +1,5 @@
+import AnimateAction from '../animation';
+
 //进入
 const onBeforeEnter = function (el: any) {
     el!.style.opacity = 0;
@@ -31,12 +33,23 @@ const onAfterLeave = function (el: any) {
     el!.style.opacity = 0;
 }
 
-export default {
-    onBeforeEnter,
-    onEnter,
-    onAfterEnter,
-    onEnterCancelled,
-    onBeforeLeave,
-    onLeave,
-    onAfterLeave
-};
+class BackIn implements AnimateAction  {
+    duration: number
+    enter!: (el: any, done: any) => void;
+    afterEenter!: (el: any) => void;
+    leave!: (el: any, done: any) => void;
+    beforeEnter!: (el: any) => void;
+    beforeLeave!: (el: any) => void;
+    afterLeave!: (el: any) => void;
+    constructor(duration: number = 1000) {
+        this.duration = duration;
+    }
+}
+BackIn.prototype.enter = onEnter;
+BackIn.prototype.beforeEnter = onBeforeEnter;
+BackIn.prototype.afterEenter = onAfterEnter;
+BackIn.prototype.leave = onLeave;
+BackIn.prototype.beforeLeave = onBeforeLeave;
+BackIn.prototype.afterLeave = onAfterLeave;
+
+export default BackIn;
