@@ -1,4 +1,4 @@
-import { defineComponent, inject, ref, watch, nextTick, Teleport, withModifiers, getCurrentInstance } from 'vue'
+import { defineComponent, inject, ref, watch, nextTick, Teleport, withModifiers, getCurrentInstance, provide } from 'vue';
 //NOTE: css
 import styles from './preRender.module.scss'
 //NOTE: components
@@ -15,6 +15,7 @@ import { generatePageImage } from '../../presentation/utils/utils'
 //NOTE: hooks
 import useGlobeData from '../../../../components/hooks/useGlobeData'
 import useFullScreenTeleport from './hooks/useFullScreenTeleport'
+import useControl from './hooks/useControl'
 
 function renderText(data: any[]) {
   if (data.length == 0) {
@@ -99,6 +100,8 @@ export default defineComponent({
     const pageList = ref(null)
     const firstRender = ref<boolean>(true)
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
+    const playPosition = useControl()
+    provide('playPosition', playPosition)
 
     watch(
       () => handleObj.currentPageData,

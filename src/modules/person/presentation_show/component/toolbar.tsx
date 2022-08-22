@@ -17,7 +17,7 @@ const PreViewToolbar = defineComponent({
   setup(props: ToolbarProps, { emit }) {
     const instance: any = getCurrentInstance();
     const globalData = useGlobeData(instance);
-    const { toolList, getToolButton } = useToolbarList({}, globalData)
+    const { toolList, getToolButton } = useToolbarList(globalData)
     return () => <div class={styles.toolbar_container}>{getToolButton(instance.ctx.$el)}</div>
   },
 })

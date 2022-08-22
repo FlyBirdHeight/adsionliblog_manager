@@ -90,7 +90,6 @@ const generatePageData = async function (this: any, pageData: any) {
     }
     this.currentPageData = this.pageList.get(this.currentPage)
     this.itemTypeIndexList = setItemTypeIndexList(this.currentPageData || null);
-    console.log(this.itemTypeIndexList)
     this.switchPageAction();
     this.save = false;
 }

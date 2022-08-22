@@ -1,7 +1,13 @@
-import { withModifiers, ref } from 'vue'
+import { withModifiers, ref, inject } from 'vue'
 import { ElButton, ElButtonGroup } from 'element-plus'
 import { ElTooltip } from 'element-plus/lib/components'
-export default function ToolbarList(pageInfo: any, globalData: any) {
+function playPosition(status: any) {
+  if (status.value == false) {
+    status.value = true
+  }
+}
+export default function ToolbarList(globalData: any) {
+  const playStatus = inject('playPosition')
   const toolList: { icon: string; action: string; label: string }[] = [
     {
       icon: 'Back',
@@ -14,9 +20,9 @@ export default function ToolbarList(pageInfo: any, globalData: any) {
       label: '上一步',
     },
     {
-      icon: 'RefreshRight',
-      action: 'refresh',
-      label: '重放',
+      icon: 'VideoPlay',
+      action: 'play',
+      label: '播放',
     },
     {
       icon: 'Bottom',
@@ -35,7 +41,8 @@ export default function ToolbarList(pageInfo: any, globalData: any) {
         break
       case 'next':
         break
-      case 'refresh':
+      case 'play':
+        playPosition(playStatus)
         break
       case 'preDo':
         break
@@ -47,7 +54,13 @@ export default function ToolbarList(pageInfo: any, globalData: any) {
     let arr: any[] = []
     for (let handle of toolList) {
       arr.push(
-        <ElTooltip effect="light" style="z-index: 1048587 !important" teleported={true} content={handle.label} placement="bottom">
+        <ElTooltip
+          effect="light"
+          style="z-index: 1048587 !important"
+          teleported={true}
+          content={handle.label}
+          placement="bottom"
+        >
           <ElButton
             icon={globalData.$icon[handle.icon]}
             onClick={withModifiers(() => {

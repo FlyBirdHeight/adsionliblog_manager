@@ -54,7 +54,7 @@
   <pre-render-container
     @getPage="getPreRenderPage"
     @getRef="getPreRenderPageRef"
-    :display="true"
+    :display="projection"
     :flyToBody="!projection"
     @clostProjection="projection = false"
   ></pre-render-container>
