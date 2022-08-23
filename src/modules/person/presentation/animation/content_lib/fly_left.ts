@@ -7,7 +7,7 @@ class FlyInLeft implements AnimateAction {
     //进入
     beforeEnter(el: any) {
         el!.style.opacity = 0;
-        el!.style.transform = 'translate(-150%, 0)';
+        el!.style.transform = 'translate(-100%, 0)';
     }
     enter(el: any, done: any) {
         el!.style.transition = `all ${this.getTime()} linear`
@@ -26,7 +26,7 @@ class FlyInLeft implements AnimateAction {
         el!.style.opacity = 1;
     }
     leave(el: any, done: any) {
-        el!.style.transform = 'translate(150%,0)';
+        el!.style.transform = 'translate(100%,0)';
         el!.style.opacity = 0;
         el!.style.transition = `all ${this.getTime()} linear`;
         setTimeout(() => {

@@ -8,7 +8,6 @@ import {
   withModifiers,
   getCurrentInstance,
   provide,
-  Transition,
   vShow,
   withDirectives,
 } from 'vue'
@@ -114,7 +113,7 @@ export default defineComponent({
     const pageList = ref(null)
     const firstRender = ref<boolean>(true)
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
-    const animate = ref('fly-down')
+    const animate = ref('fly-left')
     const playTime = ref<number>(1000)
     const playPosition = useControl(playTime.value)
 
