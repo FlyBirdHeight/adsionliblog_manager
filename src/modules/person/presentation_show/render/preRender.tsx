@@ -114,8 +114,9 @@ export default defineComponent({
     const pageList = ref(null)
     const firstRender = ref<boolean>(true)
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
-    const playPosition = useControl()
-    const animate = ref('opacity')
+    const animate = ref('fly-down')
+    const playTime = ref<number>(1000)
+    const playPosition = useControl(playTime.value)
 
     provide('playPosition', playPosition)
     watch(
@@ -148,7 +149,7 @@ export default defineComponent({
           ref={preRenderContainer}
         >
           {props.flyToBody ? '' : <ElButton class={styles.closeBtn} circle icon={globalData.$icon['Close']} />}
-          <ItemAnimation animate={animate.value} duration={1000}>
+          <ItemAnimation animate={animate.value} duration={playTime.value}>
             {withDirectives(
               <div
                 class={styles.preRender}

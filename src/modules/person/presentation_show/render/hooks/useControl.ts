@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-export default function useControl() {
+export default function useControl(duration: number) {
     /**
      * @property {boolean} play 播放设置
      */
@@ -11,7 +11,7 @@ export default function useControl() {
                 timer = setTimeout(() => {
                     play.value = false;
                     timer = null;
-                }, 1000)
+                }, duration)
             }
         }
     })

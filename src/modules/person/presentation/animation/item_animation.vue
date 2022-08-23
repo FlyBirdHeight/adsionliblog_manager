@@ -17,6 +17,8 @@
 import { ref, defineProps, computed, watch, reactive, onMounted } from 'vue'
 import BackIn from './content_lib/backIn'
 import Opacity from './content_lib/opacity'
+import FlyInLeft from './content_lib/fly_left'
+import FlyInDown from './content_lib/fly_down';
 const props = defineProps({
   type: {
     type: String,
@@ -37,7 +39,9 @@ const props = defineProps({
 })
 const animateList = {
   'back-in': BackIn,
-  'opacity': Opacity,
+  opacity: Opacity,
+  'fly-left': FlyInLeft,
+  'fly-down': FlyInDown
 }
 const useAnimate = ref(new BackIn())
 onMounted(() => {
