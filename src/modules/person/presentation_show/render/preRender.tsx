@@ -12,7 +12,6 @@ import {
   vShow,
   withDirectives,
 } from 'vue'
-import BackIn from '@/modules/person/presentation/animation/content_lib/backIn'
 //NOTE: css
 import styles from './scss/preRender.module.scss'
 //NOTE: components
@@ -20,6 +19,7 @@ import { ElButton } from 'element-plus'
 import ShowText from '@/modules/person/presentation_show/component/text.tsx'
 import ShowImage from '@/modules/person/presentation_show/component/image.tsx'
 import PreViewToolbar from '@/modules/person/presentation_show/component/toolbar.tsx'
+import ItemAnimation from '@/modules/person/presentation/animation/item_animation.vue'
 //NOTE: utils
 import { ImageItem } from '../../presentation/image/type'
 import { TextItem } from '../../presentation/text/type'
@@ -115,7 +115,8 @@ export default defineComponent({
     const firstRender = ref<boolean>(true)
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
     const playPosition = useControl()
-    const animate = new BackIn(1000)
+    const animate = ref('opacity')
+
     provide('playPosition', playPosition)
     watch(
       () => handleObj.currentPageData,
@@ -147,14 +148,7 @@ export default defineComponent({
           ref={preRenderContainer}
         >
           {props.flyToBody ? '' : <ElButton class={styles.closeBtn} circle icon={globalData.$icon['Close']} />}
-          <Transition
-            onBeforeEnter={animate.beforeEnter}
-            onEnter={animate.enter}
-            onAfterEnter={animate.afterEenter}
-            onBeforeLeave={animate.beforeLeave}
-            onLeave={animate.leave}
-            onAfterLeave={animate.afterLeave}
-          >
+          <ItemAnimation animate={animate.value} duration={1000}>
             {withDirectives(
               <div
                 class={styles.preRender}
@@ -167,7 +161,7 @@ export default defineComponent({
               </div>,
               [[vShow, props.display && !playPosition.value]]
             )}
-          </Transition>
+          </ItemAnimation>
           {firstRender.value === true ? firstRenderPage(handleObj.pageList, preRenderList) : false}
           <PreViewToolbar position={[1, 2]} />
         </div>

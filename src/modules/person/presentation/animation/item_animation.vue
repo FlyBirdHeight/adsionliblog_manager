@@ -2,25 +2,21 @@
   <transition
     :appear="runningItem"
     :type="props.type"
-    @beforeEnter="props.animate.beforeEnter"
-    @enter="props.animate.enter"
-    @after-enter="props.animate.afterEnter"
-    @before-leave="props.animate.beforeLeave"
-    @leave="props.animate.leave"
-    @after-leave="props.animate.afterLeave"
+    @beforeEnter="beforeEnter"
+    @enter="enter"
+    @after-enter="afterEnter"
+    @before-leave="beforeLeave"
+    @leave="leave"
+    @after-leave="afterLeave"
     :css="false"
   >
     <slot></slot>
   </transition>
 </template>
-<script lang="ts">
-import BackIn from './content_lib/backIn'
-import { ref, defineProps, computed, watch, reactive, onMounted } from 'vue'
-export default {
-  name: 'ItemAnimation',
-}
-</script>
 <script lang="ts" setup>
+import { ref, defineProps, computed, watch, reactive, onMounted } from 'vue'
+import BackIn from './content_lib/backIn'
+import Opacity from './content_lib/opacity'
 const props = defineProps({
   type: {
     type: String,
@@ -31,17 +27,42 @@ const props = defineProps({
     default: 1500,
   },
   animate: {
-    default: () => {
-      return new BackIn()
-    },
+    type: String,
+    default: 'back-in',
   },
   runningItem: {
     type: Boolean,
     default: false,
   },
 })
+const animateList = {
+  'back-in': BackIn,
+  'opacity': Opacity,
+}
+const useAnimate = ref(new BackIn())
 onMounted(() => {
-  console.log(props.animate)
+  useAnimate.value = (() => {
+    let Obj = animateList[props.animate]
+    return new Obj(props.duration)
+  })()
 })
+const beforeEnter = (el: any) => {
+  useAnimate.value.beforeEnter(el)
+}
+const enter = (el: any, done: any) => {
+  useAnimate.value.enter(el, done)
+}
+const afterEnter = (el: any) => {
+  useAnimate.value.afterEnter(el)
+}
+const beforeLeave = (el: any) => {
+  useAnimate.value.beforeLeave(el)
+}
+const leave = (el: any, done: any) => {
+  useAnimate.value.leave(el, done)
+}
+const afterLeave = (el: any) => {
+  useAnimate.value.afterLeave(el)
+}
 </script>
 <style lang="scss" scoped></style>
