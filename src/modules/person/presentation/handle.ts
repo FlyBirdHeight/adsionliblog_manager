@@ -50,6 +50,7 @@ import getPresentationData from "./utils/get";
 import save from "@/modules/person/presentation/utils/save";
 import LayerHandle from './layer/layer';
 import { default as FullScreen } from "./utils/full_screen";
+import ImplementAnimate from "./animation/implement";
 
 const initFn = [addTextArea, addImage, keyInput, addItem, deleteItem, updateItem, updateBody, save, getPresentationData];
 class HandlePresentation {
@@ -64,6 +65,7 @@ class HandlePresentation {
     currentPageData: Type.Page | null;
     layerSetting: LayerHandle;
     fullscreen: FullScreen;
+    implementAnimate: ImplementAnimate;
     save: boolean;
     constructor() {
         this.pageList = new Map();
@@ -78,6 +80,7 @@ class HandlePresentation {
         this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.layerSetting = new LayerHandle();
         this.fullscreen = new FullScreen();
+        this.implementAnimate = new ImplementAnimate();
         this.save = true;
         this.registerFn();
     }

@@ -64,7 +64,7 @@ const tabList = ref([
   {
     label: '动画设置',
     value: 'animate',
-    show: false,
+    show: true,
   },
 ])
 const activeInfo = ref<string>('main')
