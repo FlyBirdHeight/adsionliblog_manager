@@ -23,8 +23,10 @@
           @editBackground="editBackground"
           @removeBackgroundImage="removeBackgroundImage"
         ></presentation-body-setting>
+        <animation-list v-else-if="activeInfo == 'animate'"></animation-list>
         <edit-presentation-text v-else-if="activeInfo == 'text'" />
         <edit-presentation-image v-else-if="activeInfo == 'image'" />
+        
       </keep-alive>
     </div>
   </div>
@@ -39,6 +41,7 @@ export default {
 import PresentationBodySetting from '@/components/site/person/presentation/edit/body/body.vue'
 import EditPresentationText from '@/components/site/person/presentation/edit/text/edit_text.vue'
 import EditPresentationImage from '@/components/site/person/presentation/edit/image/edit_image.vue'
+import AnimationList from '@/modules/person/presentation/animation/animation_list.vue'
 const emit = defineEmits(['setPage'])
 const tabList = ref([
   {
@@ -67,7 +70,7 @@ const tabList = ref([
     show: true,
   },
 ])
-const activeInfo = ref<string>('main')
+const activeInfo = ref<string>('animate')
 const itemTypeIndexList = inject('itemTypeIndexList')
 const activeIndex = inject('activeItem')
 provide('tabInfo', activeInfo)

@@ -1,7 +1,7 @@
 type Animate = {
     time: number,
     action: string,
-    mode: string
+    mode: 'in' | 'out'
 }
 /**
  * @type AnimateType 控件动画内容

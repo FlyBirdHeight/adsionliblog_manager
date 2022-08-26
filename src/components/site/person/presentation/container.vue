@@ -51,13 +51,13 @@
     ></edit-body-image-setting>
   </div>
 
-  <pre-render-container
+  <!-- <pre-render-container
     @getPage="getPreRenderPage"
     @getRef="getPreRenderPageRef"
     :display="projection"
     :flyToBody="!projection"
     @clostProjection="projection = false"
-  ></pre-render-container>
+  ></pre-render-container> -->
 </template>
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, provide, shallowReactive, nextTick, onMounted, inject } from 'vue'
@@ -120,8 +120,8 @@ provide('pageInfo', pageInfo)
 provide('pageImage', pageImage)
 onMounted(async () => {
   loadingText.value = '正在加载，请稍后'
-  saveOrUpdateData.value = true
-  await handleObj.getPresentationData()
+  // saveOrUpdateData.value = true
+  // await handleObj.getPresentationData()
   isSave.value = handleObj.save
   pageMap.value = handleObj.currentPageData
   pageInfo.pageCount = handleObj.pageList.size

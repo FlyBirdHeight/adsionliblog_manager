@@ -1,0 +1,185 @@
+@mixin subTitle($fontSize, $fontColor: #000) {
+    font-family: -apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei',
+        'Microsoft JhengHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Source Han Sans CN', 'Noto Sans SC',
+        'Source Han Sans TC', 'Noto Sans CJK TC', 'WenQuanYi Micro Hei', SimSun, sans-serif;
+    font-size: $fontSize;
+    display: block;
+    font-weight: 500;
+    color: $fontColor;
+}
+
+.animate-container {
+    user-select: none;
+    margin-top: 10px;
+
+    .page-animate {
+        padding: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dcdfe6;
+
+        .label {
+            @include header();
+        }
+    }
+
+
+    .page-choice {
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        height: 50px;
+
+        .animate-in,
+        .animate-out {
+            flex-shrink: 0;
+            height: 50px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            .choice-label {
+                @include subTitle(13px);
+                width: 50%;
+            }
+
+            .choice {
+                width: 50%;
+
+                .none-choice {
+                    width: 50px;
+                    height: 50px;
+                    margin: 0 3px;
+                    border: 1px solid #EBEEF5;
+                    border-radius: 5px;
+                    line-height: 55px;
+                    font-size: 20px;
+                    text-align: center;
+                    cursor: pointer;
+                }
+
+                .own-animate {
+                    cursor: pointer;
+                    width: 60px;
+                    height: 50px;
+                    margin: 0 3px;
+                    border: 1px solid #EBEEF5;
+                    border-radius: 5px;
+                    text-align: center;
+
+                    .data-icon {
+                        width: 100%;
+                        height: 30px;
+
+                        span {
+                            width: 100%;
+                            height: 30px;
+
+                            svg {
+                                width: 100%;
+                                height: 30px;
+                            }
+                        }
+                    }
+
+                    .data-label {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
+
+    .page-animate-setting {
+        margin: 5px;
+        font-size: 13px;
+
+        .setting-in {
+            padding: 5px;
+        }
+
+        .setting-out {
+            padding: 5px;
+        }
+    }
+}
+
+.page-animate_choice {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    .choice-data {
+        flex-shrink: 0;
+        width: 50px;
+        height: 60px;
+        margin: 3px;
+        text-align: center;
+        border: 1px solid #EBEEF5;
+        cursor: pointer;
+        border-radius: 5px;
+
+        .data-icon {
+            width: 100%;
+            height: 40px;
+
+            span {
+                width: 100%;
+                height: 100%;
+
+                svg {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+
+        .data-label {
+            font-size: 12px;
+        }
+    }
+
+    .choice-data:hover {
+        background-color: #79bbff;
+        color: #ffffff;
+        scale: 1.1;
+    }
+}
+
+
+.open-show-enter-from {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.open-show-enter-to {
+    opacity: 1;
+    max-height: 600px;
+}
+
+.open-show-enter-active {
+    transition: all 0.4s linear;
+    overflow: hidden;
+}
+
+.open-show-leave-active {
+    transition: all 0.4s linear;
+    max-height: 600px;
+}
+
+.open-show-leave-to {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.open-show-leave {
+    max-height: 600px;
+    opacity: 1;
+}
