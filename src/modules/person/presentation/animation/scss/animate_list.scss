@@ -97,13 +97,19 @@
     .page-animate-setting {
         margin: 5px;
         font-size: 13px;
+        width: 100%;
 
-        .setting-in {
-            padding: 5px;
-        }
-
+        .setting-in,
         .setting-out {
             padding: 5px;
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            width: 100%;
+
+            .setting-label {
+                width: 140px;
+            }
         }
     }
 }
@@ -151,35 +157,4 @@
     }
 }
 
-
-.open-show-enter-from {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-}
-
-.open-show-enter-to {
-    opacity: 1;
-    max-height: 600px;
-}
-
-.open-show-enter-active {
-    transition: all 0.4s linear;
-    overflow: hidden;
-}
-
-.open-show-leave-active {
-    transition: all 0.4s linear;
-    max-height: 600px;
-}
-
-.open-show-leave-to {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-}
-
-.open-show-leave {
-    max-height: 600px;
-    opacity: 1;
-}
+@import './open_show.scss'

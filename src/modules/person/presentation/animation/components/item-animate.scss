@@ -1,0 +1,28 @@
+.item-animate {
+    width: 100%;
+    padding: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dcdfe6;
+
+    .item-animate_label {
+        @include header();
+    }
+
+    .item-animate_choice {
+        padding: 4px;
+        width: 100%;
+    }
+
+    .item-animate_list {
+        margin: 4px;
+        padding: 4px;
+        border-radius: 5px;
+        border: 1px solid #EBEEF5;
+
+        .list-item {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+        }
+    }
+}

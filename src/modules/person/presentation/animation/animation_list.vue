@@ -76,31 +76,36 @@
           v-if="checkAnimate.page.in != null || checkAnimate.page.out != null"
         >
           <div class="setting-in" v-if="checkAnimate.page.in != null">
-            <span>进入动画持续时间：</span>
+            <span class="setting-label">进入动画时间：</span>
+            <el-input
+              v-model="checkAnimate.page.in.time"
+              placeholder="请输入动画播放时长"
+              :suffix-icon="$icon['Timer']"
+            />
           </div>
           <div class="setting-out" v-if="checkAnimate.page.out != null">
-            <span>离开动画持续时间：</span>
+            <span class="setting-label">离开动画时间：</span>
+            <el-input
+              v-model="checkAnimate.page.out.time"
+              placeholder="请输入动画播放时长"
+              :suffix-icon="$icon['Timer']"
+            />
           </div>
         </div>
       </transition-group>
     </div>
-    <div class="item-animate">
-      <div class="item-animate_label"></div>
-      <div class="item-animate_choice"></div>
-      <div class="item-animate_list"></div>
-    </div>
+    <item-animate></item-animate>
   </div>
 </template>
 <script lang="ts">
-import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
+import { ref, computed, watch, reactive, watchEffect } from 'vue'
 import { pageAnimate } from './data/list'
 export default {
   name: 'AnimationList',
 }
 </script>
 <script lang="ts" setup>
-const props = defineProps()
-const emit = defineEmits([])
+import ItemAnimate from './components/item-animate.vue'
 const hideStatus = reactive({
   pageChoice: true,
   itemChoice: false,
