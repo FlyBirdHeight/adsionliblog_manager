@@ -6,6 +6,7 @@ declare global {
   const ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
   const ElCalendar: typeof import('element-plus/es')['ElCalendar']
   const ElCard: typeof import('element-plus/es')['ElCard']
+  const ElCascader: typeof import('element-plus/es')['ElCascader']
   const ElCascaderPanel: typeof import('element-plus/es')['ElCascaderPanel']
   const ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
   const ElCheckboxButton: typeof import('element-plus/es')['ElCheckboxButton']

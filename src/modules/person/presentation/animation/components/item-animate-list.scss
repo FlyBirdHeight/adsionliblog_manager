@@ -1,0 +1,52 @@
+.item-animate_list {
+    margin: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ebeef5;
+    height: 400px;
+
+    .list-item {
+        display: flex;
+        cursor: pointer;
+        justify-content: left;
+        height: 30px;
+        font-size: 13px;
+        font-weight: 400;
+        margin: 5px 0;
+        transition: all 0.3s linear;
+        .item-index,
+        .item-trigger,
+        .item-animate {
+            width: 10%;
+            line-height: 30px;
+        }
+
+        .item-trigger {
+            font-size: 15px;
+        }
+
+        .item-animate {
+            font-size: 25px;
+        }
+
+        .item-key {
+            width: 50%;
+            padding: 0 10px;
+            line-height: 30px;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item-mode {
+            width: 20%;
+        }
+    }
+
+    .list-item:hover {
+        padding: 5px;
+        background-color: #409eff;
+        border-radius: 5px;
+        color: #fff;
+    }
+}

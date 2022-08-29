@@ -2,27 +2,33 @@
     width: 100%;
     padding: 4px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #dcdfe6;
 
     .item-animate_label {
         @include header();
     }
 
     .item-animate_choice {
-        padding: 4px;
+        overflow: hidden;
         width: 100%;
-    }
+        border-bottom: 1px solid #dcdfe6;
+        padding-bottom: 5px;
 
-    .item-animate_list {
-        margin: 4px;
-        padding: 4px;
-        border-radius: 5px;
-        border: 1px solid #EBEEF5;
+        .animate-choice {
+            margin-left: 10px;
 
-        .list-item {
-            display: flex;
-            justify-content: left;
-            align-items: center;
+            span {
+                font-size: 13px;
+                font-weight: 400;
+            }
+        }
+
+        .animate-setting {
+            margin: 5px 0;
+
+            .label {
+                font-size: 13px;
+                font-weight: 500;
+            }
         }
     }
 }

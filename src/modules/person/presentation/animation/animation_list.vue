@@ -12,7 +12,7 @@
           <div class="animate-in">
             <div class="choice-label">进入动画:</div>
             <div class="choice">
-              <el-popover placement="bottom" :width="300" trigger="hover">
+              <el-popover placement="bottom" :width="300" trigger="click">
                 <template #reference>
                   <div class="none-choice" v-if="checkAnimate.page.in == null">
                     <el-icon><component :is="$icon['Plus']" /></el-icon>
@@ -42,7 +42,7 @@
           <div class="animate-out">
             <div class="choice-label">离开动画:</div>
             <div class="choice">
-              <el-popover placement="bottom" :width="300" trigger="hover">
+              <el-popover placement="bottom" :width="300" trigger="click">
                 <template #reference>
                   <div class="none-choice" v-if="checkAnimate.page.out == null">
                     <el-icon><component :is="$icon['Plus']" /></el-icon>
