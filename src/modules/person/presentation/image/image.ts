@@ -142,7 +142,21 @@ const addImage = function (this: any, url: string): Promise<ImageItem> {
                         localUrl,
                         index: index,
                         ratio: true,
-                        type: "image"
+                        type: "image",
+                        animate: {
+                            in: {
+                                type: '',
+                                time: 0,
+                                trigger: '',
+                                info: null
+                            },
+                            out: {
+                                type: '',
+                                time: 0,
+                                trigger: '',
+                                info: null
+                            }
+                        }
                     })
                 }
             }

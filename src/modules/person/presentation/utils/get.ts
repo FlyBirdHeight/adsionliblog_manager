@@ -33,9 +33,13 @@ const getDefaultPageData = (): Page => {
             },
         },
         animate: {
-            changePage: {
-                duration: 1500,
-                type: ''
+            in: {
+                type: '',
+                time: 1500
+            },
+            out: {
+                type: '',
+                time: 1500,
             },
             item: {
                 enter: [],
@@ -94,4 +98,7 @@ const generatePageData = async function (this: any, pageData: any) {
     this.save = false;
 }
 
-export default getPresentationData;
+export {
+    getPresentationData,
+    getDefaultPageData
+};

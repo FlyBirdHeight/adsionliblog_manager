@@ -35,16 +35,6 @@ const defaultStyle = (): TextStyle => {
                 style: "solid",
                 color: "rgba(0,0,0,1)"
             }
-        },
-        animate: {
-            join: {
-                type: "none",
-                time: 0
-            },
-            left: {
-                type: "none",
-                time: 0
-            }
         }
     }
 }
@@ -121,7 +111,21 @@ const addTextArea = function (this: any): TextItem {
         style: defaultStyle(),
         data: "添加文字",
         index,
-        type: "text"
+        type: "text",
+        animate: {
+            in: {
+                type: "",
+                time: 0,
+                trigger: '',
+                info: null
+            },
+            out: {
+                type: "",
+                time: 0,
+                trigger: '',
+                info: null
+            }
+        }
     }
 }
 
@@ -148,7 +152,21 @@ const convertTextData = (textData: any): TextItem => {
         style,
         data,
         index,
-        type
+        type,
+        animate: {
+            in: {
+                type: "",
+                time: 0,
+                trigger: '',
+                info: null
+            },
+            out: {
+                type: "",
+                time: 0,
+                trigger: '',
+                info: null
+            }
+        }
     }
 }
 

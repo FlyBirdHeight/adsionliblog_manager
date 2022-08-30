@@ -32,16 +32,6 @@ type TextStyle = {
             style: "solid",
             color: "rgba(0,0,0,1)"
         }
-    },
-    animate: {
-        join: {
-            type: "none",
-            time: number
-        },
-        left: {
-            type: "none",
-            time: number
-        }
     }
 }
 
@@ -49,7 +39,23 @@ type TextItem = {
     style: TextStyle,
     index: string,
     data: string,
-    type: "text"
+    type: "text",
+    animate: {
+        in: {
+            type: string,
+            time: number,
+            trigger: string,
+            info?: any,
+            order?: number
+        },
+        out: {
+            type: string,
+            time: number,
+            trigger: string,
+            info?: any,
+            order?: number
+        }
+    }
 }
 
 export {

@@ -1,18 +1,6 @@
 import { ImageItem } from './image/type'
 import { TextItem } from './text/type'
 
-type Animation = {
-    join: {
-        type: string,
-        timer: number,
-        level: number
-    },
-    leave: {
-        type: string,
-        timer: number,
-        level: number
-    }
-}
 type PageItem = ImageItem | TextItem
 
 type Action = {
@@ -57,7 +45,20 @@ type PageBack = {
         y: number,
     },
 }
-
+type PageAnimate = {
+    in: {
+        type: string,
+        time: number
+    },
+    out: {
+        type: string,
+        time: number
+    },
+    item?: {
+        enter: ItemAnimateList[],
+        leave: ItemAnimateList[]
+    }
+}
 type Page = {
     item: {
         text: any[],
@@ -66,19 +67,10 @@ type Page = {
         count: 0
     },
     setting: PageBack,
-    animate: {
-        changePage: {
-            duration: number,
-            type: string
-        },
-        item: {
-            enter: ItemAnimateList[],
-            leave: ItemAnimateList[]
-        }
-    }
+    animate: PageAnimate,
     isEdit: boolean,
     page_key?: string,
-    id?:number
+    id?: number
 }
 
 type ItemInfo = {
@@ -92,11 +84,11 @@ type CopyObj = {
 }
 
 export {
-    Animation,
     CopyObj,
     Page,
     Action,
     PageItem,
     ItemInfo,
-    PageBack
+    PageBack,
+    PageAnimate
 }

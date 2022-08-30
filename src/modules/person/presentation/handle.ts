@@ -3,42 +3,6 @@ const enum ActionType {
     PAGE_ACTION = "page",
     ITEM_ACTION = "item"
 }
-const getDefaultPageData = (): Type.Page => {
-    return {
-        item: {
-            text: [],
-            image: [],
-            code: [],
-            count: 0,
-        },
-        setting: {
-            background: {
-                type: '',
-                data: '',
-                config: null,
-                image: {
-                    url: '',
-                    localUrl: ''
-                }
-            },
-            resolution: {
-                x: 900,
-                y: 600,
-            },
-        },
-        animate: {
-            changePage: {
-                duration: 1500,
-                type: ''
-            },
-            item: {
-                enter: [],
-                leave: []
-            }
-        },
-        isEdit: false
-    }
-}
 import { addTextArea } from "@/modules/person/presentation/text/text";
 import { addImage } from "@/modules/person/presentation/image/image";
 import { keyInput } from "@/modules/person/presentation/utils/key_input";
@@ -46,7 +10,7 @@ import { addItem, deleteItem, updateItem, updateBody } from "@/modules/person/pr
 import { handleUndo } from '@/modules/person/presentation/utils/undo';
 import { handleRecovery } from '@/modules/person/presentation/utils/recovery';
 import { setItemTypeIndexList, setItemDataToLayer } from './utils/utils';
-import getPresentationData from "./utils/get";
+import { getPresentationData, getDefaultPageData } from "./utils/get";
 import save from "@/modules/person/presentation/utils/save";
 import LayerHandle from './layer/layer';
 import { default as FullScreen } from "./utils/full_screen";
@@ -252,7 +216,9 @@ class HandlePresentation {
         this.currentPageData = this.pageList.get(this.currentPage) || null;
         this.itemTypeIndexList = setItemTypeIndexList(this.currentPageData || null);
         this.clearStack();
+        this.implementAnimate.clearStack();
         this.layerSetting.setLayerList(setItemDataToLayer(this.currentPageData))
+        this.implementAnimate.setTask(this.currentPageData);
     }
     /**
      * @method clearStack 切换页面时，清空栈

@@ -53,6 +53,22 @@ type ImageStyle = {
 }
 type ImageItem = {
     style: ImageStyle,
+    animate: {
+        in: {
+            type: string,
+            time: number,
+            trigger: string,
+            order?: number,
+            info?: any
+        },
+        out: {
+            type: string,
+            time: number,
+            trigger: string,
+            order?: number,
+            info?: any
+        }
+    }
     index: string,
     url: string,
     ratio: true,

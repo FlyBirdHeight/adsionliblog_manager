@@ -1,7 +1,7 @@
 type Animate = {
     time: number,
     action: string,
-    mode: 'in' | 'out'
+    options?: any
 }
 /**
  * @type AnimateType 控件动画内容
@@ -16,14 +16,14 @@ type AnimateType = {
  * @type AnimateList 动画可视化列表显示
  * @property {string} itemIndex 控件标识
  * @property {string} type 执行类型
- * @property {string} label 执行内容名称
+ * @property {string} icon 执行内容图标
  * @property {string} mode 触发方式
  */
 type AnimateList = {
     itemIndex: string,
     type: string,
-    label: string,
-    mode: string
+    icon: string,
+    mode: 'in' | 'out',
 }
 /**
  * @type AnimateOrder 动画执行属性
@@ -31,11 +31,23 @@ type AnimateList = {
  * @property {Animate} action 动画属性
  */
 type AnimateOrder = AnimateList & { action: Animate }
-
+type AnimatePage = {
+    in: {
+        type: string,
+        time: number,
+        status: boolean
+    },
+    out: {
+        type: string,
+        time: number,
+        status: boolean
+    }
+}
 
 export {
     Animate,
     AnimateType,
     AnimateOrder,
-    AnimateList
+    AnimateList,
+    AnimatePage
 }
