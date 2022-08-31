@@ -86,7 +86,7 @@ const removeBackgroundImage = (val: any) => {
 }
 const displayTab = () => {
   tabList.value.forEach((v) => {
-    if (v.value != 'main') {
+    if (v.value != 'main' || v.value != 'animate') {
       v.show = false
     }
   })

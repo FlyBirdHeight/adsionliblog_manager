@@ -24,6 +24,7 @@ type AnimateList = {
     type: string,
     icon: string,
     mode: 'in' | 'out',
+    trigger: 'click' | 'auto'
 }
 /**
  * @type AnimateOrder 动画执行属性

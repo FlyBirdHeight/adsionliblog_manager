@@ -57,6 +57,11 @@ const setItemAnimate = function (this: any, items: any) {
             }
         }
     }
+    console.log(this.autoImplementStack);
+    console.log(this.activeTrigger);
+    console.log(this.showList);
+    console.log(this.execuatedStack);
+    console.log(this.pageAnimate)
 }
 
 export {
