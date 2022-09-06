@@ -2,7 +2,7 @@ import { AnimateOrder, AnimateList, AnimatePage } from "./type/animate"
 import { Page, PageAnimate } from '../type'
 import { setPageAnimate, setItemAnimate } from "./utils/data_setting"
 import { AnimateStatus } from "./enum/animate_enum"
-import { playAnimate } from './utils/timeline'
+import { playAnimate, playPage } from './utils/timeline'
 class ImplementAnimate {
     /**
      * @property {Map<string, AnimateOrder>} autoImplementStack 自动播放任务栈
@@ -11,7 +11,7 @@ class ImplementAnimate {
      * @property {Map<string, AnimateOrder>} execuatedStack 已执行任务栈
      * @property {AnimateList[]} showList 动画展示列表数据
      * @property {string} status 当前动画进行状态
-     * @property {string | null} pauseOrder 暂停时执行动画位置指针
+     * @property {number} actionSpeed 播放速度
      */
     autoImplementStack: Map<string, AnimateOrder>
     activeTrigger: Map<string, AnimateOrder>
@@ -20,14 +20,15 @@ class ImplementAnimate {
     execuatedStack: Map<string, AnimateOrder>
     pageAnimate: AnimatePage
     status: string
-    pauseOrder: string | null
+    actionSpeed: number
     setPageAnimate!: (pageAnimate: PageAnimate) => void
     setItemAnimate!: (itemAnimate: any) => void
-    playAnimate!: (this: any, animateList: AnimateOrder[]) => void
+    playAnimate!: (animateList: AnimateOrder[], isClick?: boolean) => void
+    playPage!: () => Promise<boolean>
     constructor() {
         this.pageAnimate = {
             in: { type: '', time: 1000, status: false },
-            out: { type: '', time: 1000, status: false }
+            out: { type: '', time: 1000, status: true }
         }
         this.autoImplementStack = new Map();
         this.activeTrigger = new Map();
@@ -35,7 +36,7 @@ class ImplementAnimate {
         this.showList = [];
         this.execuatedStack = new Map();
         this.status = AnimateStatus.Ready;
-        this.pauseOrder = null
+        this.actionSpeed = 1;
     }
     /**
      * @method setTask 设置动画执行任务
@@ -49,17 +50,19 @@ class ImplementAnimate {
     /**
      * @method runTask 运行动画执行任务
      */
-    runTask() {
+    async runTask() {
+        let playAnimate = this.getAnimateList();
         if (this.status === AnimateStatus.Pause) {
             this.status = AnimateStatus.Running;
-            console.log(this.pauseOrder);
+            this.playAnimate(playAnimate);
         } else {
-            this.status = AnimateStatus.Running;
+            this.status = AnimateStatus.PageIn;
             if (this.pageAnimate.in.type != '') {
-                
+                await this.playPage();
             }
+            this.status = AnimateStatus.Running;
+            this.playAnimate(playAnimate);
         }
-
     }
     /**
      * @method parseTask 暂停动画执行
@@ -75,14 +78,18 @@ class ImplementAnimate {
      * @method quickRunning 加速动画执行
      */
     quickRunning() {
-
+        this.actionSpeed += 0.5;
     }
 
     /**
      * @method triggerClick 触发点击执行
      */
     triggerClick() {
-
+        if (this.status !== AnimateStatus.WaitTrigger) {
+            return;
+        }
+        this.status = AnimateStatus.Running;
+        this.playAnimate(this.getAnimateList(), true);
     }
 
     /**
@@ -100,6 +107,17 @@ class ImplementAnimate {
     }
 
     /**
+     * @method getAnimateList 获取播放动画列表
+     * @return {AnimateList[]}
+     */
+    getAnimateList(): AnimateOrder[] {
+        let res: AnimateOrder[] = [];
+        for (let [key, value] of this.execuatedStack) {
+            res.push(value);
+        }
+        return res;
+    }
+    /**
      * @method cleatStack 清空动画栈全部内容
      */
     clearStack() {
@@ -108,7 +126,6 @@ class ImplementAnimate {
         this.execuationOrder.clear();
         this.showList = [];
         this.execuatedStack.clear();
-        this.pauseOrder = null;
         this.status = AnimateStatus.Ready;
     }
 }
@@ -116,6 +133,7 @@ class ImplementAnimate {
 ImplementAnimate.prototype.setPageAnimate = setPageAnimate;
 ImplementAnimate.prototype.setItemAnimate = setItemAnimate;
 ImplementAnimate.prototype.playAnimate = playAnimate;
+ImplementAnimate.prototype.playPage = playPage;
 
 
 export default ImplementAnimate;

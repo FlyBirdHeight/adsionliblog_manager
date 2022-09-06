@@ -194,6 +194,19 @@
                             "component": "views/site/setting/person"
                         }
                     ]
+                },
+                {
+                    "name": "内容测试",
+                    "icon": "",
+                    "children": [
+                        {
+                            "name": "动画时间轴执行测试",
+                            "icon": "",
+                            "routeName": "AnimateTest",
+                            "path": "animate-test",
+                            "component": "views/site/test/animate"
+                        }
+                    ]
                 }
             ]
         }

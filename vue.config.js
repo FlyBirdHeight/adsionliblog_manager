@@ -2,12 +2,12 @@ const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
-const WorkboxPlugin = require('workbox-webpack-plugin')
-const workbox = new WorkboxPlugin.InjectManifest({
-    swSrc: "./src/modules/person/presentation_show/cache/cache.js",
-    maximumFileSizeToCacheInBytes: 512 * 1024 * 1024,
-    swDest: "sw.js"
-})
+// const WorkboxPlugin = require('workbox-webpack-plugin')
+// const workbox = new WorkboxPlugin.InjectManifest({
+//     swSrc: "./src/modules/person/presentation_show/cache/cache.js",
+//     maximumFileSizeToCacheInBytes: 512 * 1024 * 1024,
+//     swDest: "sw.js"
+// })
 
 module.exports = {
     // 基本路径  3.6之前的版本时 baseUrl
@@ -55,7 +55,7 @@ module.exports = {
             Components({
                 resolvers: [ElementPlusResolver()],
             }),
-            workbox
+            // workbox
         ]
     },
 

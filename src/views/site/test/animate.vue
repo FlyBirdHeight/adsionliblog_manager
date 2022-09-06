@@ -1,0 +1,60 @@
+<template>
+  <h1>动画时间轴设置测试</h1>
+  <el-button-group>
+    <el-button @click="handle('start')"> 开始 </el-button>
+    <el-button @click="handle('pause')"> 暂停 </el-button>
+    <el-button @click="handle('click')"> 点击触发 </el-button>
+    <el-button @click="handle('forward')"> 快进 </el-button>
+    <el-button @click="handle('end')"> 直接完成 </el-button>
+    <el-button @click="handle('restart')">重置</el-button>
+  </el-button-group>
+</template>
+<script lang="ts">
+import { pageAnimate, itemAnimate, execuateStack } from './data/animate_test'
+import ImplementAnimate from '@/modules/person/presentation/animation/implement.ts'
+export default {
+  name: 'AnimateTest',
+}
+</script>
+<script lang="ts" setup>
+import { ref, defineProps, defineEmits, computed, watch, reactive, watchEffect } from 'vue'
+const props = defineProps()
+const emit = defineEmits([])
+const animateStack = new ImplementAnimate()
+const setList = () => {
+  for (let value of itemAnimate) {
+    if (value.trigger === 'auto') {
+      animateStack.autoImplementStack.set(value.itemIndex + '-' + value.mode, value)
+    } else {
+      animateStack.activeTrigger.set(value.itemIndex + '-' + value.mode, value)
+    }
+  }
+}
+setList()
+animateStack.pageAnimate = pageAnimate
+animateStack.execuationOrder = (() => {
+  let map = new Map()
+  for (let value of execuateStack) {
+    map.set(value.order.toString(), value)
+  }
+  return map
+})()
+console.log(animateStack)
+const handle = function (action: string) {
+  switch (action) {
+    case 'start':
+      break
+    case 'pause':
+      break
+    case 'click':
+      break
+    case 'forward':
+      break
+    case 'end':
+      break
+    default:
+      break
+  }
+}
+</script>
+<style lang="scss" scoped></style>

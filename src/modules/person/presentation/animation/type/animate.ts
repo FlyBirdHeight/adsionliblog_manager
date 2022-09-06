@@ -32,17 +32,14 @@ type AnimateList = {
  * @property {Animate} action 动画属性
  */
 type AnimateOrder = AnimateList & { action: Animate }
+type PageAnimateAction = {
+    type: string,
+    time: number,
+    status: any,
+}
 type AnimatePage = {
-    in: {
-        type: string,
-        time: number,
-        status: boolean
-    },
-    out: {
-        type: string,
-        time: number,
-        status: boolean
-    }
+    in: PageAnimateAction,
+    out: PageAnimateAction
 }
 
 export {
@@ -50,5 +47,6 @@ export {
     AnimateType,
     AnimateOrder,
     AnimateList,
-    AnimatePage
+    AnimatePage,
+    PageAnimateAction
 }

@@ -8,8 +8,10 @@
  */
 enum AnimateStatus {
     Ready = 'Ready',
+    PageIn = 'PageIn',
     Running = 'Running',
     Pause = 'Pause',
+    PageOut = 'PageOut',
     Complete = 'Complete',
     WaitTrigger = 'WaitTrigger'
 }
