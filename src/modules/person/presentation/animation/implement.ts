@@ -2,6 +2,7 @@ import { AnimateOrder, AnimateList, AnimatePage } from "./type/animate"
 import { Page, PageAnimate } from '../type'
 import { setPageAnimate, setItemAnimate } from "./utils/data_setting"
 import { AnimateStatus } from "./enum/animate_enum"
+import { playAnimate } from './utils/timeline'
 class ImplementAnimate {
     /**
      * @property {Map<string, AnimateOrder>} autoImplementStack 自动播放任务栈
@@ -22,6 +23,7 @@ class ImplementAnimate {
     pauseOrder: string | null
     setPageAnimate!: (pageAnimate: PageAnimate) => void
     setItemAnimate!: (itemAnimate: any) => void
+    playAnimate!: (this: any, animateList: AnimateOrder[]) => void
     constructor() {
         this.pageAnimate = {
             in: { type: '', time: 1000, status: false },
@@ -113,6 +115,7 @@ class ImplementAnimate {
 
 ImplementAnimate.prototype.setPageAnimate = setPageAnimate;
 ImplementAnimate.prototype.setItemAnimate = setItemAnimate;
+ImplementAnimate.prototype.playAnimate = playAnimate;
 
 
 export default ImplementAnimate;

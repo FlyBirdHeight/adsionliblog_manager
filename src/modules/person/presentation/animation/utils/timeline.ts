@@ -26,3 +26,8 @@ const playAnimate = function (this: any, animateList: AnimateOrder[]) {
         }
     }, animateList[0].action.time)
 }
+
+
+export {
+    playAnimate
+}
