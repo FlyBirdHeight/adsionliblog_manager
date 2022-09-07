@@ -19,7 +19,7 @@ let itemAnimate = [
         mode: 'in',
         trigger: 'click',
         action: {
-            time: 1500,
+            time: 2000,
             action: 'clip-in',
             options: {
                 show: false
@@ -33,7 +33,7 @@ let itemAnimate = [
         mode: 'in',
         trigger: 'auto',
         action: {
-            time: 1500,
+            time: 2000,
             action: 'clip-in',
             options: {
                 show: false
@@ -47,7 +47,7 @@ let itemAnimate = [
         mode: 'in',
         trigger: 'click',
         action: {
-            time: 1500,
+            time: 2000,
             action: 'clip-in',
             options: {
                 show: false
@@ -61,7 +61,7 @@ let itemAnimate = [
         mode: 'out',
         trigger: 'auto',
         action: {
-            time: 1500,
+            time: 2000,
             action: 'clip-out',
             options: {
                 show: false
@@ -75,7 +75,7 @@ let itemAnimate = [
         mode: 'out',
         trigger: 'auto',
         action: {
-            time: 1500,
+            time: 2000,
             action: 'clip-out',
             options: {
                 show: false
@@ -89,7 +89,7 @@ let itemAnimate = [
         mode: 'out',
         trigger: 'click',
         action: {
-            time: 1500,
+            time: 2000,
             action: 'clip-out',
             options: {
                 show: false

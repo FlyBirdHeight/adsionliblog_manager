@@ -2,7 +2,7 @@
   <h1>动画时间轴设置测试</h1>
   <el-button-group>
     <el-button @click="handle('start')"> 开始 </el-button>
-    <el-button @click="handle('pause')"> 暂停 </el-button>
+    <el-button @click="handle('parse')"> 暂停 </el-button>
     <el-button @click="handle('click')"> 点击触发 </el-button>
     <el-button @click="handle('forward')"> 快进 </el-button>
     <el-button @click="handle('end')"> 直接完成 </el-button>
@@ -35,7 +35,7 @@ animateStack.pageAnimate = pageAnimate
 animateStack.execuationOrder = (() => {
   let map = new Map()
   for (let value of execuateStack) {
-    map.set(value.order.toString(), value)
+    map.set(value.order, value)
   }
   return map
 })()
@@ -43,12 +43,16 @@ console.log(animateStack)
 const handle = function (action: string) {
   switch (action) {
     case 'start':
+      animateStack.runTask()
       break
-    case 'pause':
+    case 'parse':
+      animateStack.parseTask()
       break
     case 'click':
+      animateStack.triggerClick()
       break
     case 'forward':
+      animateStack.quickRunning()
       break
     case 'end':
       break

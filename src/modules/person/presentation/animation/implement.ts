@@ -17,13 +17,13 @@ class ImplementAnimate {
     activeTrigger: Map<string, AnimateOrder>
     execuationOrder: Map<number, AnimateOrder>
     showList: AnimateList[]
-    execuatedStack: Map<string, AnimateOrder>
+    execuatedStack: Map<number, AnimateOrder>
     pageAnimate: AnimatePage
     status: string
     actionSpeed: number
     setPageAnimate!: (pageAnimate: PageAnimate) => void
     setItemAnimate!: (itemAnimate: any) => void
-    playAnimate!: (animateList: AnimateOrder[], isClick?: boolean) => void
+    playAnimate!: (animateList: { order: number[], animate: AnimateOrder[] }, isClick?: boolean) => void
     playPage!: () => Promise<boolean>
     constructor() {
         this.pageAnimate = {
@@ -110,11 +110,18 @@ class ImplementAnimate {
      * @method getAnimateList 获取播放动画列表
      * @return {AnimateList[]}
      */
-    getAnimateList(): AnimateOrder[] {
-        let res: AnimateOrder[] = [];
-        for (let [key, value] of this.execuatedStack) {
-            res.push(value);
+    getAnimateList(): { order: number[], animate: AnimateOrder[] } {
+        let res: { order: number[], animate: AnimateOrder[] } = { order: [], animate: [] };
+        for (let [key, value] of this.execuationOrder) {
+            res.order.push(key);
         }
+        res.order.sort((a, b) => a - b);
+        res.order.length != 0 && res.order.forEach((v: any) => {
+            let itemInfo: any = this.execuationOrder.get(v);
+            let key: string = itemInfo.itemIndex + '-' + itemInfo.mode;
+            let task: any = this.activeTrigger.has(key) ? this.activeTrigger.get(key) : this.autoImplementStack.get(key);
+            res.animate.push(task)
+        })
         return res;
     }
     /**
