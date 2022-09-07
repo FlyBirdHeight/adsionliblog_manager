@@ -67,7 +67,7 @@ class ImplementAnimate {
     /**
      * @method parseTask 暂停动画执行
      */
-    parseTask() {
+    pauseTask() {
         if (this.status != AnimateStatus.Running) {
             return;
         }
@@ -96,7 +96,24 @@ class ImplementAnimate {
      * @method executeNow 立即执行完成
      */
     executeNow() {
-
+        for (let [key, value] of this.execuationOrder) {
+            value.action.options!.show = true;
+            this.execuatedStack.set(key, value)
+        }
+        this.execuationOrder.clear();
+        this.status = AnimateStatus.PageOut;
+    }
+    /**
+     * @method restartTask 重置动画执行
+     */
+    restartTask() {
+        for (let [key, value] of this.execuatedStack) {
+            this.execuationOrder.set(key, value)
+        }
+        this.execuatedStack.clear();
+        this.status = AnimateStatus.Ready;
+        this.pageAnimate.in.status = false;
+        this.pageAnimate.out.status = true;
     }
 
     /**

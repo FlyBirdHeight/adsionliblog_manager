@@ -39,14 +39,15 @@ animateStack.execuationOrder = (() => {
   }
   return map
 })()
-console.log(animateStack)
 const handle = function (action: string) {
+  console.log(action)
+  console.log(animateStack.autoImplementStack, animateStack.activeTrigger, animateStack.execuationOrder)
   switch (action) {
     case 'start':
       animateStack.runTask()
       break
     case 'parse':
-      animateStack.parseTask()
+      animateStack.pauseTask()
       break
     case 'click':
       animateStack.triggerClick()
