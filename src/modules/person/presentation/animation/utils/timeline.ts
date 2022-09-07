@@ -14,6 +14,7 @@ const playAnimate = function (this: any, info: { order: number[], animate: Anima
     }
     let animateTask: any = animateList.shift();
     let order: any = orderList.shift();
+    console.log(animateTask, animateTask.trigger, isClick);
     if (animateTask.trigger === 'auto' || (animateTask.trigger === 'click' && isClick)) {
         animateTask.action.options.show = true;
         this.execuationOrder.delete(order);

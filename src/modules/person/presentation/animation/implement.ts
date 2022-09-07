@@ -52,15 +52,18 @@ class ImplementAnimate {
      */
     async runTask() {
         let playAnimate = this.getAnimateList();
+        console.log('ready')
         if (this.status === AnimateStatus.Pause) {
             this.status = AnimateStatus.Running;
             this.playAnimate(playAnimate);
         } else {
             this.status = AnimateStatus.PageIn;
+            console.log(this.status)
             if (this.pageAnimate.in.type != '') {
                 await this.playPage();
             }
             this.status = AnimateStatus.Running;
+            console.log(this.status)
             this.playAnimate(playAnimate);
         }
     }
@@ -97,23 +100,31 @@ class ImplementAnimate {
      */
     executeNow() {
         for (let [key, value] of this.execuationOrder) {
-            value.action.options!.show = true;
+            let index: string = value.itemIndex + '-' + value.mode;
+            let task: any = this.activeTrigger.has(index) ? this.activeTrigger.get(index) : this.autoImplementStack.get(index);
+            task.action.options.show = true;
+            console.log(task)
             this.execuatedStack.set(key, value)
         }
         this.execuationOrder.clear();
         this.status = AnimateStatus.PageOut;
+        console.log(this.status, this.execuatedStack);
     }
     /**
      * @method restartTask 重置动画执行
      */
     restartTask() {
         for (let [key, value] of this.execuatedStack) {
+            let index: string = value.itemIndex + '-' + value.mode;
+            let task: any = this.activeTrigger.has(index) ? this.activeTrigger.get(index) : this.autoImplementStack.get(index);
+            task.action.options.show = false;
             this.execuationOrder.set(key, value)
         }
         this.execuatedStack.clear();
         this.status = AnimateStatus.Ready;
         this.pageAnimate.in.status = false;
         this.pageAnimate.out.status = true;
+        console.log(this.status, this.execuationOrder)
     }
 
     /**

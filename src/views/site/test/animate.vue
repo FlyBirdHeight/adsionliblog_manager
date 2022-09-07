@@ -40,8 +40,6 @@ animateStack.execuationOrder = (() => {
   return map
 })()
 const handle = function (action: string) {
-  console.log(action)
-  console.log(animateStack.autoImplementStack, animateStack.activeTrigger, animateStack.execuationOrder)
   switch (action) {
     case 'start':
       animateStack.runTask()
@@ -56,7 +54,10 @@ const handle = function (action: string) {
       animateStack.quickRunning()
       break
     case 'end':
+      animateStack.executeNow();
       break
+    case 'restart':
+      animateStack.restartTask();
     default:
       break
   }
