@@ -54,6 +54,7 @@ const getPresentationData = async function (this: any, name: string = defaultPre
     let presentationData = resData.data.data;
     if (!presentationData) {
         this.getData = true;
+        this.currentPageData = this.pageList.get(this.currentPage)
         return [];
     }
     let pageData = presentationData.presentation_page_list;

@@ -34,19 +34,19 @@ function renderText(data: any) {
   if (data.length == 0) {
     return
   }
-  const tag: any = ShowText
-  return data.map((text: TextItem) => {
-    return <tag info={text} />
+  let res = data.map((text: TextItem) => {
+    return <ShowText info={text} />
   })
+  return res
 }
 function renderImage(data: any) {
   if (data.length == 0) {
     return
   }
-  const tag: any = ShowImage
-  return data.map((image: ImageItem) => {
-    return <tag info={image} />
+  let res = data.map((image: ImageItem) => {
+    return <ShowImage info={image} />
   })
+  return res
 }
 /**
  * @method renderBackground 渲染背景设置
@@ -125,7 +125,6 @@ export default defineComponent({
     watch(
       () => handleObj.getData,
       async (newV: any, oldV: any) => {
-        pageMap.value = handleObj.currentPageData
         emit('getRef', preRenderContainer.value)
         if (firstRender.value) {
           pageCount.value = handleObj.pageList.size
@@ -139,6 +138,12 @@ export default defineComponent({
             emit('getPage', pageImage.value)
           })
         }
+      }
+    )
+    watch(
+      () => handleObj.currentPageData,
+      (newV: any, oldV: any) => {
+        pageMap.value = newV
       }
     )
     return () => (
@@ -160,8 +165,8 @@ export default defineComponent({
                 onClick={withModifiers(() => {}, ['stop'])}
                 style={renderBackground(pageMap.value.setting, null, true)}
               >
-                {renderText(pageMap.value.item.text)}
-                {renderImage(pageMap.value.item.image)}
+                {props.display ? renderText(pageMap.value.item.text) : ''}
+                {props.display ? renderImage(pageMap.value.item.image) : ''}
               </div>,
               [[vShow, props.display && !playPosition.value]]
             )}

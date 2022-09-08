@@ -21,8 +21,7 @@ const analysisText = (data: any) => {
 
 const renderText = (analysisData: any) => {
   if (!analysisData) return
-
-  return <div style={analysisData.style} v-html={analysisData.data} />
+  return <div style={analysisData.value.style} v-html={analysisData.value.data} />
 }
 
 export default defineComponent({
@@ -33,6 +32,7 @@ export default defineComponent({
       default: null,
     },
   },
+
   setup(props: any, context: any) {
     watch(
       () => props.info,
@@ -42,7 +42,11 @@ export default defineComponent({
         }
       }
     )
+
     const analysisData: any = ref(analysisText(props.info))
+    watch(analysisData, (newV: any) => {
+      console.log(newV)
+    })
     return () => renderText(analysisData)
   },
 })
