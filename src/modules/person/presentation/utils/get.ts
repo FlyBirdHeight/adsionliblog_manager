@@ -52,11 +52,13 @@ const getDefaultPageData = (): Page => {
 const getPresentationData = async function (this: any, name: string = defaultPresentationName) {
     let resData = await axios.get(`/api/setting/presentation/get/presentation?name=${name}`);
     let presentationData = resData.data.data;
-    if (presentationData === null) {
+    if (!presentationData) {
+        this.getData = true;
         return [];
     }
     let pageData = presentationData.presentation_page_list;
     await generatePageData.call(this, pageData);
+    this.getData = true;
 }
 /**
  * @method generatePageData 根据后端回传数据生成显示page数据
@@ -95,7 +97,7 @@ const generatePageData = async function (this: any, pageData: any) {
     this.currentPageData = this.pageList.get(this.currentPage)
     this.itemTypeIndexList = setItemTypeIndexList(this.currentPageData || null);
     this.switchPageAction();
-    this.save = false;
+    this.isSave = false;
 }
 
 export {

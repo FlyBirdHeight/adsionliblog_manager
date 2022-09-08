@@ -30,7 +30,8 @@ class HandlePresentation {
     layerSetting: LayerHandle;
     fullscreen: FullScreen;
     implementAnimate: ImplementAnimate;
-    save: boolean;
+    isSave: boolean;
+    getData: boolean;
     constructor() {
         this.pageList = new Map();
         this.currentPage = 1;
@@ -45,7 +46,8 @@ class HandlePresentation {
         this.layerSetting = new LayerHandle();
         this.fullscreen = new FullScreen();
         this.implementAnimate = new ImplementAnimate();
-        this.save = true;
+        this.isSave = true;
+        this.getData = false;
         this.registerFn();
     }
 

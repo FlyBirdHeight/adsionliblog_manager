@@ -1,14 +1,15 @@
 import { PageAnimate } from "../../type"
 import { pageAnimate } from '../data/list';
 const setPageAnimate = function (this: any, pageAnimate: PageAnimate) {
-    if (pageAnimate.in.type !== '') {
-        this.pageAnimate.in.type = pageAnimate.in.type;
-        this.pageAnimate.in.time = pageAnimate.in.time || 1000;
-    }
-    if (pageAnimate.out.type !== '') {
-        this.pageAnimate.out.type = pageAnimate.out.type;
-        this.pageAnimate.out.time = pageAnimate.out.time || 1000
-    }
+    console.log('page',pageAnimate)
+    // if (pageAnimate.in.type !== '') {
+    //     this.pageAnimate.in.type = pageAnimate.in.type;
+    //     this.pageAnimate.in.time = pageAnimate.in.time || 1000;
+    // }
+    // if (pageAnimate.out.type !== '') {
+    //     this.pageAnimate.out.type = pageAnimate.out.type;
+    //     this.pageAnimate.out.time = pageAnimate.out.time || 1000
+    // }
 }
 const getAnimateIcon = (type: string) => {
     let index = pageAnimate.findIndex((v: { label: string, action: string, icon: string }) => {
@@ -49,19 +50,20 @@ const setItemAnimate = function (this: any, items: any) {
             continue
         }
         for (let item of items[key]) {
-            if (item.animate.in.type != '') {
-                setAnimateData.call(this, { animate: item.animate.in, index: item.index, mode: 'in' });
-            }
-            if (item.animate.out.type != '') {
-                setAnimateData.call(this, { animate: item.animate.out, index: item.index, mode: 'in' });
-            }
+            console.log('item',item)
+            // if (item.animate.in.type != '') {
+            //     setAnimateData.call(this, { animate: item.animate.in, index: item.index, mode: 'in' });
+            // }
+            // if (item.animate.out.type != '') {
+            //     setAnimateData.call(this, { animate: item.animate.out, index: item.index, mode: 'in' });
+            // }
         }
     }
-    console.log(this.autoImplementStack);
-    console.log(this.activeTrigger);
-    console.log(this.showList);
-    console.log(this.execuatedStack);
-    console.log(this.pageAnimate)
+    // console.log(this.autoImplementStack);
+    // console.log(this.activeTrigger);
+    // console.log(this.showList);
+    // console.log(this.execuatedStack);
+    // console.log(this.pageAnimate)
 }
 
 export {

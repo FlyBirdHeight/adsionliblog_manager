@@ -30,7 +30,7 @@ import useGlobeData from '../../../../components/hooks/useGlobeData'
 import useFullScreenTeleport from './hooks/useFullScreenTeleport'
 import useControl from './hooks/useControl'
 
-function renderText(data: any[]) {
+function renderText(data: any) {
   if (data.length == 0) {
     return
   }
@@ -39,7 +39,7 @@ function renderText(data: any[]) {
     return <tag info={text} />
   })
 }
-function renderImage(data: any[]) {
+function renderImage(data: any) {
   if (data.length == 0) {
     return
   }
@@ -54,7 +54,10 @@ function renderImage(data: any[]) {
  * @param {any} preRenderContainer 渲染背景Dom
  */
 function renderBackground(backgroundData: PageBack, preRenderContainer: any, getStyle: boolean = false) {
-  let { background } = backgroundData
+  if (!backgroundData) {
+    return
+  }
+  let background = backgroundData.background
   if (getStyle) {
     return getAnalysisBackgroundStyle(background)
   }
@@ -69,7 +72,7 @@ function firstRenderPage(pageList: Map<number, any>, refList: any) {
   for (let [key, page] of pageList) {
     arr.push(page)
   }
-  return arr.map((v: any) => {
+  let res = arr.map((v: any) => {
     return (
       <div
         class={styles.preRender}
@@ -86,6 +89,7 @@ function firstRenderPage(pageList: Map<number, any>, refList: any) {
       </div>
     )
   })
+  return res
 }
 
 export default defineComponent({
@@ -103,10 +107,10 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const instance = getCurrentInstance()
-    const globalData: any = useGlobeData(instance)
+    const globalData = useGlobeData(instance)
     const handleObj: any = inject('handleObj')
     const pageMap: any = ref(handleObj.currentPageData)
-    const preRenderContainer: any = ref()
+    const preRenderContainer = ref()
     const preRenderList = ref([])
     const pageImage = ref([])
     const pageCount = ref(handleObj.pageList.size)
@@ -119,20 +123,20 @@ export default defineComponent({
 
     provide('playPosition', playPosition)
     watch(
-      () => handleObj.currentPageData,
+      () => handleObj.getData,
       async (newV: any, oldV: any) => {
-        pageMap.value = newV
+        pageMap.value = handleObj.currentPageData
         emit('getRef', preRenderContainer.value)
         if (firstRender.value) {
           pageCount.value = handleObj.pageList.size
           pageList.value = handleObj.pageList
+          firstRender.value = false
           nextTick(async () => {
             let promiseList = preRenderList.value.map((v: any, i: number) => {
               return generatePageImage(v, i + 1, pageImage.value)
             })
             await Promise.all(promiseList)
             emit('getPage', pageImage.value)
-            firstRender.value = false
           })
         }
       }
@@ -162,7 +166,7 @@ export default defineComponent({
               [[vShow, props.display && !playPosition.value]]
             )}
           </ItemAnimation>
-          {firstRender.value === true ? firstRenderPage(handleObj.pageList, preRenderList) : false}
+          {firstRender.value && !handleObj.isSave ? firstRenderPage(handleObj.pageList, preRenderList) : ''}
           <PreViewToolbar position={[1, 2]} />
         </div>
       </Teleport>

@@ -12,8 +12,8 @@ import 'element-plus/theme-chalk/el-loading.css'
 import { vLoading } from 'element-plus/es/components/loading/src/directive'
 import "default-passive-events"
 
-import registeSw from "./modules/person/presentation_show/cache/register";
-registeSw();
+// import registeSw from "./modules/person/presentation_show/cache/register";
+// registeSw();
 
 const app = createApp(App)
 app.directive("load", vLoading)

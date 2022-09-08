@@ -21,7 +21,7 @@ const analysisText = (data: any) => {
 
 const renderText = (analysisData: any) => {
   if (!analysisData) return
-  console.log(analysisData)
+
   return <div style={analysisData.style} v-html={analysisData.data} />
 }
 

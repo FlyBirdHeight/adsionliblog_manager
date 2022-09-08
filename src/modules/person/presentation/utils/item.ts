@@ -26,7 +26,7 @@ const getAnalysisBackgroundStyle = (data: any) => {
     let style: any = {};
     if (!data.config) {
         if (data.type != '') {
-            style.backgroundColor = data.data;
+            style.backgroundColor = data.data == '' ? '#fff' : data.data;
         } else {
             style = {
                 backgroundSize: null,

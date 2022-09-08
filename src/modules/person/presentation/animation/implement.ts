@@ -44,6 +44,7 @@ class ImplementAnimate {
      */
     setTask(pageInfo: Page | null) {
         if (!pageInfo) return;
+        console.log(pageInfo)
         this.setPageAnimate(pageInfo!.animate);
         this.setItemAnimate(pageInfo.item);
     }
