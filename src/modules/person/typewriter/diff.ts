@@ -80,11 +80,10 @@ const getTypeData = (handleData: (AddText | RemovalText | NormalText)[], input: 
         let breakLength = 0;
         let typeDataList = handleData[i].type !== 2 ? handleData[i].text : output.slice(from, from + handleData[i].length)
 
-        if (typeDataList?.includes('\n')) {
+        if (typeDataList?.includes('\n')) {  
             breakData = true
             breakLength = typeDataList?.match(/\n/mg)?.length || 0
         }
-
 
         typeDataList?.split('\n').forEach((v, i) => {
             editList.push({

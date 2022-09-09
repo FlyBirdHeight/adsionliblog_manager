@@ -119,6 +119,9 @@ const setItemDataToLayer = (currentPage: Page | null) => {
  * @method generatePageImage 生成page的图片内容
  */
 const generatePageImage = async (dom: any, page: number, pageImageList: any[]) => {
+    if (!dom) {
+        return;
+    }
     function changeToBlob(blob: any) {
         let arr = blob.split(','),
             type = arr[0].match(/:(.*?);/)[1],

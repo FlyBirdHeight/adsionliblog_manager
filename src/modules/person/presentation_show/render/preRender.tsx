@@ -69,6 +69,7 @@ function renderBackground(backgroundData: PageBack, preRenderContainer: any, get
  */
 function firstRenderPage(pageList: Map<number, any>, refList: any) {
   let arr: any[] = []
+  console.log('render')
   for (let [key, page] of pageList) {
     arr.push(page)
   }
@@ -78,7 +79,7 @@ function firstRenderPage(pageList: Map<number, any>, refList: any) {
         class={styles.preRender}
         tabindex="-1"
         ref={(el: any) => {
-          if (!refList.value.includes(el)) {
+          if (!refList.value.includes(el) && el != null) {
             refList.value.push(el)
           }
         }}
@@ -116,6 +117,7 @@ export default defineComponent({
     const pageCount = ref(handleObj.pageList.size)
     const pageList = ref(null)
     const firstRender = ref<boolean>(true)
+    const firstRenderList = ref([])
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
     const animate = ref('fly-left')
     const playTime = ref<number>(1000)
@@ -129,12 +131,13 @@ export default defineComponent({
         if (firstRender.value) {
           pageCount.value = handleObj.pageList.size
           pageList.value = handleObj.pageList
-          firstRender.value = false
           nextTick(async () => {
+            preRenderList.value = preRenderList.value.filter((v: any) => v != null)
             let promiseList = preRenderList.value.map((v: any, i: number) => {
               return generatePageImage(v, i + 1, pageImage.value)
             })
             await Promise.all(promiseList)
+            firstRender.value = false
             emit('getPage', pageImage.value)
           })
         }
@@ -171,7 +174,7 @@ export default defineComponent({
               [[vShow, props.display && !playPosition.value]]
             )}
           </ItemAnimation>
-          {firstRender.value && !handleObj.isSave ? firstRenderPage(handleObj.pageList, preRenderList) : ''}
+          {firstRender.value && handleObj.getData ? firstRenderPage(handleObj.pageList, preRenderList) : ''}
           <PreViewToolbar position={[1, 2]} />
         </div>
       </Teleport>

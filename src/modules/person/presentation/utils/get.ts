@@ -8,7 +8,7 @@ import { setItemTypeIndexList } from './utils';
 /**
  * @module 本模块用于获取后端数据
  */
-const defaultPresentationName = 'default'
+const defaultPresentationName = '首页展示'
 const getDefaultPageData = (): Page => {
     return {
         item: {

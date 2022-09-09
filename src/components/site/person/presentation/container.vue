@@ -121,10 +121,10 @@ provide('pageImage', pageImage)
 onMounted(async () => {
   loadingText.value = '正在加载，请稍后'
   saveOrUpdateData.value = true
-  await handleObj.getPresentationData();
+  await handleObj.getPresentationData()
   isSave.value = handleObj.isSave
-  if(isSave.value) {
-    saveOrUpdateData.value = false;
+  if (isSave.value) {
+    saveOrUpdateData.value = false
   }
   pageMap.value = handleObj.currentPageData
   pageInfo.pageCount = handleObj.pageList.size
