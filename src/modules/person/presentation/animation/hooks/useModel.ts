@@ -8,5 +8,8 @@ export function useModel(props: any, key: string = 'modelValue', emit: any) {
         () => proxy.value,
         (v: any) => _emit(event, v)
     );
+    watch(() => props[key], (newV: any) => {
+        proxy.value = newV;
+    })
     return proxy
 }

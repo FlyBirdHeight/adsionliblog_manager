@@ -30,45 +30,22 @@
 </template>
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, inject } from 'vue'
-import useDrag from '../hooks/useDrag';
+import useDrag from '../hooks/useDrag'
 export default {
   name: 'ItemAnimateList',
 }
 </script>
 <script lang="ts" setup>
 const handleObj = inject('handleObj')
+const activeItem = inject('activeItem')
 const animateObj = handleObj.implementAnimate
-// const testData = animateObj.showList
-const testData = reactive([
-  {
-    trigger: 'click',
-    animate: 'fly',
-    index: '123456123456123456123456',
-    mode: 'in',
-  },
-  {
-    trigger: 'auto',
-    animate: 'fly',
-    index: '456789',
-    mode: 'out',
-  },
-  {
-    trigger: 'auto',
-    animate: 'fly',
-    index: '45612789',
-    mode: 'out',
-  },
-  {
-    trigger: 'auto',
-    animate: 'fly',
-    index: '456723289',
-    mode: 'out',
-  },
-])
+const testData = animateObj.showList
+
 const activeIndex = function (index: string) {
-  console.log(index)
+  activeItem = index;
 }
-const dragger = useDrag(function(newV, oldV){
+
+const dragger = useDrag(function (newV, oldV) {
   if (!newV || newV.index == this.dragInfo.index) {
     return
   } else {

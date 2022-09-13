@@ -21,5 +21,6 @@ const props = defineProps({
 })
 const checkData = useModel(props)
 const options: ItemAnimateSelect[] = AnimateSelect
+
 </script>
 <style lang="scss" scoped></style>

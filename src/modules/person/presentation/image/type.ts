@@ -58,6 +58,7 @@ type ImageItem = {
             type: string,
             time: number,
             trigger: string,
+            speed: number,
             order?: number,
             info?: any
         },
@@ -65,6 +66,7 @@ type ImageItem = {
             type: string,
             time: number,
             trigger: string,
+            speed: number,
             order?: number,
             info?: any
         }

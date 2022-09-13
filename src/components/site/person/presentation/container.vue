@@ -100,7 +100,7 @@ const pageInfo = reactive({
 })
 const pageMap = ref(handleObj.currentPageData)
 const activeItem = ref<number>(-1)
-const itemTypeIndexList = ref<{ index: number; type: string }[]>(handleObj.itemTypeIndexList)
+const itemTypeIndexList = ref<{ index: string; type: string }[]>(handleObj.itemTypeIndexList)
 const clickTime = ref<number>(0)
 const presentationBody = ref()
 const preRender = ref(null)

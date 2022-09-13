@@ -146,15 +146,17 @@ const addImage = function (this: any, url: string): Promise<ImageItem> {
                         animate: {
                             in: {
                                 type: '',
-                                time: 0,
+                                time: 1000,
                                 trigger: '',
-                                info: null
+                                info: null,
+                                speed: 1,
                             },
                             out: {
                                 type: '',
-                                time: 0,
+                                time: 1000,
                                 trigger: '',
-                                info: null
+                                info: null,
+                                speed: 1,
                             }
                         }
                     })

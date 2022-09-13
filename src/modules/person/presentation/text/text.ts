@@ -115,15 +115,17 @@ const addTextArea = function (this: any): TextItem {
         animate: {
             in: {
                 type: "",
-                time: 0,
+                time: 1000,
                 trigger: '',
-                info: null
+                info: null,
+                speed: 1
             },
             out: {
                 type: "",
-                time: 0,
+                time: 1000,
                 trigger: '',
-                info: null
+                info: null,
+                speed: 1
             }
         }
     }
@@ -156,15 +158,17 @@ const convertTextData = (textData: any): TextItem => {
         animate: {
             in: {
                 type: "",
-                time: 0,
+                time: 1000,
                 trigger: '',
-                info: null
+                info: null,
+                speed: 1,
             },
             out: {
                 type: "",
-                time: 0,
+                time: 1000,
                 trigger: '',
-                info: null
+                info: null,
+                speed: 1
             }
         }
     }

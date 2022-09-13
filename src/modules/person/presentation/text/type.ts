@@ -45,6 +45,7 @@ type TextItem = {
             type: string,
             time: number,
             trigger: string,
+            speed: number,
             info?: any,
             order?: number
         },
@@ -52,6 +53,7 @@ type TextItem = {
             type: string,
             time: number,
             trigger: string,
+            speed: number,
             info?: any,
             order?: number
         }
