@@ -22,9 +22,9 @@
             v-model:time="animateSetting.time"
           ></animate-setting-item>
         </div>
-        <item-animate-list></item-animate-list>
       </div>
     </transition>
+    <item-animate-list></item-animate-list>
   </div>
 </template>
 <script lang="ts">

@@ -73,7 +73,7 @@
         <div
           class="page-animate-setting"
           key="pageSetting"
-          v-if="checkAnimate.page.in != null || checkAnimate.page.out != null"
+          v-if="(checkAnimate.page.in != null || checkAnimate.page.out != null) && hideStatus.pageChoice"
         >
           <div class="setting-in" v-if="checkAnimate.page.in != null">
             <span class="setting-label">进入动画时间：</span>

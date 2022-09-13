@@ -26,7 +26,6 @@
         <animation-list v-else-if="activeInfo == 'animate'"></animation-list>
         <edit-presentation-text v-else-if="activeInfo == 'text'" />
         <edit-presentation-image v-else-if="activeInfo == 'image'" />
-        
       </keep-alive>
     </div>
   </div>
@@ -85,11 +84,13 @@ const removeBackgroundImage = (val: any) => {
   emit('setPage', { val }, 'removeBackgroundImage')
 }
 const displayTab = () => {
-  tabList.value.forEach((v) => {
-    if (v.value != 'main' || v.value != 'animate') {
-      v.show = false
+  for (let item of tabList.value) {
+    if (item.value === 'main' || item.value === 'animate') {
+      item.show = true;
+      continue
     }
-  })
+    item.show = false
+  }
 }
 watch(activeIndex, (newV, oldV) => {
   displayTab()
@@ -106,8 +107,11 @@ watch(activeIndex, (newV, oldV) => {
   if (tI == -1) {
     activeInfo.value = 'main'
     return
+  } else {
+    tabList.value[0].show = false
   }
   tabList.value[tI].show = true
+
   activeInfo.value = itemTypeIndexList.value[index].type
 })
 </script>

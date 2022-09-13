@@ -1,12 +1,12 @@
 <template>
-  <div class="item-animate_list" @drop="dragDrop($event)">
+  <div class="item-animate_list" @drop="dragger.dragDrop($event)">
     <div
       class="list-item"
       draggable="true"
-      @dragstart.native="dragStart($event, item)"
-      @dragenter="dragEnter($event, item)"
-      @dragover.prevent="dragOver($event, item)"
-      @dragend="dragEnd($event)"
+      @dragstart.native="dragger.dragStart($event, item)"
+      @dragenter="dragger.dragEnter($event, item)"
+      @dragover.prevent="dragger.dragOver($event, item)"
+      @dragend="dragger.dragEnd($event)"
       @click="activeIndex(item)"
       v-for="(item, index) in testData"
       :key="item.index"
@@ -29,15 +29,17 @@
   </div>
 </template>
 <script lang="ts">
+import { ref, computed, watch, reactive, watchEffect, inject } from 'vue'
+import useDrag from '../hooks/useDrag';
 export default {
   name: 'ItemAnimateList',
 }
 </script>
 <script lang="ts" setup>
-import { ref, computed, watch, reactive, watchEffect } from 'vue'
-const props = defineProps()
-const emit = defineEmits([])
-const testData = ref([
+const handleObj = inject('handleObj')
+const animateObj = handleObj.implementAnimate
+// const testData = animateObj.showList
+const testData = reactive([
   {
     trigger: 'click',
     animate: 'fly',
@@ -66,46 +68,19 @@ const testData = ref([
 const activeIndex = function (index: string) {
   console.log(index)
 }
-
-const dragEnterData = ref(null)
-const dragInfo = ref(null)
-const dragDom = ref(null)
-
-const dragStart = (event, column) => {
-  dragInfo.value = column
-  dragDom.value = event.path[0]
-  dragDom.value.style.opacity = 0
-}
-const dragEnter = (event, column) => {
-  dragEnterData.value = column
-}
-const dragOver = (event, column) => {
-  event.preventDefault()
-}
-const dragEnd = (event) => {
-  dragDom.value.style.opacity = 1
-  dragDom.value = null
-}
-const dragDrop = (event) => {
-  if (event.stopPropagation) {
-    event.stopPropagation()
-  }
-  dragEnterData.value = null
-  dragInfo.value = null
-}
-watch(dragEnterData, (newV, oldV) => {
-  if (!newV || newV.index == dragInfo.value.index) {
+const dragger = useDrag(function(newV, oldV){
+  if (!newV || newV.index == this.dragInfo.index) {
     return
   } else {
-    let index = testData.value.findIndex((v) => {
+    let index = testData.findIndex((v) => {
       return v.index == newV.index
     })
-    let oldIndex = testData.value.findIndex((v) => {
-      return v.index == dragInfo.value.index
+    let oldIndex = testData.findIndex((v) => {
+      return v.index == this.dragInfo.index
     })
-    let t = testData.value[oldIndex]
-    testData.value[oldIndex] = testData.value[index]
-    testData.value[index] = t
+    let t = testData[oldIndex]
+    testData[oldIndex] = testData[index]
+    testData[index] = t
   }
 })
 </script>
