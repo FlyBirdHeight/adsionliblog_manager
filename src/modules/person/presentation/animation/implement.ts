@@ -1,8 +1,9 @@
 import { AnimateOrder, AnimateList, AnimatePage } from "./type/animate"
 import { Page, PageAnimate } from '../type'
-import { setPageAnimate, setItemAnimate } from "./utils/data_setting"
+import { setPageAnimate, setItemAnimate, addAnimate } from "./utils/data_setting"
 import { AnimateStatus } from "./enum/animate_enum"
 import { playAnimate, playPage } from './utils/timeline'
+import { WaitSetting } from './components/utils/utils'
 class ImplementAnimate {
     /**
      * @property {Map<string, AnimateOrder>} autoImplementStack 自动播放任务栈
@@ -25,6 +26,7 @@ class ImplementAnimate {
     setItemAnimate!: (itemAnimate: any) => void
     playAnimate!: (animateList: { order: number[], animate: AnimateOrder[] }, isClick?: boolean) => void
     playPage!: () => Promise<boolean>
+    addAnimate!: (item: any, setting: WaitSetting, mode: string) => void;
     constructor() {
         this.pageAnimate = {
             in: { type: '', time: 1000, status: false },
@@ -44,7 +46,6 @@ class ImplementAnimate {
      */
     setTask(pageInfo: Page | null) {
         if (!pageInfo) return;
-        console.log(pageInfo)
         this.setPageAnimate(pageInfo!.animate);
         this.setItemAnimate(pageInfo.item);
     }
@@ -170,6 +171,7 @@ ImplementAnimate.prototype.setPageAnimate = setPageAnimate;
 ImplementAnimate.prototype.setItemAnimate = setItemAnimate;
 ImplementAnimate.prototype.playAnimate = playAnimate;
 ImplementAnimate.prototype.playPage = playPage;
+ImplementAnimate.prototype.addAnimate = addAnimate;
 
 
 export default ImplementAnimate;

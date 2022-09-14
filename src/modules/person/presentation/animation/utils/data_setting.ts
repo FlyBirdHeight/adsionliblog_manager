@@ -1,6 +1,7 @@
 import { PageAnimate } from "../../type"
 import { pageAnimate } from '../data/list';
 import { reactive } from 'vue';
+import { WaitSetting } from '../components/utils/utils';
 const setPageAnimate = function (this: any, pageAnimate: PageAnimate) {
     if (pageAnimate.in.type !== '') {
         this.pageAnimate.in.type = pageAnimate.in.type;
@@ -22,23 +23,28 @@ const setAnimateData = function (this: any, itemAnimate: any) {
     let animate = itemAnimate.animate;
     let data = reactive({
         itemIndex: itemAnimate.index,
-        type: animate.type,
-        icon: getAnimateIcon(animate.type),
+        // icon: getAnimateIcon(animate.type),
+        icon: '',
         mode: itemAnimate.mode,
         action: {
             time: animate.time,
             action: animate.type,
+            speed: animate.speed,
+            trigger: animate.trigger,
             options: animate.info || {
                 show: false
-            }
+            },
+            order: animate.order
         }
     });
-    if (animate.trigger === 'click') {
-        this.activeTrigger.set(itemAnimate.index, data)
+    let key = itemAnimate.index + '-' + itemAnimate.mode;
+    if (animate.trigger == 'click') {
+        this.activeTrigger.set(key, data)
     } else {
-        this.autoImplementStack.set(itemAnimate.index, data);
+        this.autoImplementStack.set(key, data);
     }
     this.execuationOrder.set(animate!.order, data)
+    this.showList.push(data);
 }
 const setItemAnimate = function (this: any, items: any) {
     if (items.count == 0) {
@@ -56,18 +62,40 @@ const setItemAnimate = function (this: any, items: any) {
                 setAnimateData.call(this, { animate: item.animate.in, index: item.index, mode: 'in' });
             }
             if (item.animate.out.type != '') {
-                setAnimateData.call(this, { animate: item.animate.out, index: item.index, mode: 'in' });
+                setAnimateData.call(this, { animate: item.animate.out, index: item.index, mode: 'out' });
             }
         }
     }
-    console.log('auto:',this.autoImplementStack);
-    console.log('trigger:',this.activeTrigger);
-    console.log('showList:',this.showList);
-    console.log('execuated:',this.execuatedStack);
-    console.log('page:',this.pageAnimate)
+    this.showList.length != 0 && this.showList.sort((a: any, b: any) => a.action.order - b.action.order);
 }
 
+const addAnimate = function (this: any, item: any, setting: WaitSetting, mode: string) {
+    let order: number = this.execuatedStack.size;
+    setting.order = order;
+    let key = item.index + '-' + mode;
+    if (this.activeTrigger.has(key)) {
+        updateAnimate(this.activeTrigger.get(key), setting)
+        return
+    } else if (this.autoImplementStack.has(key)) {
+        updateAnimate(this.autoImplementStack.get(key), setting);
+        return;
+    }
+    setAnimateData.call(this, { animate: setting, index: item.index, mode });
+}
+const updateAnimate = (oldData: any, setting: WaitSetting) => {
+    oldData.action = {
+        time: setting.time,
+        action: setting.type,
+        speed: setting.speed,
+        options: setting.info || {
+            show: false
+        },
+        order: setting.order,
+        trigger: setting.trigger,
+    }
+}
 export {
     setPageAnimate,
-    setItemAnimate
+    setItemAnimate,
+    addAnimate
 }

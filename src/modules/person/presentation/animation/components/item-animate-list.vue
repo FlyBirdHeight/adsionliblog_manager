@@ -8,18 +8,18 @@
       @dragover.prevent="dragger.dragOver($event, item)"
       @dragend="dragger.dragEnd($event)"
       @click="activeIndex(item)"
-      v-for="(item, index) in testData"
-      :key="item.index"
+      v-for="(item, index) in showList"
+      :key="item.itemIndex + '-' + item.mode"
     >
       <div class="item-index">{{ index + 1 }}</div>
       <div class="item-trigger">
-        <el-icon><component :is="item.trigger == 'click' ? $icon['Mouse'] : $icon['VideoPlay']" /></el-icon>
+        <el-icon><component :is="item.action.trigger == 'click' ? $icon['Mouse'] : $icon['VideoPlay']" /></el-icon>
       </div>
       <div class="item-animate">
-        <icon-font class="edit-icon" :icon="'Hdonghua-xiangshangfeiru'" />
+        <icon-font class="edit-icon" :icon="item.icon" />
       </div>
       <div class="item-key">
-        {{ item.index }}
+        {{ item.itemIndex }}
       </div>
       <div class="item-mode">
         <el-tag v-if="item.mode === 'in'">进入</el-tag>
@@ -31,33 +31,42 @@
 <script lang="ts">
 import { ref, computed, watch, reactive, watchEffect, inject } from 'vue'
 import useDrag from '../hooks/useDrag'
+import useAnimateObj from '../hooks/useAnimateObj'
 export default {
   name: 'ItemAnimateList',
 }
 </script>
 <script lang="ts" setup>
-const handleObj = inject('handleObj')
+const animateObj = useAnimateObj()
 const activeItem = inject('activeItem')
-const animateObj = handleObj.implementAnimate
-const testData = animateObj.showList
+const showList = ref(animateObj.showList)
 
+watch(
+  () => animateObj.showList,
+  (newV, oldV) => {
+    showList.value = newV
+  },
+  {
+    deep: true,
+  }
+)
 const activeIndex = function (index: string) {
-  activeItem = index;
+  activeItem = index
 }
 
 const dragger = useDrag(function (newV, oldV) {
   if (!newV || newV.index == this.dragInfo.index) {
     return
   } else {
-    let index = testData.findIndex((v) => {
+    let index = showList.value.findIndex((v) => {
       return v.index == newV.index
     })
-    let oldIndex = testData.findIndex((v) => {
+    let oldIndex = showList.value.findIndex((v) => {
       return v.index == this.dragInfo.index
     })
-    let t = testData[oldIndex]
-    testData[oldIndex] = testData[index]
-    testData[index] = t
+    let t = showList.value[oldIndex]
+    showList.value[oldIndex] = showList.value[index]
+    showList.value[index] = t
   }
 })
 </script>

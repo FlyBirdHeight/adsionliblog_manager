@@ -30,8 +30,10 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, computed, watch, reactive, watchEffect } from 'vue'
+import { ref, computed, watch, reactive, watchEffect, inject } from 'vue';
 import useActiveItem from '../hooks/useActiveItem'
+import useAnimateObj from '../hooks/useAnimateObj'
+import { setAnimateChoice } from './utils/utils';
 export default {
   name: 'ItemAnimate',
 }
@@ -40,10 +42,10 @@ export default {
 import AnimateSelect from './animate-select.vue'
 import AnimateSettingItem from './animate-setting.vue'
 import ItemAnimateList from './item-animate-list.vue'
+const handleObj = inject('handleObj')
 const itemChoice = ref<boolean>(true)
-const animateInfo = useActiveItem(function (itemInfo: any) {
-  return itemInfo.animate
-})
+const animateObj = useAnimateObj();
+const animateInfo = useActiveItem()
 const animateSet = reactive({
   in: {
     type: '',
@@ -66,11 +68,6 @@ const animateSetting = reactive({
   attribute: '',
   speed: 1,
 })
-watch(animateInfo, (newV, oldV) => {
-  if (newV) {
-    console.log(newV)
-  }
-})
 
 watch(checkData, (newV: any, oldV: any) => {
   if (newV[0] === 'in') {
@@ -85,7 +82,6 @@ watch(checkData, (newV: any, oldV: any) => {
     attribute: '',
     speed: 1
   })
-  console.log(animateSetting)
 })
 watch(animateSetting, (newV) => {
   if (newV.task === 'in') {
@@ -93,9 +89,11 @@ watch(animateSetting, (newV) => {
   } else if (newV.task === 'out') {
     Object.assign(animateSet.out, newV)
   }
+  setAnimateChoice(animateSet, newV.task, animateInfo.value, animateObj);
 })
 </script>
 <style lang="scss" scoped>
 @import '../scss/open_show.scss';
 @import './item-animate.scss';
+
 </style>

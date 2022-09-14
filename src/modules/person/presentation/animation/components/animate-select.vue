@@ -1,5 +1,5 @@
 <template>
-  <el-cascader v-model="checkData" :options="options">
+  <el-cascader v-model="checkData" :options="options" :disabled="activeItem === null">
     <template #default="{ node, data }">
       <el-icon><component :is="$icon[data.icon]" /></el-icon>
       <span style="margin-left: 10px">{{ data.label }}</span>
@@ -11,6 +11,7 @@
 import { ref, defineProps, defineEmits } from 'vue'
 import { useModel } from '../hooks/useModel'
 import { AnimateSelect, ItemAnimateSelect } from '../data/item_animate'
+import useActiveItem from '../hooks/useActiveItem'
 export default {
   name: 'AnimateSelect',
 }
@@ -21,6 +22,6 @@ const props = defineProps({
 })
 const checkData = useModel(props)
 const options: ItemAnimateSelect[] = AnimateSelect
-
+const activeItem = useActiveItem();
 </script>
 <style lang="scss" scoped></style>

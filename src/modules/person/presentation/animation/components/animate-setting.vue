@@ -12,7 +12,7 @@
       </el-select>
     </div>
     <div class="setting-attribute">
-      <span class="label">属性:{{attribute}}</span>
+      <span class="label">属性:</span>
       <el-select v-model="attribute" :disabled="animateType === '' || infoList.length === 0" placeholder="选择动画属性">
         <el-option v-for="info in infoList" :key="info.value" :label="info.label" :value="info.value" />
       </el-select>
