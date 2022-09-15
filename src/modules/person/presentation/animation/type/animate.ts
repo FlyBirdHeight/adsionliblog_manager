@@ -41,12 +41,31 @@ type AnimatePage = {
     in: PageAnimateAction,
     out: PageAnimateAction
 }
-
+type ItemAnimate = {
+    in: {
+        type: string,
+        time: number,
+        trigger: string,
+        info?: any,
+        order?: number,
+        speed: any,
+    },
+    out: {
+        type: string,
+        time: number,
+        trigger: string,
+        info?: any,
+        order?: number,
+        speed: any,
+    },
+    show: boolean
+}
 export {
     Animate,
     AnimateType,
     AnimateOrder,
     AnimateList,
     AnimatePage,
-    PageAnimateAction
+    PageAnimateAction,
+    ItemAnimate
 }

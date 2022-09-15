@@ -157,7 +157,8 @@ const addImage = function (this: any, url: string): Promise<ImageItem> {
                                 trigger: '',
                                 info: null,
                                 speed: 1,
-                            }
+                            },
+                            show: true
                         }
                     })
                 }

@@ -31,9 +31,7 @@ const setAnimateData = function (this: any, itemAnimate: any) {
             action: animate.type,
             speed: animate.speed,
             trigger: animate.trigger,
-            options: animate.info || {
-                show: false
-            },
+            options: animate.info,
             order: animate.order
         }
     });
@@ -81,15 +79,16 @@ const addAnimate = function (this: any, item: any, setting: WaitSetting, mode: s
         return;
     }
     setAnimateData.call(this, { animate: setting, index: item.index, mode });
+    if (item.animate.in.type !== '') {
+        item.animate.show = false;
+    }
 }
 const updateAnimate = (oldData: any, setting: WaitSetting) => {
     oldData.action = {
         time: setting.time,
         action: setting.type,
         speed: setting.speed,
-        options: setting.info || {
-            show: false
-        },
+        options: setting.info,
         order: setting.order,
         trigger: setting.trigger,
     }

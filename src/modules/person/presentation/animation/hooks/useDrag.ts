@@ -32,7 +32,7 @@ export default function useDrag(func: Function | null) {
         if (!func) {
             return;
         }
-        console.log(new Object({ dragInfo: dragInfo.value, dragEnterData, dragDom }))
+
         func.call(new Object({ dragInfo: dragInfo.value, dragEnterData, dragDom }), newV, oldV)
     })
 

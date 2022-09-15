@@ -46,26 +46,40 @@ const animateList = {
 const useAnimate = ref(new BackIn())
 onMounted(() => {
   useAnimate.value = (() => {
-    let Obj = animateList[props.animate]
-    return new Obj(props.duration)
+    console.log(typeof props.animate);
+    // let Obj = animateList[props.animate]
+    return null;
+    // return new Obj(props.duration)
   })()
 })
 const beforeEnter = (el: any) => {
+  if(!useAnimate.value) return;
   useAnimate.value.beforeEnter(el)
 }
 const enter = (el: any, done: any) => {
+  if(!useAnimate.value) {
+    done();
+    return;
+  }
   useAnimate.value.enter(el, done)
 }
 const afterEnter = (el: any) => {
+  if(!useAnimate.value) return;
   useAnimate.value.afterEnter(el)
 }
 const beforeLeave = (el: any) => {
+  if(!useAnimate.value) return;
   useAnimate.value.beforeLeave(el)
 }
 const leave = (el: any, done: any) => {
+  if(!useAnimate.value) {
+    done();
+    return;
+  }
   useAnimate.value.leave(el, done)
 }
 const afterLeave = (el: any) => {
+  if(!useAnimate.value) return;
   useAnimate.value.afterLeave(el)
 }
 </script>

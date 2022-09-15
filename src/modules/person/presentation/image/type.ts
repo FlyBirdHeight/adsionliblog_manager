@@ -1,3 +1,5 @@
+import { ItemAnimate } from '../animation/type/animate'
+
 type ImageStyle = {
     attribute: {
         width: number | string,
@@ -53,24 +55,7 @@ type ImageStyle = {
 }
 type ImageItem = {
     style: ImageStyle,
-    animate: {
-        in: {
-            type: string,
-            time: number,
-            trigger: string,
-            speed: number,
-            order?: number,
-            info?: any
-        },
-        out: {
-            type: string,
-            time: number,
-            trigger: string,
-            speed: number,
-            order?: number,
-            info?: any
-        }
-    }
+    animate: ItemAnimate,
     index: string,
     url: string,
     ratio: true,

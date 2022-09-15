@@ -45,6 +45,7 @@ watch(
   () => animateObj.showList,
   (newV, oldV) => {
     showList.value = newV
+    console.log(showList.value)
   },
   {
     deep: true,
@@ -55,14 +56,14 @@ const activeIndex = function (index: string) {
 }
 
 const dragger = useDrag(function (newV, oldV) {
-  if (!newV || newV.index == this.dragInfo.index) {
+  if (!newV || (newV.itemIndex == this.dragInfo.itemIndex && newV.mode == this.dragInfo.mode)) {
     return
   } else {
     let index = showList.value.findIndex((v) => {
-      return v.index == newV.index
+      return v.itemIndex == newV.itemIndex && v.mode == newV.mode
     })
     let oldIndex = showList.value.findIndex((v) => {
-      return v.index == this.dragInfo.index
+      return v.itemIndex == this.dragInfo.itemIndex && v.mode == this.dragInfo.mode
     })
     let t = showList.value[oldIndex]
     showList.value[oldIndex] = showList.value[index]

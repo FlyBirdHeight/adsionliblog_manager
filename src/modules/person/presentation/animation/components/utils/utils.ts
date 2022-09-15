@@ -13,7 +13,7 @@ export function setAnimateChoice(setting: any, type: string, itemInfo: any, anim
     waitSet.speed = set.speed;
     waitSet.trigger = set.trigger;
     waitSet.type = set.type;
-    waitSet.info = { show: false, attribute: set.attribute };
+    waitSet.info = { attribute: set.attribute };
     animateObj.addAnimate(itemInfo, waitSet, type);
 }
 

@@ -126,7 +126,8 @@ const addTextArea = function (this: any): TextItem {
                 trigger: '',
                 info: null,
                 speed: 1
-            }
+            },
+            show: true
         }
     }
 }
@@ -169,7 +170,8 @@ const convertTextData = (textData: any): TextItem => {
                 trigger: '',
                 info: null,
                 speed: 1
-            }
+            },
+            show: true
         }
     }
 }

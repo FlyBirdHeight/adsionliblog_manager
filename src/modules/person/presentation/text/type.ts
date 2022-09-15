@@ -1,3 +1,5 @@
+import { ItemAnimate } from '../animation/type/animate'
+
 type TextStyle = {
     attribute: {
         width: number,
@@ -40,24 +42,7 @@ type TextItem = {
     index: string,
     data: string,
     type: "text",
-    animate: {
-        in: {
-            type: string,
-            time: number,
-            trigger: string,
-            speed: number,
-            info?: any,
-            order?: number
-        },
-        out: {
-            type: string,
-            time: number,
-            trigger: string,
-            speed: number,
-            info?: any,
-            order?: number
-        }
-    }
+    animate: ItemAnimate
 }
 
 export {
