@@ -18,7 +18,8 @@ import { ref, defineProps, computed, watch, reactive, onMounted } from 'vue'
 import BackIn from './content_lib/backIn'
 import Opacity from './content_lib/opacity'
 import FlyInLeft from './content_lib/fly_left'
-import FlyInDown from './content_lib/fly_down';
+import FlyInDown from './content_lib/fly_down'
+import Fly from './content_lib/fly'
 const props = defineProps({
   type: {
     type: String,
@@ -29,7 +30,6 @@ const props = defineProps({
     default: 1500,
   },
   animate: {
-    type: String,
     default: 'back-in',
   },
   runningItem: {
@@ -41,45 +41,102 @@ const animateList = {
   'back-in': BackIn,
   opacity: Opacity,
   'fly-left': FlyInLeft,
-  'fly-down': FlyInDown
+  'fly-down': FlyInDown,
+  fly: Fly,
 }
-const useAnimate = ref(new BackIn())
+const useAnimate = ref(null)
 onMounted(() => {
   useAnimate.value = (() => {
-    console.log(typeof props.animate);
-    // let Obj = animateList[props.animate]
-    return null;
-    // return new Obj(props.duration)
+    if (typeof props.animate !== 'string') {
+      console.log(typeof props.animate, props.animate)
+      return setAnimate(props.animate)
+    } else {
+      let Obj = animateList[props.animate]
+      return new Obj(props.duration)
+    }
   })()
 })
+/**
+ * @method setAnimate 负责控件内容动画部分的组装
+ * @param {{in: Object, out: Object}} animate 动画内容
+ */
+const setAnimate = (animateInfo) => {
+  let enter = animateInfo.in
+  let leave = animateInfo.out
+  let res = new Object({
+    beforeEnter: null,
+    enter: null,
+    afterEnter: null,
+    beforeLeave: null,
+    leave: null,
+    afterLeave: null,
+  })
+  console.log(enter, leave)
+  if (enter.type != '') {
+    let type = enter.type.split('-')[0]
+    let Obj = animateList[type]
+    let enterObj = new Obj(enter.time)
+    if (enter.info) {
+      enterObj.setAttribute('in', { speed: enter.speed, attribute: enter.info })
+    }
+    res.beforeEnter = enterObj.beforeEnter
+    res.enter = enterObj.enter
+    res.afterEnter = enterObj.afterEnter
+  }
+  if (leave.type != '') {
+    let type = leave.type.split('-')[0]
+    let Obj = animateList[type]
+    let leaveObj = new Obj(leave.time)
+    if (leave.info) {
+      leaveObj.setAttribute('in', { speed: leave.speed, attribute: leave.info })
+    }
+    res.beforeLeave = leaveObj.beforeLeave
+    res.leave = leaveObj.leave
+    res.afterLeave = leaveObj.afterLeave
+  }
+  return res
+}
+
 const beforeEnter = (el: any) => {
-  if(!useAnimate.value) return;
+  if (!useAnimate.value) return
+  if (!useAnimate.value.beforeEnter) return
   useAnimate.value.beforeEnter(el)
 }
 const enter = (el: any, done: any) => {
-  if(!useAnimate.value) {
-    done();
-    return;
+  if (!useAnimate.value) {
+    done()
+    return
+  }
+  if (!useAnimate.value.enter) {
+    done()
+    return
   }
   useAnimate.value.enter(el, done)
 }
 const afterEnter = (el: any) => {
-  if(!useAnimate.value) return;
+  if (!useAnimate.value) return
+  if (!useAnimate.value.afterEnter) return
   useAnimate.value.afterEnter(el)
 }
 const beforeLeave = (el: any) => {
-  if(!useAnimate.value) return;
+  if (!useAnimate.value) return
+  if (!useAnimate.value.beforeLeave) return
   useAnimate.value.beforeLeave(el)
 }
 const leave = (el: any, done: any) => {
-  if(!useAnimate.value) {
-    done();
-    return;
+  if (!useAnimate.value) {
+    done()
+    return
+  }
+  if (!useAnimate.value.leave) {
+    done()
+    return
   }
   useAnimate.value.leave(el, done)
 }
 const afterLeave = (el: any) => {
-  if(!useAnimate.value) return;
+  if (!useAnimate.value) return
+  if (!useAnimate.value.afterLeave) return
   useAnimate.value.afterLeave(el)
 }
 </script>

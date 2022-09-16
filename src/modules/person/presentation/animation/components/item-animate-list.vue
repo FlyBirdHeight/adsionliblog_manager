@@ -15,9 +15,9 @@
       <div class="item-trigger">
         <el-icon><component :is="item.action.trigger == 'click' ? $icon['Mouse'] : $icon['VideoPlay']" /></el-icon>
       </div>
-      <div class="item-animate">
+      <!-- <div class="item-animate">
         <icon-font class="edit-icon" :icon="item.icon" />
-      </div>
+      </div> -->
       <div class="item-key">
         {{ item.itemIndex }}
       </div>
