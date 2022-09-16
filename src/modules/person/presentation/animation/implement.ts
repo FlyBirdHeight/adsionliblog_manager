@@ -60,7 +60,6 @@ class ImplementAnimate {
             this.playAnimate(playAnimate);
         } else {
             this.status = AnimateStatus.PageIn;
-            console.log(this.status)
             if (this.pageAnimate.in.type != '') {
                 await this.playPage();
             }
@@ -104,13 +103,11 @@ class ImplementAnimate {
         for (let [key, value] of this.execuationOrder) {
             let index: string = value.itemIndex + '-' + value.mode;
             let task: any = this.activeTrigger.has(index) ? this.activeTrigger.get(index) : this.autoImplementStack.get(index);
-            task.action.options.show = true;
-            console.log(task)
+            task.item.show = true;
             this.execuatedStack.set(key, value)
         }
         this.execuationOrder.clear();
         this.status = AnimateStatus.PageOut;
-        console.log(this.status, this.execuatedStack);
     }
     /**
      * @method restartTask 重置动画执行
@@ -119,14 +116,13 @@ class ImplementAnimate {
         for (let [key, value] of this.execuatedStack) {
             let index: string = value.itemIndex + '-' + value.mode;
             let task: any = this.activeTrigger.has(index) ? this.activeTrigger.get(index) : this.autoImplementStack.get(index);
-            task.action.options.show = false;
+            task.item.show = false;
             this.execuationOrder.set(key, value)
         }
         this.execuatedStack.clear();
         this.status = AnimateStatus.Ready;
         this.pageAnimate.in.status = false;
         this.pageAnimate.out.status = true;
-        console.log(this.status, this.execuationOrder)
     }
 
     /**
@@ -146,12 +142,14 @@ class ImplementAnimate {
             res.order.push(key);
         }
         res.order.sort((a, b) => a - b);
-        res.order.length != 0 && res.order.forEach((v: any) => {
-            let itemInfo: any = this.execuationOrder.get(v);
-            let key: string = itemInfo.itemIndex + '-' + itemInfo.mode;
-            let task: any = this.activeTrigger.has(key) ? this.activeTrigger.get(key) : this.autoImplementStack.get(key);
-            res.animate.push(task)
-        })
+        if (res.order.length != 0) {
+            for (let order of res.order) {
+                let itemInfo: any = this.execuationOrder.get(order);
+                let key: string = itemInfo.itemIndex + '-' + itemInfo.mode;
+                let task: any = this.activeTrigger.has(key) ? this.activeTrigger.get(key) : this.autoImplementStack.get(key);
+                res.animate.push(task)
+            }
+        }
         return res;
     }
     /**

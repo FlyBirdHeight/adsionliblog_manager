@@ -122,7 +122,7 @@ export default defineComponent({
     const animate = ref('fly-left')
     const playTime = ref<number>(1000)
     const playPosition = useControl(playTime.value)
-
+    
     provide('playPosition', playPosition)
     watch(
       () => handleObj.getData,

@@ -30,6 +30,7 @@ class Fly implements AnimateAction {
     //进入
     beforeEnter(el: any) {
         let position = this.attribute.in.attribute;
+        console.log(this.getPositionStyler(position), position);
         el!.style.opacity = 0;
         el!.style.transform = this.getPositionStyler(position);
     }

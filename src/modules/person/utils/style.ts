@@ -23,15 +23,12 @@ const getPositionStyle = (scale: { x: number, y: number }, attribute: { width: n
     let width: string = newWidth + 'px';
     let height: string = newHeight + 'px';
 
-    let transformMatrix: any = transform(
-        translate(roundTo(offset.x + changedWidth), roundTo(offset.y + changedHeight)),
-        rotate((attribute.angle || 0) * (Math.PI / 180)),
-    )
-
     return {
         width,
         height,
-        transform: toCSS(transformMatrix)
+        left: `${offset.x + changedWidth}px`,
+        rotate: `${attribute.angle}deg`,
+        top: `${offset.y + changedHeight}px`,
     }
 }
 

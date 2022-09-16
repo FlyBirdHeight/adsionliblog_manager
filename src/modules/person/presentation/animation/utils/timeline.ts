@@ -14,12 +14,11 @@ const playAnimate = function (this: any, info: { order: number[], animate: Anima
     }
     let animateTask: any = animateList.shift();
     let order: any = orderList.shift();
-    console.log(animateTask, animateTask.trigger, isClick);
-    if (animateTask.trigger === 'auto' || (animateTask.trigger === 'click' && isClick)) {
-        animateTask.action.options.show = true;
+    if (animateTask.action.trigger === 'auto' || (animateTask.action.trigger === 'click' && isClick)) {
+        animateTask.item.show = !animateTask.item.show;
         this.execuationOrder.delete(order);
         this.execuatedStack.set(order, animateTask);
-    } else if (animateTask.trigger === 'click' && !isClick) {
+    } else if (animateTask.action.trigger === 'click' && !isClick) {
         this.status = AnimateStatus.WaitTrigger;
         return;
     }
@@ -39,7 +38,7 @@ const playAnimate = function (this: any, info: { order: number[], animate: Anima
 
             return playAnimate.call(that, { order: orderList, animate: animateList });
         }
-    }, animateTask.action.time / this.actionSpeed);
+    }, Math.floor(animateTask.action.time / animateTask.action.speed));
 }
 const playPage = function (this: any): Promise<boolean> {
     let animate: PageAnimateAction;
@@ -48,6 +47,7 @@ const playPage = function (this: any): Promise<boolean> {
     } else {
         animate = this.pageAnimate.out;
     }
+    console.log(animate);
     //NOTE: 具体实现后再打开，用来控制显隐的
     // animate.status.value = !animate.status.value;
     return new Promise(resolve => {

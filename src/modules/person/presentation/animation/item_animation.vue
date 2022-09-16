@@ -45,6 +45,7 @@ const animateList = {
   fly: Fly,
 }
 const useAnimate = ref(null)
+const needAttribute = ['fly', 'scale'];
 onMounted(() => {
   useAnimate.value = (() => {
     if (typeof props.animate !== 'string') {
@@ -71,24 +72,23 @@ const setAnimate = (animateInfo) => {
     leave: null,
     afterLeave: null,
   })
-  console.log(enter, leave)
   if (enter.type != '') {
     let type = enter.type.split('-')[0]
     let Obj = animateList[type]
     let enterObj = new Obj(enter.time)
-    if (enter.info) {
-      enterObj.setAttribute('in', { speed: enter.speed, attribute: enter.info })
+    if (needAttribute.includes(type)) {
+      enterObj.setAttribute('in', { speed: enter.speed, attribute: enter.info.attribute })
     }
-    res.beforeEnter = enterObj.beforeEnter
-    res.enter = enterObj.enter
-    res.afterEnter = enterObj.afterEnter
+    res.beforeEnter = enterObj.beforeEnter.bind(enterObj)
+    res.enter = enterObj.enter.bind(enterObj)
+    res.afterEnter = enterObj.afterEnter.bind(enterObj)
   }
   if (leave.type != '') {
     let type = leave.type.split('-')[0]
     let Obj = animateList[type]
     let leaveObj = new Obj(leave.time)
-    if (leave.info) {
-      leaveObj.setAttribute('in', { speed: leave.speed, attribute: leave.info })
+    if (needAttribute.includes(type)) {
+      leaveObj.setAttribute('out', { speed: leave.speed, attribute: leave.info })
     }
     res.beforeLeave = leaveObj.beforeLeave
     res.leave = leaveObj.leave

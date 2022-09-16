@@ -1,6 +1,6 @@
 import { PageAnimate } from "../../type"
 import { pageAnimate } from '../data/list';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { WaitSetting } from '../components/utils/utils';
 const setPageAnimate = function (this: any, pageAnimate: PageAnimate) {
     if (pageAnimate.in.type !== '') {
@@ -19,13 +19,14 @@ const getAnimateIcon = (type: string) => {
 
     return pageAnimate[index].icon;
 }
-const setAnimateData = function (this: any, itemAnimate: any) {
+const setAnimateData = function (this: any, itemAnimate: any, item: any) {
     let animate = itemAnimate.animate;
     let data = reactive({
         itemIndex: itemAnimate.index,
         // icon: getAnimateIcon(animate.type),
         icon: '',
         mode: itemAnimate.mode,
+        item: item.animate,
         action: {
             time: animate.time,
             action: animate.type,
@@ -57,10 +58,10 @@ const setItemAnimate = function (this: any, items: any) {
         }
         for (let item of items[key]) {
             if (item.animate.in.type != '') {
-                setAnimateData.call(this, { animate: item.animate.in, index: item.index, mode: 'in' });
+                setAnimateData.call(this, { animate: item.animate.in, index: item.index, mode: 'in' }, item);
             }
             if (item.animate.out.type != '') {
-                setAnimateData.call(this, { animate: item.animate.out, index: item.index, mode: 'out' });
+                setAnimateData.call(this, { animate: item.animate.out, index: item.index, mode: 'out' }, item);
             }
         }
     }
@@ -68,7 +69,7 @@ const setItemAnimate = function (this: any, items: any) {
 }
 
 const addAnimate = function (this: any, item: any, setting: WaitSetting, mode: string) {
-    let order: number = this.execuatedStack.size;
+    let order: number = this.execuationOrder.size;
     setting.order = order;
     let key = item.index + '-' + mode;
     if (this.activeTrigger.has(key)) {
@@ -78,9 +79,11 @@ const addAnimate = function (this: any, item: any, setting: WaitSetting, mode: s
         updateAnimate(this.autoImplementStack.get(key), setting);
         return;
     }
-    setAnimateData.call(this, { animate: setting, index: item.index, mode });
+    setAnimateData.call(this, { animate: setting, index: item.index, mode }, item);
     if (item.animate.in.type !== '') {
         item.animate.show = false;
+    }else {
+        item.animate.show = true;
     }
 }
 const updateAnimate = (oldData: any, setting: WaitSetting) => {
