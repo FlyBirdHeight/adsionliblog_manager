@@ -22,11 +22,13 @@ class ImplementAnimate {
     pageAnimate: AnimatePage
     status: string
     actionSpeed: number
+    intervalTime: number
     setPageAnimate!: (pageAnimate: PageAnimate) => void
     setItemAnimate!: (itemAnimate: any) => void
     playAnimate!: (animateList: { order: number[], animate: AnimateOrder[] }, isClick?: boolean) => void
     playPage!: () => Promise<boolean>
     addAnimate!: (item: any, setting: WaitSetting, mode: string) => void;
+
     constructor() {
         this.pageAnimate = {
             in: { type: '', time: 1000, status: false },
@@ -39,6 +41,7 @@ class ImplementAnimate {
         this.execuatedStack = new Map();
         this.status = AnimateStatus.Ready;
         this.actionSpeed = 1;
+        this.intervalTime = 1000;
     }
     /**
      * @method setTask 设置动画执行任务
@@ -150,6 +153,7 @@ class ImplementAnimate {
                 res.animate.push(task)
             }
         }
+        console.log(res);
         return res;
     }
     /**

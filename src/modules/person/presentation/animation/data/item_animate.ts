@@ -55,7 +55,7 @@ const AnimateInfo = {
     "fly": [
         {
             label: "底部",
-            value: 'button'
+            value: 'bottom'
         },
         {
             label: '左侧',
@@ -67,7 +67,7 @@ const AnimateInfo = {
         },
         {
             label: '顶部',
-            value: 'left'
+            value: 'top'
         },
     ],
     "scale": [

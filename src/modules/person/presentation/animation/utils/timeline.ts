@@ -22,6 +22,7 @@ const playAnimate = function (this: any, info: { order: number[], animate: Anima
         this.status = AnimateStatus.WaitTrigger;
         return;
     }
+    console.log(Math.floor(animateTask.action.time / animateTask.action.speed) + this.intervalTime)
     setTimeout(() => {
         if (this.status === AnimateStatus.PageOut) {
             return;
@@ -35,10 +36,9 @@ const playAnimate = function (this: any, info: { order: number[], animate: Anima
                 console.log('end', that.status)
                 return;
             }
-
             return playAnimate.call(that, { order: orderList, animate: animateList });
         }
-    }, Math.floor(animateTask.action.time / animateTask.action.speed));
+    }, Math.floor(animateTask.action.time / animateTask.action.speed) + this.intervalTime);
 }
 const playPage = function (this: any): Promise<boolean> {
     let animate: PageAnimateAction;

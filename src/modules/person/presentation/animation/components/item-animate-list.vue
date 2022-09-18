@@ -45,7 +45,6 @@ watch(
   () => animateObj.showList,
   (newV, oldV) => {
     showList.value = newV
-    console.log(showList.value)
   },
   {
     deep: true,

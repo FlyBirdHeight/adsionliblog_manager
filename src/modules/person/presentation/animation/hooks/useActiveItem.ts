@@ -1,5 +1,5 @@
 import { inject, watch, ref } from 'vue';
-export default function useActiveItem(func: Function | null = null) {
+export default function useActiveItem(func: Function | null = null, argF: Function | null = null) {
     const activeIndex: any = inject('activeItem');
 
     const itemIndex: any = inject('itemTypeIndexList');
@@ -22,6 +22,9 @@ export default function useActiveItem(func: Function | null = null) {
             }
         } else if (newV === -1) {
             itemData.value = null;
+        }
+        if (!argF && typeof argF === 'function') {
+            argF!.call(null, newV);
         }
     })
 

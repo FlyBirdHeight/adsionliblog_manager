@@ -30,21 +30,22 @@ class Fly implements AnimateAction {
     //进入
     beforeEnter(el: any) {
         let position = this.attribute.in.attribute;
-        console.log(this.getPositionStyler(position), position);
         el!.style.opacity = 0;
         el!.style.transform = this.getPositionStyler(position);
     }
     enter(el: any, done: any) {
         let timer: number = this.getTime(this.attribute.in.speed);
-        el!.style.transition = `all ${timer}s linear`
+        console.log(timer)
+        el!.style.transition = `all ${timer / 1000}s linear`
         setTimeout(() => {
             el!.style.opacity = 1;
             el!.style.transform = 'translate(0,0)';
             done();
-        }, timer * 1000)
+        }, timer)
     }
     afterEnter(el: any) {
-
+        el!.style.opacity = 1;
+        el!.style.transform = 'translate(0,0)';
     }
     //离开
     beforeLeave(el: any) {
@@ -53,20 +54,21 @@ class Fly implements AnimateAction {
     }
     leave(el: any, done: any) {
         let timer: number = this.getTime(this.attribute.out.speed);
+        console.log(timer)
         let position = this.attribute.out.attribute;
         el!.style.transform = this.getPositionStyler(position);
         el!.style.opacity = 0;
-        el!.style.transition = `all ${timer}s linear`;
+        el!.style.transition = `all ${timer / 1000}s linear`;
         setTimeout(() => {
             done();
-        }, timer * 1000)
+        }, timer)
     }
     afterLeave(el: any) {
 
     }
 
     getTime(speed: number): number {
-        return Number(((this.duration / speed) / 1000).toFixed(2))
+        return Math.floor(this.duration / speed)
     }
 
     getPositionStyler(position: string) {
@@ -79,10 +81,10 @@ class Fly implements AnimateAction {
                 styler = 'translate(100%, 0)'
                 break;
             case 'bottom':
-                styler = 'translate(0, -100%)'
+                styler = 'translate(0, 100%)'
                 break;
             case 'top':
-                styler = 'translate(0, 100%)'
+                styler = 'translate(0, -100%)'
                 break;
         }
 

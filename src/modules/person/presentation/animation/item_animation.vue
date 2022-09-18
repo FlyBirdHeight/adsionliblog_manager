@@ -9,6 +9,7 @@
     @leave="leave"
     @after-leave="afterLeave"
     :css="false"
+    mode="in-out"
   >
     <slot></slot>
   </transition>
@@ -49,7 +50,6 @@ const needAttribute = ['fly', 'scale'];
 onMounted(() => {
   useAnimate.value = (() => {
     if (typeof props.animate !== 'string') {
-      console.log(typeof props.animate, props.animate)
       return setAnimate(props.animate)
     } else {
       let Obj = animateList[props.animate]
@@ -87,12 +87,13 @@ const setAnimate = (animateInfo) => {
     let type = leave.type.split('-')[0]
     let Obj = animateList[type]
     let leaveObj = new Obj(leave.time)
+    console.log(leaveObj)
     if (needAttribute.includes(type)) {
-      leaveObj.setAttribute('out', { speed: leave.speed, attribute: leave.info })
+      leaveObj.setAttribute('out', { speed: leave.speed, attribute: leave.info.attribute })
     }
-    res.beforeLeave = leaveObj.beforeLeave
-    res.leave = leaveObj.leave
-    res.afterLeave = leaveObj.afterLeave
+    res.beforeLeave = leaveObj.beforeLeave.bind(leaveObj)
+    res.leave = leaveObj.leave.bind(leaveObj)
+    res.afterLeave = leaveObj.afterLeave.bind(leaveObj)
   }
   return res
 }
