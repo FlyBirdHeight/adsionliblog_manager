@@ -22,7 +22,6 @@ const playAnimate = function (this: any, info: { order: number[], animate: Anima
         this.status = AnimateStatus.WaitTrigger;
         return;
     }
-    console.log(this.status);
     setTimeout(() => {
         if (this.status === AnimateStatus.PageOut) {
             return;

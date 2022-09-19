@@ -69,7 +69,6 @@ function renderBackground(backgroundData: PageBack, preRenderContainer: any, get
  */
 function firstRenderPage(pageList: Map<number, any>, refList: any) {
   let arr: any[] = []
-  console.log('render')
   for (let [key, page] of pageList) {
     arr.push(page)
   }

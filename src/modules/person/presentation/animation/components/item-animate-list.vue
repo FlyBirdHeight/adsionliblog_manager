@@ -1,13 +1,13 @@
 <template>
   <div class="item-animate_list" @drop="dragger.dragDrop($event)">
     <div
-      class="list-item"
+      :class="activeItem !== null && activeItem.index === item.itemIndex ? 'list-item-active list-item' : 'list-item'"
       draggable="true"
       @dragstart.native="dragger.dragStart($event, item)"
       @dragenter="dragger.dragEnter($event, item)"
       @dragover.prevent="dragger.dragOver($event, item)"
       @dragend="dragger.dragEnd($event)"
-      @click="activeIndex(item)"
+      @click="setAnimateSetting(index)"
       v-for="(item, index) in showList"
       :key="item.itemIndex + '-' + item.mode"
     >
@@ -29,16 +29,19 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, computed, watch, reactive, watchEffect, inject } from 'vue'
+import { ref, computed, watch, reactive, watchEffect, inject, defineEmits } from 'vue'
 import useDrag from '../hooks/useDrag'
 import useAnimateObj from '../hooks/useAnimateObj'
+import useActiveItem from '../hooks/useActiveItem'
 export default {
   name: 'ItemAnimateList',
 }
 </script>
 <script lang="ts" setup>
+const emits = defineEmits(['checkAnimateData'])
 const animateObj = useAnimateObj()
-const activeItem = inject('activeItem')
+const activeItem = useActiveItem()
+const activeItemIndex = inject('activeItem')
 const showList = ref(animateObj.showList)
 
 watch(
@@ -50,9 +53,20 @@ watch(
     deep: true,
   }
 )
-const activeIndex = function (index: string) {
-  // activeItem = index
-  console.log(index)
+const setAnimateSetting = function (index: number) {
+  let item = showList.value[index];
+  let attribute = item.action.options.attribute || ''
+  let emitData = {
+    task: item.mode,
+    type: item.action.action,
+    speed: item.action.speed,
+    trigger: item.action.trigger,
+    attribute,
+  }
+  if (activeItemIndex.value == -1) {
+    activeItemIndex.value = item.itemIndex
+  }
+  emits('checkAnimateData', emitData)
 }
 
 const dragger = useDrag(function (newV, oldV) {
@@ -68,7 +82,7 @@ const dragger = useDrag(function (newV, oldV) {
     let t = showList.value[oldIndex]
     showList.value[oldIndex] = showList.value[index]
     showList.value[index] = t
-    animateObj.changeAnimateOrder(oldIndex, index);
+    animateObj.changeAnimateOrder(oldIndex, index)
   }
 })
 </script>

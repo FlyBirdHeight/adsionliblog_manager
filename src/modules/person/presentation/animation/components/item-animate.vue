@@ -26,7 +26,7 @@
         </div>
       </div>
     </transition>
-    <item-animate-list></item-animate-list>
+    <item-animate-list @checkAnimateData="checkAnimateData"></item-animate-list>
   </div>
 </template>
 <script lang="ts">
@@ -46,6 +46,7 @@ const handleObj = inject('handleObj')
 const itemChoice = ref<boolean>(true)
 const animateObj = useAnimateObj()
 const checkData = ref([])
+const checkedDataChange = ref<boolean>(false)
 const animateSetting = reactive({
   task: '',
   type: '',
@@ -54,6 +55,10 @@ const animateSetting = reactive({
   speed: 1,
 })
 const animateInfo = useActiveItem(null, function (activeItem: any) {
+  if(checkedDataChange.value) {
+    checkedDataChange.value = false;
+    return;
+  }
   Object.assign(animateSetting, {
     task: '',
     type: '',
@@ -61,7 +66,7 @@ const animateInfo = useActiveItem(null, function (activeItem: any) {
     attribute: '',
     speed: 1,
   })
-  console.log(animateSetting)
+  checkData.value = []
 })
 const animateSet = reactive({
   in: {
@@ -78,19 +83,30 @@ const animateSet = reactive({
   },
 })
 
+const checkAnimateData = (animateData: any) => {
+  Object.assign(animateSetting, animateData)
+  checkData.value = [animateData.task, animateData.type]
+  checkedDataChange.value = true;
+}
+
 watch(checkData, (newV: any, oldV: any) => {
+  if (newV.length == 0) {
+    return
+  }
   if (newV[0] === 'in') {
     animateSet.in.type = newV[1]
   } else if (newV[0] === 'out') {
     animateSet.out.type = newV[1]
   }
-  animateSetting.task = newV[0]
-  animateSetting.type = newV[1]
-  Object.assign(animateSetting, {
-    trigger: 'click',
-    attribute: '',
-    speed: 1,
-  })
+  if (animateSetting.task !== newV[0] || animateSetting.type !== newV[1]) {
+    animateSetting.task = newV[0]
+    animateSetting.type = newV[1]
+    Object.assign(animateSetting, {
+      trigger: 'click',
+      attribute: '',
+      speed: 1,
+    })
+  }
 })
 watch(animateSetting, (newV) => {
   if (newV.task === 'in') {
@@ -98,7 +114,10 @@ watch(animateSetting, (newV) => {
   } else if (newV.task === 'out') {
     Object.assign(animateSet.out, newV)
   }
-  setAnimateChoice(animateSet, newV.task, animateInfo.value, animateObj)
+  console.log(animateInfo, newV, animateSet)
+  if (animateInfo.value) {
+    setAnimateChoice(animateSet, newV.task, animateInfo.value, animateObj)
+  }
 })
 </script>
 <style lang="scss" scoped>

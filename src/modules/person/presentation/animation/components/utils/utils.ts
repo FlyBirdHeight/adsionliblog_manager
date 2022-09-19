@@ -8,6 +8,9 @@ type WaitSetting = {
     order?: number
 }
 export function setAnimateChoice(setting: any, type: string, itemInfo: any, animateObj: any) {
+    if(type === '') {
+        return;
+    }
     let set: Setting = setting[type];
     let waitSet: WaitSetting = itemInfo.animate[type];
     waitSet.speed = set.speed;

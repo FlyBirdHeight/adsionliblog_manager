@@ -156,7 +156,7 @@ class ImplementAnimate {
                 res.animate.push(task)
             }
         }
-        console.log(res);
+
         return res;
     }
     /**

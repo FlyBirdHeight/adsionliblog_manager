@@ -23,7 +23,7 @@ export default function useActiveItem(func: Function | null = null, argF: Functi
         } else if (newV === -1) {
             itemData.value = null;
         }
-        if (!argF && typeof argF === 'function') {
+        if (typeof argF === 'function') {
             argF!.call(null, newV);
         }
     })

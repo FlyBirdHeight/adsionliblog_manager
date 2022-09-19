@@ -86,13 +86,16 @@ const removeBackgroundImage = (val: any) => {
 const displayTab = () => {
   for (let item of tabList.value) {
     if (item.value === 'main' || item.value === 'animate') {
-      item.show = true;
+      item.show = true
       continue
     }
     item.show = false
   }
 }
 watch(activeIndex, (newV, oldV) => {
+  if (activeInfo.value === 'animate') {
+    return
+  }
   displayTab()
   if (newV === -1) {
     activeInfo.value = 'main'
