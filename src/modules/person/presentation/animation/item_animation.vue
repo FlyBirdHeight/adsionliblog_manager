@@ -87,7 +87,6 @@ const setAnimate = (animateInfo) => {
     let type = leave.type.split('-')[0]
     let Obj = animateList[type]
     let leaveObj = new Obj(leave.time)
-    console.log(leaveObj)
     if (needAttribute.includes(type)) {
       leaveObj.setAttribute('out', { speed: leave.speed, attribute: leave.info.attribute })
     }

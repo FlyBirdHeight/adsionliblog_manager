@@ -2,6 +2,8 @@ import { PageAnimate } from "../../type"
 import { pageAnimate } from '../data/list';
 import { reactive, ref } from 'vue';
 import { WaitSetting } from '../components/utils/utils';
+import { AnimateList } from '../type/animate';
+import ImplementAnimate from '../implement';
 const setPageAnimate = function (this: any, pageAnimate: PageAnimate) {
     if (pageAnimate.in.type !== '') {
         this.pageAnimate.in.type = pageAnimate.in.type;
@@ -73,20 +75,29 @@ const addAnimate = function (this: any, item: any, setting: WaitSetting, mode: s
     setting.order = order;
     let key = item.index + '-' + mode;
     if (this.activeTrigger.has(key)) {
-        updateAnimate(this.activeTrigger.get(key), setting)
+        updateAnimate.call(this, this.activeTrigger.get(key), setting, key)
         return
     } else if (this.autoImplementStack.has(key)) {
-        updateAnimate(this.autoImplementStack.get(key), setting);
+        updateAnimate.call(this, this.autoImplementStack.get(key), setting, key);
         return;
     }
     setAnimateData.call(this, { animate: setting, index: item.index, mode }, item);
     if (item.animate.in.type !== '') {
         item.animate.show = false;
-    }else {
+    } else {
         item.animate.show = true;
     }
 }
-const updateAnimate = (oldData: any, setting: WaitSetting) => {
+const updateAnimate = function (this: ImplementAnimate, oldData: any, setting: WaitSetting, key: string) {
+    if (oldData.action.trigger !== setting.trigger) {
+        if (oldData.action.trigger === 'click') {
+            this.activeTrigger.delete(key);
+            this.autoImplementStack.set(key, oldData);
+        } else {
+            this.autoImplementStack.delete(key);
+            this.activeTrigger.set(key, oldData);
+        }
+    }
     oldData.action = {
         time: setting.time,
         action: setting.type,
@@ -96,8 +107,21 @@ const updateAnimate = (oldData: any, setting: WaitSetting) => {
         trigger: setting.trigger,
     }
 }
+const changeAnimateOrder = function (this: ImplementAnimate, oldOrder: number, newOrder: number) {
+    console.log(oldOrder, newOrder);
+    let oldData: any = this.execuationOrder.get(oldOrder);
+    let tar: any = this.execuationOrder.get(newOrder);
+    oldData.action.order = newOrder;
+    tar.action.order = oldOrder;
+    this.execuationOrder.set(newOrder, oldData);
+    this.execuationOrder.set(oldOrder, tar);
+    console.log(this.autoImplementStack);
+    console.log(this.execuationOrder);
+    console.log(this.activeTrigger);
+}
 export {
     setPageAnimate,
     setItemAnimate,
-    addAnimate
+    addAnimate,
+    changeAnimateOrder
 }

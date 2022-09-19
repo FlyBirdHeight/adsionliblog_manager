@@ -51,7 +51,8 @@ watch(
   }
 )
 const activeIndex = function (index: string) {
-  activeItem = index
+  // activeItem = index
+  console.log(index)
 }
 
 const dragger = useDrag(function (newV, oldV) {
@@ -67,6 +68,7 @@ const dragger = useDrag(function (newV, oldV) {
     let t = showList.value[oldIndex]
     showList.value[oldIndex] = showList.value[index]
     showList.value[index] = t
+    animateObj.changeAnimateOrder(oldIndex, index);
   }
 })
 </script>

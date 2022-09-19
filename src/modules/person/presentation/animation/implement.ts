@@ -1,6 +1,6 @@
 import { AnimateOrder, AnimateList, AnimatePage } from "./type/animate"
 import { Page, PageAnimate } from '../type'
-import { setPageAnimate, setItemAnimate, addAnimate } from "./utils/data_setting"
+import { setPageAnimate, setItemAnimate, addAnimate, changeAnimateOrder } from "./utils/data_setting"
 import { AnimateStatus } from "./enum/animate_enum"
 import { playAnimate, playPage } from './utils/timeline'
 import { WaitSetting } from './components/utils/utils'
@@ -13,6 +13,7 @@ class ImplementAnimate {
      * @property {AnimateList[]} showList 动画展示列表数据
      * @property {string} status 当前动画进行状态
      * @property {number} actionSpeed 播放速度
+     * @property {number} intervalTime 播放间隔时间
      */
     autoImplementStack: Map<string, AnimateOrder>
     activeTrigger: Map<string, AnimateOrder>
@@ -28,7 +29,7 @@ class ImplementAnimate {
     playAnimate!: (animateList: { order: number[], animate: AnimateOrder[] }, isClick?: boolean) => void
     playPage!: () => Promise<boolean>
     addAnimate!: (item: any, setting: WaitSetting, mode: string) => void;
-
+    changeAnimateOrder!: (oldOrder: number, newOrder: number) => void
     constructor() {
         this.pageAnimate = {
             in: { type: '', time: 1000, status: false },
@@ -174,6 +175,7 @@ ImplementAnimate.prototype.setItemAnimate = setItemAnimate;
 ImplementAnimate.prototype.playAnimate = playAnimate;
 ImplementAnimate.prototype.playPage = playPage;
 ImplementAnimate.prototype.addAnimate = addAnimate;
+ImplementAnimate.prototype.changeAnimateOrder = changeAnimateOrder;
 
 
 export default ImplementAnimate;
