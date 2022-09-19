@@ -22,7 +22,7 @@ const playAnimate = function (this: any, info: { order: number[], animate: Anima
         this.status = AnimateStatus.WaitTrigger;
         return;
     }
-    console.log(Math.floor(animateTask.action.time / animateTask.action.speed) + this.intervalTime)
+    console.log(this.status);
     setTimeout(() => {
         if (this.status === AnimateStatus.PageOut) {
             return;

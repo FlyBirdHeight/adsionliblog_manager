@@ -108,16 +108,12 @@ const updateAnimate = function (this: ImplementAnimate, oldData: any, setting: W
     }
 }
 const changeAnimateOrder = function (this: ImplementAnimate, oldOrder: number, newOrder: number) {
-    console.log(oldOrder, newOrder);
     let oldData: any = this.execuationOrder.get(oldOrder);
     let tar: any = this.execuationOrder.get(newOrder);
     oldData.action.order = newOrder;
     tar.action.order = oldOrder;
     this.execuationOrder.set(newOrder, oldData);
     this.execuationOrder.set(oldOrder, tar);
-    console.log(this.autoImplementStack);
-    console.log(this.execuationOrder);
-    console.log(this.activeTrigger);
 }
 export {
     setPageAnimate,

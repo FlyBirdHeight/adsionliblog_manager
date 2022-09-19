@@ -32,7 +32,7 @@ export default function useHandleList(animateObj: any) {
       case 'start':
         animateObj.runTask()
         break
-      case 'parse':
+      case 'pause':
         animateObj.pauseTask()
         break
       case 'click':

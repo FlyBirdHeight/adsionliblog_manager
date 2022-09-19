@@ -76,10 +76,12 @@ class ImplementAnimate {
      * @method parseTask 暂停动画执行
      */
     pauseTask() {
+        console.log(this.status)
         if (this.status != AnimateStatus.Running) {
             return;
         }
         this.status = AnimateStatus.Pause;
+        console.log(this.status);
     }
 
     /**
