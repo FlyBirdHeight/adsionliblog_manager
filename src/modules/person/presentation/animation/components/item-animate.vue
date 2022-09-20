@@ -55,9 +55,21 @@ const animateSetting = reactive({
   speed: 1,
 })
 const animateInfo = useActiveItem(null, function (activeItem: any) {
-  if(checkedDataChange.value) {
-    checkedDataChange.value = false;
-    return;
+  if (activeItem === -1) {
+    Object.assign(animateSetting, {
+      task: '',
+      type: '',
+      trigger: 'click',
+      attribute: '',
+      speed: 1,
+    })
+    checkData.value = []
+    checkedDataChange.value = false
+    return
+  }
+  if (checkedDataChange.value) {
+    checkedDataChange.value = false
+    return
   }
   Object.assign(animateSetting, {
     task: '',
@@ -86,7 +98,7 @@ const animateSet = reactive({
 const checkAnimateData = (animateData: any) => {
   Object.assign(animateSetting, animateData)
   checkData.value = [animateData.task, animateData.type]
-  checkedDataChange.value = true;
+  checkedDataChange.value = true
 }
 
 watch(checkData, (newV: any, oldV: any) => {
