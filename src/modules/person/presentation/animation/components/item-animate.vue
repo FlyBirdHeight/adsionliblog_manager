@@ -126,7 +126,6 @@ watch(animateSetting, (newV) => {
   } else if (newV.task === 'out') {
     Object.assign(animateSet.out, newV)
   }
-  console.log(animateInfo, newV, animateSet)
   if (animateInfo.value) {
     setAnimateChoice(animateSet, newV.task, animateInfo.value, animateObj)
   }
