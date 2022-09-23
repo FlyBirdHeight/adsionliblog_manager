@@ -1,4 +1,4 @@
-import { AnimateOrder, AnimateList, AnimatePage } from "./type/animate"
+import { AnimateOrder, AnimateList, AnimatePage, ItemAnimate } from "./type/animate"
 import { Page, PageAnimate } from '../type'
 import { setPageAnimate, setItemAnimate, addAnimate, changeAnimateOrder } from "./utils/data_setting"
 import { AnimateStatus } from "./enum/animate_enum"
@@ -106,10 +106,17 @@ class ImplementAnimate {
      * @method executeNow 立即执行完成
      */
     executeNow() {
+        const setShow = (itemAnimate: ItemAnimate) => {
+            if(itemAnimate.in.type === '') {
+                itemAnimate.show = true;
+            }else {
+                itemAnimate.show = false;
+            }
+        }
         for (let [key, value] of this.execuationOrder) {
             let index: string = value.itemIndex + '-' + value.mode;
             let task: any = this.activeTrigger.has(index) ? this.activeTrigger.get(index) : this.autoImplementStack.get(index);
-            task.item.show = true;
+            setShow(task.item);
             this.execuatedStack.set(key, value)
         }
         this.execuationOrder.clear();
@@ -119,10 +126,18 @@ class ImplementAnimate {
      * @method restartTask 重置动画执行
      */
     restartTask() {
+        const setShow = (itemAnimate: ItemAnimate) => {
+            if(itemAnimate.in.type === '') {
+                itemAnimate.show = true;
+            }else {
+                itemAnimate.show = false;
+            }
+        }
         for (let [key, value] of this.execuatedStack) {
             let index: string = value.itemIndex + '-' + value.mode;
             let task: any = this.activeTrigger.has(index) ? this.activeTrigger.get(index) : this.autoImplementStack.get(index);
-            task.item.show = false;
+            setShow(task.item);
+            console.log(task)
             this.execuationOrder.set(key, value)
         }
         this.execuatedStack.clear();

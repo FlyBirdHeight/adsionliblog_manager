@@ -35,7 +35,6 @@ class Fly implements AnimateAction {
     }
     enter(el: any, done: any) {
         let timer: number = this.getTime(this.attribute.in.speed);
-        console.log(timer)
         el!.style.transition = `all ${timer / 1000}s linear`
         setTimeout(() => {
             el!.style.opacity = 1;
@@ -54,7 +53,6 @@ class Fly implements AnimateAction {
     }
     leave(el: any, done: any) {
         let timer: number = this.getTime(this.attribute.out.speed);
-        console.log(timer)
         let position = this.attribute.out.attribute;
         el!.style.transform = this.getPositionStyler(position);
         el!.style.opacity = 0;
@@ -64,7 +62,9 @@ class Fly implements AnimateAction {
         }, timer)
     }
     afterLeave(el: any) {
-
+        el!.style.opacity = '';
+        el!.style.transform = null;
+        el!.style.transition = '';
     }
 
     getTime(speed: number): number {
