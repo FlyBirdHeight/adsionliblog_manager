@@ -1,5 +1,4 @@
 import { defineComponent, watch, ref, withDirectives, vShow } from 'vue'
-import { ImageItem } from '../../presentation/image/type'
 import { analysisCss } from '../../presentation/image/image'
 import getPositionStyle from '../../utils/style'
 import ItemAnimation from '@/modules/person/presentation/animation/item_animation.vue'

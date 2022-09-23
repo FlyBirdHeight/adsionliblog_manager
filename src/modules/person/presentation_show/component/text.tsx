@@ -1,7 +1,7 @@
-import { defineComponent, watch, ref } from 'vue'
+import { defineComponent, watch, ref, withDirectives, vShow } from 'vue'
 import { analysisCss } from '@/modules/person/presentation/text/text'
 import getPositionStyle from '../../utils/style'
-
+import ItemAnimation from '@/modules/person/presentation/animation/item_animation.vue'
 const analysisText = (data: any) => {
   if (!data) {
     return null
@@ -20,7 +20,7 @@ const analysisText = (data: any) => {
 }
 
 const renderText = (analysisData: any) => {
-  if (!analysisData) return
+  if (!analysisData) return <div></div>;
   return <div style={analysisData.value.style} v-html={analysisData.value.data} />
 }
 
@@ -44,9 +44,12 @@ export default defineComponent({
     )
 
     const analysisData: any = ref(analysisText(props.info))
-    watch(analysisData, (newV: any) => {
-      console.log(newV)
-    })
-    return () => renderText(analysisData)
+    return () => (
+      <ItemAnimation animate={props.info.animate} duration={1000}>
+        {withDirectives(renderText(analysisData), [
+          [vShow, props.info.animate.show == null || props.info.animate.show],
+        ])}
+      </ItemAnimation>
+    )
   },
 })
