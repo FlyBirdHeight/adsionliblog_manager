@@ -82,12 +82,12 @@ const AnimateInfo = {
     ],
     "scale": [
         {
-            label: "从小到大",
-            value: 'small'
+            label: "普通放缩",
+            value: 'normal'
         },
         {
-            label: "从大到小",
-            value: 'big'
+            label: "模糊放缩",
+            value: 'blur'
         },
     ],
     "openUp": [

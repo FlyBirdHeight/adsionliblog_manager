@@ -19,6 +19,7 @@ import { ref, defineProps, computed, watch, reactive, onMounted } from 'vue'
 import Opacity from './content_lib/opacity'
 import Fly from './content_lib/fly'
 import OpenUp from './content_lib/openUp';
+import Scale from './content_lib/scale';
 const props = defineProps({
   type: {
     type: String,
@@ -39,7 +40,8 @@ const props = defineProps({
 const animateList = {
   opacity: Opacity,
   fly: Fly,
-  openUp: OpenUp
+  openUp: OpenUp,
+  scale: Scale
 }
 const useAnimate = ref(null)
 const needAttribute = ['fly', 'scale', 'openUp']
