@@ -2,21 +2,32 @@ import AnimateAction from "../animation";
 
 class Opacity implements AnimateAction {
     duration!: number;
+    attribute: { in: { speed: number }, out: { speed: number } };
     constructor(time: number) {
         this.duration = time;
+        this.attribute = { in: { speed: 1 }, out: { speed: 1 } }
     }
-
+    /**
+ * @method setAttribute 设置动画属性
+ * @param {string} mode 时机
+ * @param {*} attribute 属性
+ */
+    setAttribute(mode: 'in' | 'out' = 'in', attribute: {
+        speed: number
+    }) {
+        this.attribute[mode] = attribute;
+    }
     //进入
     beforeEnter(el: any) {
         el!.style.opacity = 0;
     }
     enter(el: any, done: any) {
-        el!.style.transition = 'all 1s linear'
-        let time = this.duration;
+        let timer: number = this.getTime(this.attribute.in.speed);
+        el!.style.transition = `all ${timer / 1000}s linear`
         setTimeout(() => {
             el!.style.opacity = 1;
             done();
-        }, time)
+        }, timer)
     }
     afterEnter(el: any) {
         el!.style.opacity = 1;
@@ -26,15 +37,20 @@ class Opacity implements AnimateAction {
         el!.style.opacity = 1;
     }
     leave(this: any, el: any, done: any) {
+        let timer: number = this.getTime(this.attribute.in.speed);
         el!.style.opacity = 0;
-        el!.style.transition = 'all 1s linear'
-        let time = this.duration;
+        el!.style.transition = `all ${timer / 1000}s linear`
         setTimeout(() => {
             done();
-        }, time)
+        }, timer)
     }
     afterLeave(el: any) {
-        el!.style.opacity = 0;
+        el!.style.opacity = '';
+        el!.style.transition = '';
+    }
+
+    getTime(speed: number): number {
+        return Math.floor(this.duration / speed)
     }
 }
 

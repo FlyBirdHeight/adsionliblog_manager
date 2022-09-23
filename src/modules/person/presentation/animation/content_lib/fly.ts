@@ -14,7 +14,7 @@ class Fly implements AnimateAction {
     attribute: FlyAttribute;
     constructor(time: number = 1000) {
         this.duration = time;
-        this.attribute = { in: { attribute: 'left', speed: 1 }, out: { attribute: 'left', speed: 1 } }
+        this.attribute = { in: { attribute: 'left', speed: 1 }, out: { attribute: 'right', speed: 1 } }
     }
     /**
      * @method setAttribute 设置动画属性
@@ -54,7 +54,7 @@ class Fly implements AnimateAction {
     leave(el: any, done: any) {
         let timer: number = this.getTime(this.attribute.out.speed);
         let position = this.attribute.out.attribute;
-        el!.style.transform = this.getPositionStyler(position);
+        el!.style.transform = this.getPositionStyler(position, 'out');
         el!.style.opacity = 0;
         el!.style.transition = `all ${timer / 1000}s linear`;
         setTimeout(() => {
@@ -71,7 +71,7 @@ class Fly implements AnimateAction {
         return Math.floor(this.duration / speed)
     }
 
-    getPositionStyler(position: string) {
+    getPositionStyler(position: string, mode: string = '') {
         let styler = '';
         switch (position) {
             case 'left':
@@ -85,6 +85,13 @@ class Fly implements AnimateAction {
                 break;
             case 'top':
                 styler = 'translate(0, -100%)'
+                break;
+            default:
+                if(mode === 'in') {
+                    styler = 'translate(-100%, 0)';
+                }else {
+                    styler = 'translate(100%, 0)';
+                }
                 break;
         }
 

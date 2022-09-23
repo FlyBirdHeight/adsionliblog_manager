@@ -22,6 +22,11 @@ const AnimateSelect: ItemAnimateSelect[] = [
                 icon: '',
             },
             {
+                value: 'openUp-in',
+                label: '上侧荡入',
+                icon: ''
+            },
+            {
                 value: 'scale-in',
                 label: '放缩',
                 icon: '',
@@ -42,6 +47,11 @@ const AnimateSelect: ItemAnimateSelect[] = [
                 value: 'fly-out',
                 label: '飞出',
                 icon: '',
+            },
+            {
+                value: 'openUp-out',
+                label: '上侧荡出',
+                icon: ''
             },
             {
                 value: 'scale-out',
@@ -80,6 +90,16 @@ const AnimateInfo = {
             value: 'big'
         },
     ],
+    "openUp": [
+        {
+            label: "左侧",
+            value: 'left'
+        },
+        {
+            label: "右侧",
+            value: 'right'
+        }
+    ]
 
 }
 export {

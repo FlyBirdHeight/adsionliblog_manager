@@ -9,18 +9,16 @@
     @leave="leave"
     @after-leave="afterLeave"
     :css="false"
-    mode="in-out"
+    mode="out-in"
   >
     <slot></slot>
   </transition>
 </template>
 <script lang="ts" setup>
 import { ref, defineProps, computed, watch, reactive, onMounted } from 'vue'
-import BackIn from './content_lib/backIn'
 import Opacity from './content_lib/opacity'
-import FlyInLeft from './content_lib/fly_left'
-import FlyInDown from './content_lib/fly_down'
 import Fly from './content_lib/fly'
+import OpenUp from './content_lib/openUp';
 const props = defineProps({
   type: {
     type: String,
@@ -31,7 +29,7 @@ const props = defineProps({
     default: 1500,
   },
   animate: {
-    default: 'back-in',
+    default: 'fly',
   },
   runningItem: {
     type: Boolean,
@@ -39,14 +37,12 @@ const props = defineProps({
   },
 })
 const animateList = {
-  'back-in': BackIn,
   opacity: Opacity,
-  'fly-left': FlyInLeft,
-  'fly-down': FlyInDown,
   fly: Fly,
+  openUp: OpenUp
 }
 const useAnimate = ref(null)
-const needAttribute = ['fly', 'scale'];
+const needAttribute = ['fly', 'scale', 'openUp']
 onMounted(() => {
   useAnimate.value = (() => {
     if (typeof props.animate !== 'string') {
@@ -78,6 +74,8 @@ const setAnimate = (animateInfo) => {
     let enterObj = new Obj(enter.time)
     if (needAttribute.includes(type)) {
       enterObj.setAttribute('in', { speed: enter.speed, attribute: enter.info.attribute })
+    } else {
+      enterObj.setAttribute('in', { speed: enter.speed })
     }
     res.beforeEnter = enterObj.beforeEnter.bind(enterObj)
     res.enter = enterObj.enter.bind(enterObj)
@@ -89,6 +87,8 @@ const setAnimate = (animateInfo) => {
     let leaveObj = new Obj(leave.time)
     if (needAttribute.includes(type)) {
       leaveObj.setAttribute('out', { speed: leave.speed, attribute: leave.info.attribute })
+    } else {
+      leaveObj.setAttribute('out', { speed: enter.speed })
     }
     res.beforeLeave = leaveObj.beforeLeave.bind(leaveObj)
     res.leave = leaveObj.leave.bind(leaveObj)

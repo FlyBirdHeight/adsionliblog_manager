@@ -42,7 +42,7 @@ class ImplementAnimate {
         this.execuatedStack = new Map();
         this.status = AnimateStatus.Ready;
         this.actionSpeed = 1;
-        this.intervalTime = 1000;
+        this.intervalTime = 500;
     }
     /**
      * @method setTask 设置动画执行任务
@@ -58,7 +58,6 @@ class ImplementAnimate {
      */
     async runTask() {
         let playAnimate = this.getAnimateList();
-        console.log('ready')
         if (this.status === AnimateStatus.Pause) {
             this.status = AnimateStatus.Running;
             this.playAnimate(playAnimate);
@@ -68,7 +67,6 @@ class ImplementAnimate {
                 await this.playPage();
             }
             this.status = AnimateStatus.Running;
-            console.log(this.status)
             this.playAnimate(playAnimate);
         }
     }
@@ -76,12 +74,10 @@ class ImplementAnimate {
      * @method parseTask 暂停动画执行
      */
     pauseTask() {
-        console.log(this.status)
         if (this.status != AnimateStatus.Running) {
             return;
         }
         this.status = AnimateStatus.Pause;
-        console.log(this.status);
     }
 
     /**
@@ -137,7 +133,6 @@ class ImplementAnimate {
             let index: string = value.itemIndex + '-' + value.mode;
             let task: any = this.activeTrigger.has(index) ? this.activeTrigger.get(index) : this.autoImplementStack.get(index);
             setShow(task.item);
-            console.log(task)
             this.execuationOrder.set(key, value)
         }
         this.execuatedStack.clear();

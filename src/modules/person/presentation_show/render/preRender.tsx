@@ -118,7 +118,7 @@ export default defineComponent({
     const firstRender = ref<boolean>(true)
     const firstRenderList = ref([])
     const teleportFullScreen = useFullScreenTeleport(handleObj, 'person-presentation', instance)
-    const animate = ref('fly-left')
+    const animate = ref('fly')
     const playTime = ref<number>(1000)
     const playPosition = useControl(playTime.value)
     
