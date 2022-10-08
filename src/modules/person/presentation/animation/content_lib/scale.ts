@@ -1,4 +1,5 @@
 import AnimateAction from '../animation';
+import Action from './action';
 type ScaleAttribute = {
     in: {
         attribute: 'blur' | 'normal',
@@ -9,11 +10,10 @@ type ScaleAttribute = {
         speed: number
     }
 }
-class Scale implements AnimateAction {
-    duration: number;
+class Scale extends Action implements AnimateAction {
     attribute: ScaleAttribute
     constructor(time: number) {
-        this.duration = time;
+        super(time);
         this.attribute = {
             in: {
                 attribute: 'normal',
@@ -93,10 +93,6 @@ class Scale implements AnimateAction {
             transform: '',
             transition: ''
         })
-    }
-
-    getTime(speed: number): number {
-        return Math.floor(this.duration / speed)
     }
 }
 

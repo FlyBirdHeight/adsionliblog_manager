@@ -1,10 +1,10 @@
 import AnimateAction from "../animation";
+import Action from './action';
 
-class Opacity implements AnimateAction {
-    duration!: number;
+class Opacity extends Action implements AnimateAction {
     attribute: { in: { speed: number }, out: { speed: number } };
     constructor(time: number) {
-        this.duration = time;
+        super(time);
         this.attribute = { in: { speed: 1 }, out: { speed: 1 } }
     }
     /**
@@ -47,10 +47,6 @@ class Opacity implements AnimateAction {
     afterLeave(el: any) {
         el!.style.opacity = '';
         el!.style.transition = '';
-    }
-
-    getTime(speed: number): number {
-        return Math.floor(this.duration / speed)
     }
 }
 

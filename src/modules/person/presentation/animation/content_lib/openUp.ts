@@ -1,4 +1,5 @@
 import AnimateAction from '../animation';
+import Action from './action';
 type OpenUpAttribute = {
     in: {
         attribute: 'left' | 'right',
@@ -9,11 +10,10 @@ type OpenUpAttribute = {
         speed: number
     }
 }
-class OpenUp implements AnimateAction {
-    duration: number;
+class OpenUp extends Action implements AnimateAction {
     attribute: OpenUpAttribute;
     constructor(time: number = 1000) {
-        this.duration = time;
+        super(time);
         this.attribute = {
             in: {
                 attribute: 'left',
@@ -80,9 +80,6 @@ class OpenUp implements AnimateAction {
         el!.style.transformOrigin = '';
     }
 
-    getTime(speed: number): number {
-        return Math.floor(this.duration / speed)
-    }
 }
 
 export default OpenUp

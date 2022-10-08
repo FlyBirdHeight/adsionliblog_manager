@@ -1,4 +1,5 @@
 import AnimateAction from '../animation';
+import Action from './action';
 type FlyAttribute = {
     in: {
         attribute: string,
@@ -9,11 +10,10 @@ type FlyAttribute = {
         speed: number
     }
 }
-class Fly implements AnimateAction {
-    duration: number;
+class Fly extends Action implements AnimateAction {
     attribute: FlyAttribute;
     constructor(time: number = 1000) {
-        this.duration = time;
+        super(time);
         this.attribute = { in: { attribute: 'left', speed: 1 }, out: { attribute: 'right', speed: 1 } }
     }
     /**
@@ -66,11 +66,7 @@ class Fly implements AnimateAction {
         el!.style.transform = null;
         el!.style.transition = '';
     }
-
-    getTime(speed: number): number {
-        return Math.floor(this.duration / speed)
-    }
-
+    
     getPositionStyler(position: string, mode: string = '') {
         let styler = '';
         switch (position) {
